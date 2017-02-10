@@ -9,6 +9,7 @@ Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 */
 
 import java.io.*;
+import java.util.*;
 
 public class EvolAlg {
 
@@ -21,6 +22,8 @@ public class EvolAlg {
 	private static int numberOfIterations;
 	private static Boolean whichAlgorithm; // 1 - GA, 0 - PBIL
 
+	private static ArrayList<ArrayList<Integer>> formula = new ArrayList<>();
+
 
 	public static void main(String[] args) {
 		if(args.length != 8) {
@@ -28,7 +31,8 @@ public class EvolAlg {
 			System.exit(1); //exit with error
 		}
 		readAndPrintParams(args);
-
+		readFormula(problemFilePath);
+		printFormula();
 	}
 
 	public static void readAndPrintParams(String[] args) {
@@ -59,6 +63,37 @@ public class EvolAlg {
 		} else {
 			System.out.println("Algorithm specified incorrectly");
 			System.exit(1); //exit with error
+		}
+	}
+
+	public static void readFormula(String problemFP) {
+		try(BufferedReader br = new BufferedReader(new FileReader(problemFP))) {
+			String line;
+			while((line = br.readLine()) != null) {
+				if(line.charAt(0) != 'c' && line.charAt(0) != 'p') {
+					ArrayList<Integer> temp = new ArrayList<>();
+					String[] tokens = line.split(" ");
+					for(String token : tokens) {
+						if(Integer.parseInt(token) == 0) {
+							formula.add(temp);
+							break;
+						} else {
+							temp.add(Integer.parseInt(token));
+						}
+					}
+				}
+			}
+		} catch (IOException e) {
+			System.err.format("IOException %s%n",e);
+		}
+	}
+
+	public static void printFormula() {
+		for(int i = 0; i < formula.size(); i++) {
+			for(int j = 0; j < formula.get(i).size(); j++) {
+				System.out.print(formula.get(i).get(j) + " ");
+			}
+			System.out.println();
 		}
 	}
 }
