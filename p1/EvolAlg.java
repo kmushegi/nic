@@ -62,7 +62,12 @@ public class EvolAlg {
 		}
 	}
 
-	public static void pbil(int indPerIteration, double posLearningRate, 
+	public static double evaluateFitness(ArrayList<Double> sample) { //NEED TO WRITE THIS.
+		//Number of clauses met?
+		return 0.1;
+	}
+
+	public static ArrayList<Double> pbil(int indPerIteration, double posLearningRate, 
 							double negLearningRate, double mutationProb,
 							double mutationAmt, int numIterations) {
 
@@ -72,16 +77,49 @@ public class EvolAlg {
 		}
 		
 		ArrayList<ArrayList<Integer>> samples = new ArrayList<>(indPerIteration);
+		ArrayList<Double> fitnessEvaluations = new ArrayList<>(); //The higher the value, the better the fitness.
 
 		while(numIterations > 0) {
-
+			//generate individuals
 			for(int i = 0; i < indPerIteration; i++) { //for each individual
-				//generate individuals
 				for(int j = 0; j < numberOfVariables; j++) { //for each variable
+					samples[i][j] = (Math.random() > probVector[j]) ? 0 : 1;
+				}
+				fitnessEvaluations[i] = evaluateFitness(samples[i]);
+			}
 
+			int bestVectorIndex, worstVectorIndex;
+			bestVectorIndex = worstVectorIndex = 0;
+
+			for (int i = 1; i < fitnessEvaluations.size(); i++) {
+				if (fitnessEvaluations[i] < fitnessEvaluations[worstVectorIndex]) {
+					worstVectorIndex = i;
+				}
+				if (fitnessEvaluations[i] > fitnessEvaluations[bestVectorIndex]) {
+					bestVectorIndex = i;
+				}
+			}
+
+			for (int i = 0; i < numberOfVariables; i++) {
+				probVector[i] = probVector[i] * (1.0 - posLearningRate) + (samples[bestVectorIndex][i] * posLearningRate);
+			}
+
+			for (int i = 0; i < numberOfVariables; i++) {
+				if (samples[bestVectorIndex][i] != samples[worstVectorIndex][i]) {
+					probVector[i] = probVector[i] * (1.0 - negLearningRate) + (samples[bestVectorIndex][i] * negLearningRate);
+				}
+			}
+
+			for (int i = 0; numberOfVariables; i++) {
+				if (Math.random() < mutationProb) {
+					int mutationDir = (Math.random() > 0.5) ? 1 : 0;
+					probVector[i] = probVector[i] * (1.0 - mutationAmt) + (mutationDir * mutationAmt);
 				}
 			}
 		}
+		
+		return probVector;
+
 	}
 
 	public static void readAndPrintParams(String[] args) {
