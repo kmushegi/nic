@@ -25,6 +25,8 @@ public class EvolAlg {
 	private static String crossoverMethod;
 	private static double crossoverProbability;
 	private static int numberOfGenerations;
+	private static int numberOfVariables;
+	private static int numberOfClauses;
 
 
 	//PBIL Parameters
@@ -37,6 +39,7 @@ public class EvolAlg {
 
 	//Containers
 	private static ArrayList<ArrayList<Integer>> formula = new ArrayList<>();
+	private static String bitString = "";
 
 
 	public static void main(String[] args) {
@@ -47,6 +50,7 @@ public class EvolAlg {
 		readAndPrintParams(args);
 		readFormula(problemFilePath);
 		printFormula();
+		System.out.println(bitString);
 
 		//IDEA: supply parameters into each algorithm so that global variables are only
 		//used in the function call in order to avoid confusion
@@ -55,6 +59,28 @@ public class EvolAlg {
 			//run GA
 		} else {
 			//run PBIL
+		}
+	}
+
+	public static void pbil(int indPerIteration, double posLearningRate, 
+							double negLearningRate, double mutationProb,
+							double mutationAmt, int numIterations) {
+
+		ArrayList<Double> probVector = new ArrayList<>();
+		for(int i = 0; i < numberOfVariables; i++) {
+			probVector.add(0.5);
+		}
+		
+		ArrayList<ArrayList<Integer>> samples = new ArrayList<>(indPerIteration);
+
+		while(numIterations > 0) {
+
+			for(int i = 0; i < indPerIteration; i++) { //for each individual
+				//generate individuals
+				for(int j = 0; j < numberOfVariables; j++) { //for each variable
+
+				}
+			}
 		}
 	}
 
@@ -110,7 +136,11 @@ public class EvolAlg {
 		try(BufferedReader br = new BufferedReader(new FileReader(problemFP))) {
 			String line;
 			while((line = br.readLine()) != null) {
-				if(line.charAt(0) != 'c' && line.charAt(0) != 'p') {
+				if(line.charAt(0) == 'p') {
+					String[] tokens = line.split(" ");
+					numberOfVariables = tokens[2];
+					numberOfClauses = tokens[3];
+				} else if(line.charAt(0) != 'c' && line.charAt(0) != 'p') {
 					ArrayList<Integer> temp = new ArrayList<>();
 					String[] tokens = line.split(" ");
 					for(String token : tokens) {
@@ -118,6 +148,11 @@ public class EvolAlg {
 							formula.add(temp);
 							break;
 						} else {
+							if(Integer.parseInt(token) < 0) {
+								bitString += "0";
+							} else {
+								bitString += "1";
+							}
 							temp.add(Integer.parseInt(token));
 						}
 					}
