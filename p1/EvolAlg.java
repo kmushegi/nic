@@ -47,6 +47,15 @@ public class EvolAlg {
 		readAndPrintParams(args);
 		readFormula(problemFilePath);
 		printFormula();
+
+		//IDEA: supply parameters into each algorithm so that global variables are only
+		//used in the function call in order to avoid confusion
+		//TODO: get feedback on this from Marcus & Ernesto
+		if(whichAlgorithm) {
+			//run GA
+		} else {
+			//run PBIL
+		}
 	}
 
 	public static void readAndPrintParams(String[] args) {
