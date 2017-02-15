@@ -78,7 +78,7 @@ public class EvolAlg {
 			}
 		}
 
-		return 1;
+		return fitness;
 	}
 
 	public static ArrayList<Double> pbil(int indPerIteration, double posLearningRate, 
