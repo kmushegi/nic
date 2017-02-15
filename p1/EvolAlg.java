@@ -62,9 +62,25 @@ public class EvolAlg {
 		}
 	}
 
-	public static double evaluateFitness(ArrayList<Double> sample) { //NEED TO WRITE THIS.
-		//Number of clauses met?
-		return 0.1;
+	public static int evaluateFitness(ArrayList<Double> sample) {
+		//Fitness = number of clauses met
+		//Space = or
+		//negative = not
+
+		Boolean evaluatesTrue;
+		int fitness = 0;
+
+		for (int i = 0; i < formula.length; i++) { //For each clause
+			evaluatesTrue = false;
+			for (int j = 0; j < formula[i].length; j++) {
+				if ((formula[i][j] > 0 && sample[formula[i][j]] == 1) || (formula[i][j] < 0 && sample[formula[i][j]] == 0)) {
+					fitness++;
+					break;
+				}
+			}
+		}
+
+		return 1;
 	}
 
 	public static ArrayList<Double> pbil(int indPerIteration, double posLearningRate, 
@@ -110,7 +126,7 @@ public class EvolAlg {
 				}
 			}
 
-			for (int i = 0; numberOfVariables; i++) {
+			for (int i = 0; i < numberOfVariables; i++) {
 				if (Math.random() < mutationProb) {
 					int mutationDir = (Math.random() > 0.5) ? 1 : 0;
 					probVector[i] = probVector[i] * (1.0 - mutationAmt) + (mutationDir * mutationAmt);
@@ -186,11 +202,11 @@ public class EvolAlg {
 							formula.add(temp);
 							break;
 						} else {
-							if(Integer.parseInt(token) < 0) {
-								bitString += "0";
-							} else {
-								bitString += "1";
-							}
+							// if(Integer.parseInt(token) < 0) {
+							// 	bitString += "0";
+							// } else {
+							// 	bitString += "1";
+							// }
 							temp.add(Integer.parseInt(token));
 						}
 					}
