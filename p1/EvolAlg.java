@@ -67,11 +67,9 @@ public class EvolAlg {
 		//Space = or
 		//negative = not
 
-		Boolean evaluatesTrue;
 		int fitness = 0;
 
 		for (int i = 0; i < formula.length; i++) { //For each clause
-			evaluatesTrue = false;
 			for (int j = 0; j < formula[i].length; j++) {
 				if ((formula[i][j] > 0 && sample[formula[i][j]] == 1) || (formula[i][j] < 0 && sample[formula[i][j]] == 0)) {
 					fitness++;
