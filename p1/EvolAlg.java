@@ -53,6 +53,8 @@ public class EvolAlg {
 	private static ArrayList<ArrayList<Integer>> formula = new ArrayList<>();
 	private static String bitString = "";
 
+	Random generator = new Random();
+
 
 	public static void main(String[] args) {
 		if(args.length != 8) {
@@ -100,7 +102,7 @@ public class EvolAlg {
 		for(int i = 0; i < inds; i++) {
 			ArrayList<Integer> temp = new ArrayList<>();
 			for(int j = 0; j < numberOfVariables; j++) {
-				temp.add(((Math.random() > 0.5) ? 0 : 1));
+				temp.add(((generator.nextDouble() > 0.5) ? 0 : 1));
 			}
 			pp.add(temp);
 		}
@@ -161,11 +163,15 @@ public class EvolAlg {
 				ArrayList<Integer> c1 = newChildren.child1;
 				ArrayList<Integer> c2 = newChildren.child2;
 
-				c1 = mutateChild(c1);
-				c2 = mutateChild(c2);
+				c1 = mutateChild(c1, mutationProbability);
+				c2 = mutateChild(c2, mutationProbability);
 			}
 
-			//evaluate children
+			ArrayList<Integer> childrenFitnessEvaluations = new ArrayList<>(children.size());
+			for(int i = 0; i < children.size(); i++) {
+				fitnessEvaluations.set(i,evaluateFitness(children.get(i)));
+			}
+
 			//get best solution
 			//replace pop with children
 
@@ -177,6 +183,16 @@ public class EvolAlg {
 
 	ArrayList<Integer> mutateChild(ArrayList<Integer> child) {
 
+		for (int i = 0; i < child.size(); i++) {
+			if (child.get(i) && generator.nextDouble() < mutationProbability) { //child at i is 1
+				child,set(i, 0);
+			}
+			else if (generator.nextDouble() < mutationProbability) { //child at i is 0
+				child,set(i, 1);
+			}
+		}
+
+		return child;
 	}
 
 	Child onepoint(ArrayList<Integer> parent1, ArrayList<Integer> parent2, double crossoverProbability) {
@@ -215,7 +231,7 @@ public class EvolAlg {
 			//generate individuals
 			for(int i = 0; i < indPerIteration; i++) { //for each individual
 				for(int j = 0; j < numberOfVariables; j++) { //for each variable
-					samples.get(i).set(j,((Math.random() > probVector.get(j)) ? 0 : 1));
+					samples.get(i).set(j,((generator.nextDouble() > probVector.get(j)) ? 0 : 1));
 				}
 
 				fitnessEvaluations.set(i,evaluateFitness(samples.get(i)));
@@ -246,8 +262,8 @@ public class EvolAlg {
 			}
 
 			for (int i = 0; i < numberOfVariables; i++) {
-				if (Math.random() < mutationProb) {
-					int mutationDir = (Math.random() > 0.5) ? 1 : 0;
+				if (generator.nextDouble() < mutationProb) {
+					int mutationDir = (generator.nextDouble() > 0.5) ? 1 : 0;
 					probVector.set(i,(probVector.get(i) * (1.0 - mutationAmt) + 
 								(mutationDir * mutationAmt)));
 				}
