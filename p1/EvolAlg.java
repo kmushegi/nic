@@ -53,7 +53,7 @@ public class EvolAlg {
 	private static ArrayList<ArrayList<Integer>> formula = new ArrayList<>();
 	private static String bitString = "";
 
-	Random generator = new Random();
+	private static Random generator = new Random();
 
 
 	public static void main(String[] args) {
@@ -131,7 +131,7 @@ public class EvolAlg {
 
 		ArrayList<Integer> best = population.get(bestSolutionIndex);
 
-		ArrayList<ArrayList<Integer>> parents;
+		ArrayList<ArrayList<Integer>> parents = new ArrayList<>();
 		ArrayList<ArrayList<Integer>> children = new ArrayList<>();
 
 		while(numGenerations > 0) {
@@ -152,10 +152,11 @@ public class EvolAlg {
 
 			for (int i = 0; i < parents.size(); i+=2) { //Hope that array is even!
 
-				if (crossover.equals("1c") {
-					Child newChildren = onepoint(parents.get(i), parents.get(i+1), crossoverProbability);
-				} else if (crossover.equals("uc") {
-					Child newChildren = uniform(parents.get(i), parents.get(i+1), crossoverProbability);
+				Child newChildren = new Child();
+				if (crossover.equals("1c")) {
+					newChildren = onepoint(parents.get(i), parents.get(i+1), crossoverProbability);
+				} else if (crossover.equals("uc")) {
+					newChildren = uniform(parents.get(i), parents.get(i+1), crossoverProbability);
 				} else {
 					System.exit(1);
 				}
@@ -163,8 +164,8 @@ public class EvolAlg {
 				ArrayList<Integer> c1 = newChildren.child1;
 				ArrayList<Integer> c2 = newChildren.child2;
 
-				c1 = mutateChild(c1, mutationProbability);
-				c2 = mutateChild(c2, mutationProbability);
+				c1 = mutateChild(c1);
+				c2 = mutateChild(c2);
 			}
 
 			ArrayList<Integer> childrenFitnessEvaluations = new ArrayList<>(children.size());
@@ -180,7 +181,8 @@ public class EvolAlg {
 					currentMax = childrenFitnessEvaluations.get(i);
 				}
 			}
-			ArrayList<Integer> best = children.get(bestSolutionIndex);
+			
+			best = children.get(bestSolutionIndex);
 
 			population = children;
 
@@ -190,38 +192,63 @@ public class EvolAlg {
 		return best;
 	}
 
-	ArrayList<Integer> mutateChild(ArrayList<Integer> child) {
+	public static ArrayList<Integer> mutateChild(ArrayList<Integer> child) {
 
 		for (int i = 0; i < child.size(); i++) {
-			if (child.get(i) && generator.nextDouble() < mutationProbability) { //child at i is 1
-				child,set(i, 0);
+			if ((child.get(i) == 1) && (generator.nextDouble() < mutationProbability)) { //child at i is 1
+				child.set(i, 0);
 			}
 			else if (generator.nextDouble() < mutationProbability) { //child at i is 0
-				child,set(i, 1);
+				child.set(i, 1);
 			}
 		}
 
 		return child;
 	}
 
-	Child onepoint(ArrayList<Integer> parent1, ArrayList<Integer> parent2, double crossoverProbability) {
-
+	public static Child onepoint(ArrayList<Integer> parent1, ArrayList<Integer> parent2, 
+												double crossoverProbability) {
+		Child c = new Child();
+		return c;
 	}
 
-	Child uniform(ArrayList<Integer> parent1, ArrayList<Integer> parent2, double crossoverProbability) {
-		
+	public static Child uniform(ArrayList<Integer> parent1, ArrayList<Integer> parent2, 
+												double crossoverProbability) {
+		Child c = new Child();
+		return c;
 	}
 
-	ArrayList<ArrayList<Integer>> rs(ArrayList<ArrayList<Integer>> population) {
+	public static ArrayList<ArrayList<Integer>> rs(ArrayList<ArrayList<Integer>> population) {
+		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
 
+		return selected;
 	}
 
-	ArrayList<ArrayList<Integer>> ts(ArrayList<ArrayList<Integer>> population) {
-		
+	public static ArrayList<ArrayList<Integer>> ts(ArrayList<ArrayList<Integer>> population) {
+		int m = numberOfVariables/2;
+		int k = m/3;
+
+
+		ArrayList<Integer> best = null;
+
+		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
+
+		for(int i = 0; i < k; i++) {
+			ArrayList<Integer> ind = population.get(generator.nextInt(numberOfVariables));
+			if((best == null)) {
+				best = ind;
+				selected.add(ind);
+			} else if(evaluateFitness(ind) > evaluateFitness(best)) {
+				selected.add(ind);
+				best = ind;
+			}
+		}
+		return selected;
 	}
 
-	ArrayList<ArrayList<Integer>> bs(ArrayList<ArrayList<Integer>> population) {
-		
+	public static ArrayList<ArrayList<Integer>> bs(ArrayList<ArrayList<Integer>> population) {
+		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
+		return selected;
 	}
 
 	public static ArrayList<Double> pbil(int indPerIteration, double posLearningRate, 
