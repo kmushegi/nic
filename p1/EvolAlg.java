@@ -84,11 +84,49 @@ public class EvolAlg {
 		return fitness;
 	}
 
+	public static ArrayList<ArrayList<Integer>> initializePopulation(int inds) {
+		ArrayList<ArrayList<Integer>> pp = new ArrayList<>();
+
+		for(int i = 0; i < inds; i++) {
+			ArrayList<Integer> temp = new ArrayList<>();
+			for(int j = 0; j < numberOfVariables; j++) {
+				temp.add(((Math.random() > 0.5) ? 0 : 1));
+			}
+			pp.add(temp);
+		}
+		return pp;
+	}
+
 	public static ArrayList<Double> ga(int indInPopulation, String selection,
 							String crossover, double crossoverProb, 
 							double mutationProb, int numGenerations) {
-		ArrayList<Double> t = new ArrayList<>();
-		return t;
+
+		ArrayList<ArrayList<Integer>> population = initializePopulation(indInPopulation);
+
+		ArrayList<Integer> fitnessEvaluations = new ArrayList<>(population.size());
+		for(int i = 0; i < population.size(); i++) {
+			fitnessEvaluations.set(i,evaluateFitness(population.get(i)));
+		}
+
+		int bestSolutionIndex = 0;
+		int currentMax = fitnessEvaluations.get(0);
+		for(int i = 1; i < fitnessEvaluations.size(); i++) {
+			if(fitnessEvaluations.get(i) > currentMax) {
+				bestSolutionIndex = i;
+				currentMax = fitnessEvaluations.get(i);
+			}
+		}
+
+		ArrayList<Integer> best = population.get(bestSolutionIndex);
+
+		while(numGenerations > 0) {
+			
+			numGenerations--;
+		}
+
+
+
+		return best;
 	}
 
 	public static ArrayList<Double> pbil(int indPerIteration, double posLearningRate, 
