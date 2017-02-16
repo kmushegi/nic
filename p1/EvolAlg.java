@@ -150,7 +150,7 @@ public class EvolAlg {
 				System.exit(1);
 			}
 
-			for (int i = 0; i < parents.size(); i+=2) { //Hope that array is even.
+			for (int i = 0; i < parents.size(); i+=2) { //Hope that array is even!
 
 				if (crossover.equals("1c") {
 					Child newChildren = onepoint(parents.get(i), parents.get(i+1), crossoverProbability);
@@ -172,8 +172,17 @@ public class EvolAlg {
 				fitnessEvaluations.set(i,evaluateFitness(children.get(i)));
 			}
 
-			//get best solution
-			//replace pop with children
+			bestSolutionIndex = 0;
+			currentMax = childrenFitnessEvaluations.get(0);
+			for(int i = 1; i < childrenFitnessEvaluations.size(); i++) {
+				if(childrenFitnessEvaluations.get(i) > currentMax) {
+					bestSolutionIndex = i;
+					currentMax = childrenFitnessEvaluations.get(i);
+				}
+			}
+			ArrayList<Integer> best = children.get(bestSolutionIndex);
+
+			population = children;
 
 			numGenerations--;
 		}
