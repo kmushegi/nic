@@ -69,8 +69,8 @@ public class EvolAlg {
 
 		int fitness = 0;
 
-		for (int i = 0; i < formula.length; i++) { //For each clause
-			for (int j = 0; j < formula[i].length; j++) {
+		for (int i = 0; i < formula.size(); i++) { //For each clause
+			for (int j = 0; j < formula[i].length; j++) { //For each variable in clause
 				if ((formula[i][j] > 0 && sample[formula[i][j]] == 1) || (formula[i][j] < 0 && sample[formula[i][j]] == 0)) {
 					fitness++;
 					break;
@@ -130,6 +130,9 @@ public class EvolAlg {
 					probVector[i] = probVector[i] * (1.0 - mutationAmt) + (mutationDir * mutationAmt);
 				}
 			}
+
+			numIterations--;
+
 		}
 		
 		return probVector;
@@ -190,8 +193,8 @@ public class EvolAlg {
 			while((line = br.readLine()) != null) {
 				if(line.charAt(0) == 'p') {
 					String[] tokens = line.split(" ");
-					numberOfVariables = tokens[2];
-					numberOfClauses = tokens[3];
+					numberOfVariables = Integer.parseInt(tokens[2]);
+					numberOfClauses = Integer.parseInt(tokens[3]);
 				} else if(line.charAt(0) != 'c' && line.charAt(0) != 'p') {
 					ArrayList<Integer> temp = new ArrayList<>();
 					String[] tokens = line.split(" ");
