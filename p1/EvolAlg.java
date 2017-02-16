@@ -97,7 +97,7 @@ public class EvolAlg {
 		return pp;
 	}
 
-	public static ArrayList<Double> ga(int indInPopulation, String selection,
+	public static ArrayList<Integer> ga(int indInPopulation, String selection,
 							String crossover, double crossoverProb, 
 							double mutationProb, int numGenerations) {
 
@@ -120,7 +120,16 @@ public class EvolAlg {
 		ArrayList<Integer> best = population.get(bestSolutionIndex);
 
 		while(numGenerations > 0) {
-			
+			ArrayList<ArrayList<Integer>> parents = new ArrayList<>();
+			if(selection.equals("rs")) {
+				//ranking selection
+			} else if(selection.equals("ts")) {
+				//tournament selection
+			} else if(selection.equals("bs")) {
+				//boltzmann selection
+			} else {
+				System.exit(1);
+			}
 			numGenerations--;
 		}
 
