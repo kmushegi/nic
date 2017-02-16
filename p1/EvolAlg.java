@@ -13,6 +13,16 @@ Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 import java.io.*;
 import java.util.*;
 
+class Child {
+	ArrayList<Integer> child1;
+	ArrayList<Integer> child2;
+
+	// public static void Child() {
+	// 	child1 = new ArrayList<>();
+	// 	child2 = new ArrayList<>();
+	// }
+}
+
 public class EvolAlg {
 
 	//General Parameters
@@ -119,23 +129,74 @@ public class EvolAlg {
 
 		ArrayList<Integer> best = population.get(bestSolutionIndex);
 
+		ArrayList<ArrayList<Integer>> parents;
+		ArrayList<ArrayList<Integer>> children = new ArrayList<>();
+
 		while(numGenerations > 0) {
-			ArrayList<ArrayList<Integer>> parents = new ArrayList<>();
+
+			//Select parents
 			if(selection.equals("rs")) {
-				//ranking selection
+				//rank selection
+				parents = rs(population);
 			} else if(selection.equals("ts")) {
 				//tournament selection
+				parents = ts(population);
 			} else if(selection.equals("bs")) {
 				//boltzmann selection
+				parents = bs(population);
 			} else {
 				System.exit(1);
 			}
+
+			for (int i = 0; i < parents.size(); i+=2) { //Hope that array is even.
+
+				if (crossover.equals("1c") {
+					Child newChildren = onepoint(parents.get(i), parents.get(i+1), crossoverProbability);
+				} else if (crossover.equals("uc") {
+					Child newChildren = uniform(parents.get(i), parents.get(i+1), crossoverProbability);
+				} else {
+					System.exit(1);
+				}
+
+				ArrayList<Integer> c1 = newChildren.child1;
+				ArrayList<Integer> c2 = newChildren.child2;
+
+				c1 = mutateChild(c1);
+				c2 = mutateChild(c2);
+			}
+
+			//evaluate children
+			//get best solution
+			//replace pop with children
+
 			numGenerations--;
 		}
 
-
-
 		return best;
+	}
+
+	ArrayList<Integer> mutateChild(ArrayList<Integer> child) {
+
+	}
+
+	Child onepoint(ArrayList<Integer> parent1, ArrayList<Integer> parent2, double crossoverProbability) {
+
+	}
+
+	Child uniform(ArrayList<Integer> parent1, ArrayList<Integer> parent2, double crossoverProbability) {
+		
+	}
+
+	ArrayList<ArrayList<Integer>> rs(ArrayList<ArrayList<Integer>> population) {
+
+	}
+
+	ArrayList<ArrayList<Integer>> ts(ArrayList<ArrayList<Integer>> population) {
+		
+	}
+
+	ArrayList<ArrayList<Integer>> bs(ArrayList<ArrayList<Integer>> population) {
+		
 	}
 
 	public static ArrayList<Double> pbil(int indPerIteration, double posLearningRate, 
