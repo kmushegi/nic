@@ -71,7 +71,8 @@ public class EvolAlg {
 
 		for (int i = 0; i < formula.size(); i++) { //For each clause
 			for (int j = 0; j < formula[i].length; j++) { //For each variable in clause
-				if ((formula[i][j] > 0 && sample[formula[i][j]] == 1) || (formula[i][j] < 0 && sample[formula[i][j]] == 0)) {
+				if ((formula[i][j] > 0 && sample[formula[i][j]] == 1) 
+						|| (formula[i][j] < 0 && sample[formula[i][j]] == 0)) {
 					fitness++;
 					break;
 				}
@@ -115,19 +116,22 @@ public class EvolAlg {
 			}
 
 			for (int i = 0; i < numberOfVariables; i++) {
-				probVector[i] = probVector[i] * (1.0 - posLearningRate) + (samples[bestVectorIndex][i] * posLearningRate);
+				probVector[i] = probVector[i] * (1.0 - posLearningRate) + 
+								(samples[bestVectorIndex][i] * posLearningRate);
 			}
 
 			for (int i = 0; i < numberOfVariables; i++) {
 				if (samples[bestVectorIndex][i] != samples[worstVectorIndex][i]) {
-					probVector[i] = probVector[i] * (1.0 - negLearningRate) + (samples[bestVectorIndex][i] * negLearningRate);
+					probVector[i] = probVector[i] * (1.0 - negLearningRate) + 
+								(samples[bestVectorIndex][i] * negLearningRate);
 				}
 			}
 
 			for (int i = 0; i < numberOfVariables; i++) {
 				if (Math.random() < mutationProb) {
 					int mutationDir = (Math.random() > 0.5) ? 1 : 0;
-					probVector[i] = probVector[i] * (1.0 - mutationAmt) + (mutationDir * mutationAmt);
+					probVector[i] = probVector[i] * (1.0 - mutationAmt) + 
+								(mutationDir * mutationAmt);
 				}
 			}
 
