@@ -64,7 +64,7 @@ public class EvolAlg {
 		}
 	}
 
-	public static int evaluateFitness(ArrayList<Double> sample) {
+	public static int evaluateFitness(ArrayList<Integer> sample) {
 		//Fitness = number of clauses met
 		//Space = or
 		//negative = not
@@ -72,9 +72,9 @@ public class EvolAlg {
 		int fitness = 0;
 
 		for (int i = 0; i < formula.size(); i++) { //For each clause
-			for (int j = 0; j < formula[i].length; j++) { //For each variable in clause
-				if ((formula[i][j] > 0 && sample[formula[i][j]] == 1) 
-						|| (formula[i][j] < 0 && sample[formula[i][j]] == 0)) {
+			for (int j = 0; j < formula.get(i).size(); j++) { //For each variable in clause
+				if ((formula.get(i).get(j) > 0 && sample.get(formula.get(i).get(j)-1) == 1) 
+						|| (formula.get(i).get(j) < 0 && sample.get(formula.get(i).get(j)-1) == 0)) {
 					fitness++;
 					break;
 				}
@@ -82,6 +82,13 @@ public class EvolAlg {
 		}
 
 		return fitness;
+	}
+
+	public static ArrayList<Double> ga(int indInPopulation, String selection,
+							String crossover, double crossoverProb, 
+							double mutationProb, int numGenerations) {
+		ArrayList<Double> t = new ArrayList<>();
+		return t;
 	}
 
 	public static ArrayList<Double> pbil(int indPerIteration, double posLearningRate, 
@@ -94,46 +101,47 @@ public class EvolAlg {
 		}
 		
 		ArrayList<ArrayList<Integer>> samples = new ArrayList<>(indPerIteration);
-		ArrayList<Double> fitnessEvaluations = new ArrayList<>(); //The higher the value, the better the fitness.
+		ArrayList<Integer> fitnessEvaluations = new ArrayList<>(); //The higher the value, the better the fitness.
 
 		while(numIterations > 0) {
 			//generate individuals
 			for(int i = 0; i < indPerIteration; i++) { //for each individual
 				for(int j = 0; j < numberOfVariables; j++) { //for each variable
-					samples[i][j] = (Math.random() > probVector[j]) ? 0 : 1;
+					samples.get(i).set(j,((Math.random() > probVector.get(j)) ? 0 : 1));
 				}
-				fitnessEvaluations[i] = evaluateFitness(samples[i]);
+
+				fitnessEvaluations.set(i,evaluateFitness(samples.get(i)));
 			}
 
 			int bestVectorIndex, worstVectorIndex;
 			bestVectorIndex = worstVectorIndex = 0;
 
 			for (int i = 1; i < fitnessEvaluations.size(); i++) {
-				if (fitnessEvaluations[i] < fitnessEvaluations[worstVectorIndex]) {
+				if (fitnessEvaluations.get(i) < fitnessEvaluations.get(worstVectorIndex)) {
 					worstVectorIndex = i;
 				}
-				if (fitnessEvaluations[i] > fitnessEvaluations[bestVectorIndex]) {
+				if (fitnessEvaluations.get(i) > fitnessEvaluations.get(bestVectorIndex)) {
 					bestVectorIndex = i;
 				}
 			}
 
 			for (int i = 0; i < numberOfVariables; i++) {
-				probVector[i] = probVector[i] * (1.0 - posLearningRate) + 
-								(samples[bestVectorIndex][i] * posLearningRate);
+				probVector.set(i,(probVector.get(i) * (1.0 - posLearningRate) + 
+								(samples.get(bestVectorIndex).get(i) * posLearningRate)));
 			}
 
 			for (int i = 0; i < numberOfVariables; i++) {
-				if (samples[bestVectorIndex][i] != samples[worstVectorIndex][i]) {
-					probVector[i] = probVector[i] * (1.0 - negLearningRate) + 
-								(samples[bestVectorIndex][i] * negLearningRate);
+				if (samples.get(bestVectorIndex).get(i) != samples.get(worstVectorIndex).get(i)) {
+					probVector.set(i,(probVector.get(i) * (1.0 - negLearningRate) + 
+								(samples.get(bestVectorIndex).get(i) * negLearningRate)));
 				}
 			}
 
 			for (int i = 0; i < numberOfVariables; i++) {
 				if (Math.random() < mutationProb) {
 					int mutationDir = (Math.random() > 0.5) ? 1 : 0;
-					probVector[i] = probVector[i] * (1.0 - mutationAmt) + 
-								(mutationDir * mutationAmt);
+					probVector.set(i,(probVector.get(i) * (1.0 - mutationAmt) + 
+								(mutationDir * mutationAmt)));
 				}
 			}
 
