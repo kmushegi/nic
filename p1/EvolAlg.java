@@ -312,24 +312,20 @@ public class EvolAlg {
 
 	}
 
-	//VERIFY WITH M/E & Majercik
+	//M = 2, K = 1
 	public static ArrayList<ArrayList<Integer>> ts(ArrayList<ArrayList<Integer>> population) {
-		int m = numberOfVariables/2;
-		int k = m/3;
-
-		ArrayList<Integer> best = null;
 		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
+		
+		while(selected.size() != population.size()) {
+			ArrayList<Integer> option1 = population.get(generator.nextInt(numberOfVariables));
+			ArrayList<Integer> option2 = population.get(generator.nextInt(numberOfVariables));
 
-		for(int i = 0; i < k; i++) {
-			ArrayList<Integer> ind = population.get(generator.nextInt(numberOfVariables));
-			if((best == null)) {
-				best = ind;
-				selected.add(ind);
-			} else if(evaluateFitness(ind) > evaluateFitness(best)) {
-				selected.add(ind);
-				best = ind;
-			}
+			int f1 = evaluateFitness(option1);
+			int f2 = evaluateFitness(option2);
+
+			selected.add(((f1 > f2) ? option1 : option2));
 		}
+
 		return selected;
 	}
 
