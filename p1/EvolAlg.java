@@ -56,8 +56,8 @@ public class EvolAlg {
 
 	//Containers
 	private static ArrayList<ArrayList<Integer>> formula = new ArrayList<>();
-	private static String bitString = "";
 
+	//Util
 	private static Random generator = new Random();
 
 
@@ -69,7 +69,6 @@ public class EvolAlg {
 		readAndPrintParams(args);
 		readFormula(problemFilePath);
 		printFormula();
-		System.out.println(bitString);
 
 		ArrayList<Double> sol = new ArrayList<>();
 
@@ -516,11 +515,6 @@ public class EvolAlg {
 							formula.add(temp);
 							break;
 						} else {
-							// if(Integer.parseInt(token) < 0) {
-							// 	bitString += "0";
-							// } else {
-							// 	bitString += "1";
-							// }
 							temp.add(Integer.parseInt(token));
 						}
 					}
