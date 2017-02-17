@@ -314,9 +314,10 @@ public class EvolAlg {
 
 	//M = 2, K = 1
 	public static ArrayList<ArrayList<Integer>> ts(ArrayList<ArrayList<Integer>> population) {
-		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
 		
-		while(selected.size() != population.size()) {
+		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
+
+		while(selected.size() < population.size()) {
 			ArrayList<Integer> option1 = population.get(generator.nextInt(numberOfVariables));
 			ArrayList<Integer> option2 = population.get(generator.nextInt(numberOfVariables));
 
