@@ -87,6 +87,8 @@ public class EvolAlg {
 						negativeLearningRate, mutationProbability, mutationAmount,
 						numberOfIterations);
 		}
+
+		output(problemFilePath, numberOfVariables, numberOfClauses, -1, sol);
 	}
 
 	public static int evaluateFitness(ArrayList<Integer> sample) {
@@ -98,8 +100,8 @@ public class EvolAlg {
 
 		for (int i = 0; i < formula.size(); i++) { //For each clause
 			for (int j = 0; j < formula.get(i).size(); j++) { //For each variable in clause
-				if ((formula.get(i).get(j) > 0 && sample.get(formula.get(i).get(j)-1) == 1) 
-						|| (formula.get(i).get(j) < 0 && sample.get(formula.get(i).get(j)-1) == 0)) {
+				if ((formula.get(i).get(j) > 0 && sample.get(Math.abs(formula.get(i).get(j))-1) == 1) 
+						|| (formula.get(i).get(j) < 0 && sample.get(Math.abs(formula.get(i).get(j))-1) == 0)) {
 					fitness++;
 					break;
 				}
@@ -296,11 +298,12 @@ public class EvolAlg {
 		while(numIterations > 0) {
 			//generate individuals
 			for(int i = 0; i < indPerIteration; i++) { //for each individual
+				ArrayList<Integer> sample = new ArrayList<>();
 				for(int j = 0; j < numberOfVariables; j++) { //for each variable
-					samples.get(i).set(j,((generator.nextDouble() > probVector.get(j)) ? 0 : 1));
+					sample.add(((generator.nextDouble() > probVector.get(j)) ? 0 : 1));
 				}
-
-				fitnessEvaluations.set(i,evaluateFitness(samples.get(i)));
+				samples.add(sample);
+				fitnessEvaluations.add(evaluateFitness(samples.get(i)));
 			}
 
 			int bestVectorIndex, worstVectorIndex;
@@ -353,6 +356,14 @@ public class EvolAlg {
 		//this should be done before calling output
 		ArrayList<Integer> processed = new ArrayList<>(); //placeholder
 
+		for(int i = 0; i < sol.size(); i++) {
+			if(sol.get(i) > 0.5) {
+				processed.add(1);
+			} else {
+				processed.add(0);
+			}
+		}
+
 		int satisfied = evaluateFitness(processed);
 		System.out.println("# of Satisfied Clauses: " + satisfied);
 
@@ -365,7 +376,7 @@ public class EvolAlg {
 				System.out.println(); //ten variables per line
 			}
 		}
-
+		System.out.println("\n");
 		//we currently don't support this statistic.
 		System.out.println("Iteration: " + iteration);
 
