@@ -224,13 +224,12 @@ public class EvolAlg {
 		return selected;
 	}
 
+	//VERIFY WITH M/E & Majercik
 	public static ArrayList<ArrayList<Integer>> ts(ArrayList<ArrayList<Integer>> population) {
 		int m = numberOfVariables/2;
 		int k = m/3;
 
-
 		ArrayList<Integer> best = null;
-
 		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
 
 		for(int i = 0; i < k; i++) {
@@ -248,6 +247,24 @@ public class EvolAlg {
 
 	public static ArrayList<ArrayList<Integer>> bs(ArrayList<ArrayList<Integer>> population) {
 		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
+
+		double denominator = 0;
+		for(int i = 0; i < population.size(); i++) {
+			denominator += Math.pow(Math.E, evaluateFitness(population.get(i)));
+		}
+
+		for(int i = 0; i < population.size(); i++) {
+			ArrayList<Integer> ind = population.get(i);
+			double indFitnesss = evaluateFitness(ind);
+
+			double numerator = Math.pow(Math.E,indFitnesss);
+			double prob = numerator/denominator;
+
+			if(generator.nextDouble() < prob) {
+				selected.add(ind);
+			}
+		}
+
 		return selected;
 	}
 
