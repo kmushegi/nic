@@ -14,13 +14,19 @@ import java.io.*;
 import java.util.*;
 
 class Child {
-	ArrayList<Integer> child1;
-	ArrayList<Integer> child2;
+	public static ArrayList<Integer> child1;
+	public static ArrayList<Integer> child2;
 
 	// public static void Child() {
 	// 	child1 = new ArrayList<>();
 	// 	child2 = new ArrayList<>();
 	// }
+}
+
+class rankedIndividual {
+	public static ArrayList<Integer> individual;
+	public static int fitness;
+	public static int probability;
 }
 
 public class EvolAlg {
@@ -263,9 +269,47 @@ public class EvolAlg {
 	}
 
 	public static ArrayList<ArrayList<Integer>> rs(ArrayList<ArrayList<Integer>> population) {
+		//Want selected.size == population.size
 		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
 
+		int totalRank = ((population.size()*(population.size() + 1))/2);
+
+		ArrayList<rankedIndividual> fitnessEvaluations = new ArrayList<>(population.size());
+		for(int i = 0; i < population.size(); i++) {
+			rankedIndividual newIndividual = new rankedIndividual();
+			newIndividual.individual = population.get(i);
+			newIndividual.fitness = evaluateFitness(population.get(i));
+			fitnessEvaluations.add(newIndividual);
+		}
+
+		Collections.sort(fitnessEvaluations, new Comparator<rankedIndividual>() {
+	        @Override public int compare(rankedIndividual i1, rankedIndividual i2) {
+	            return i1.fitness- i2.fitness;
+	        }
+	    });
+
+	    int totalPop = population.size();
+
+	    while (totalPop > 0) {
+
+	    	double random = generator.nextDouble();
+
+	    	for (int i = 0; i < fitnessEvaluations.size(); i++) {
+
+	    		double prob = fitnessEvaluations.get(i).fitness/(double)totalRank;
+
+	    		if (random > prob) {
+	    			selected.add(fitnessEvaluations.get(i).individual);
+	    			break;
+	    		}
+	    	}
+
+	    	totalPop--;
+
+	    }
+
 		return selected;
+
 	}
 
 	//VERIFY WITH M/E & Majercik
