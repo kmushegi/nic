@@ -28,6 +28,8 @@ public class EvolAlg {
 	//General Parameters
 	private static String problemFilePath;
 	private static Boolean whichAlgorithm; // 1 - GA, 0 - PBIL
+	private static int numberOfVariables;
+	private static int numberOfClauses;
 
 	private static double mutationProbability;
 
@@ -37,9 +39,6 @@ public class EvolAlg {
 	private static String crossoverMethod;
 	private static double crossoverProbability;
 	private static int numberOfGenerations;
-	private static int numberOfVariables;
-	private static int numberOfClauses;
-
 
 	//PBIL Parameters
 	private static int numberOfIndividualsToGenerate;
@@ -66,13 +65,27 @@ public class EvolAlg {
 		printFormula();
 		System.out.println(bitString);
 
+		ArrayList<Double> sol = new ArrayList<>();
+
 		//IDEA: supply parameters into each algorithm so that global variables are only
 		//used in the function call in order to avoid confusion
 		//TODO: get feedback on this from Marcus & Ernesto
 		if(whichAlgorithm) {
 			//run GA
+			ArrayList<Integer> temp;
+			temp = ga(numberOfIndividualsInThePopulation, breedingPoolSelectionMethod,
+					crossoverMethod, crossoverProbability, mutationProbability,
+					numberOfGenerations);
+
+			//maintain type consistency
+			for(Integer i : temp) {
+				sol.add(i.doubleValue());
+			}
 		} else {
 			//run PBIL
+			sol = pbil(numberOfIndividualsToGenerate, positiveLearningRate,
+						negativeLearningRate, mutationProbability, mutationAmount,
+						numberOfIterations);
 		}
 	}
 
@@ -327,6 +340,34 @@ public class EvolAlg {
 		}
 		
 		return probVector;
+
+	}
+
+	public static void output(String problemFP, int numVars, int numClauses, 
+							  int iteration, ArrayList<Double> sol) {
+		System.out.println("Job File: "+problemFP);
+		System.out.println("# of Variables: " + numVars);
+		System.out.println("# of Clauses: " + numClauses);
+
+		//create the solution vector, i.e. process the probabilities, maybe
+		//this should be done before calling output
+		ArrayList<Integer> processed = new ArrayList<>(); //placeholder
+
+		int satisfied = evaluateFitness(processed);
+		System.out.println("# of Satisfied Clauses: " + satisfied);
+
+		double percentage = (double)satisfied / (double)numClauses * 100;
+		System.out.println("% of Satisfied Clauses: " + percentage + "%");
+
+		for(int i = 0; i < processed.size(); i++) {
+			System.out.print(processed.get(i));
+			if(i % 10 == 0) {
+				System.out.println(); //ten variables per line
+			}
+		}
+
+		//we currently don't support this statistic.
+		System.out.println("Iteration: " + iteration);
 
 	}
 
