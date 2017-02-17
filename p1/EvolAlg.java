@@ -130,9 +130,9 @@ public class EvolAlg {
 
 		ArrayList<ArrayList<Integer>> population = initializePopulation(indInPopulation);
 
-		ArrayList<Integer> fitnessEvaluations = new ArrayList<>(population.size());
+		ArrayList<Integer> fitnessEvaluations = new ArrayList<>();
 		for(int i = 0; i < population.size(); i++) {
-			fitnessEvaluations.set(i,evaluateFitness(population.get(i)));
+			fitnessEvaluations.add(evaluateFitness(population.get(i)));
 		}
 
 		int bestSolutionIndex = 0;
