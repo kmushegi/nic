@@ -241,10 +241,8 @@ public class EvolAlg {
 				c.child1.set(i , parent1.get(i));
 				c.child2.set(i , parent2.get(i));
 				if(i >= randIndex){
-					int cross1 = parent1.get(i);
-					int cross2 = parent2.get(i);
-					c.child1.set(i , cross2);
-					c.child2.set(i , cross1);
+					c.child1.set(i , parent2.get(i));
+					c.child2.set(i , parent1.get(i));
 				}
 			}
 		}
@@ -254,14 +252,20 @@ public class EvolAlg {
 	public static Child uniform(ArrayList<Integer> parent1, ArrayList<Integer> parent2, 
 												double crossoverProbability) {
 		Child c = new Child();
-
-		for(int i = 0; i < parent1.size(); i++){
-
-			if(generator.nextDouble() < crossoverProbability){
-					int cross1 = parent1.get(i);
-					int cross2 = parent2.get(i);
-					c.child1.set(i , cross2);
-					c.child2.set(i , cross1);
+		if (generator.nextDouble() > crossoverProbability){
+			c.child1 = parent1;
+			c.child2 = parent2;
+		}
+		else {
+			for(int i = 0; i < parent1.size(); i++){
+				if(generator.nextDouble() > 0.5){
+					c.child1.set(i , parent1.get(i));
+					c.child2.set(i , parent2.get(i));
+				}
+				else{
+					c.child1.set(i , parent2.get(i));
+					c.child2.set(i , parent1.get(i));
+				}
 			}
 		}
 		return c;
