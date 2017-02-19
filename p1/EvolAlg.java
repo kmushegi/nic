@@ -14,8 +14,8 @@ import java.io.*;
 import java.util.*;
 
 class Child {
-	public static ArrayList<Integer> child1;
-	public static ArrayList<Integer> child2;
+	public ArrayList<Integer> child1;
+	public ArrayList<Integer> child2;
 
 	Child() {
 		child1 = new ArrayList<>();
@@ -33,9 +33,34 @@ class Child {
 }
 
 class rankedIndividual {
-	public static ArrayList<Integer> individual;
-	public static int fitness;
-	public static int probability;
+	public ArrayList<Integer> individual;
+	public int fitness;
+	public double probability;
+
+	void setIndividual(ArrayList<Integer> newIndividual) {
+		individual = newIndividual;
+	}
+
+	void setFitness(int newFitness) {
+		fitness = newFitness;
+	}
+
+	void setProbability(double newProbability) {
+		probability = newProbability;
+	}
+
+	ArrayList<Integer> getIndividual() {
+		return individual;
+	}
+
+	int getFitness() {
+		return fitness;
+	}
+
+	double getProbability() {
+		return probability;
+	}
+
 }
 
 public class EvolAlg {
@@ -236,7 +261,9 @@ public class EvolAlg {
 				// System.out.println()
 			}
 
-			best = population.get(bestSolutionIndex(childrenFitnessEvaluations));
+			best = children.get(bestSolutionIndex(childrenFitnessEvaluations));
+
+			// System.out.println("Fitness: " + evaluateFitness(best));
 
 			population = children;
 
@@ -331,38 +358,52 @@ public class EvolAlg {
 
 		int totalRank = ((population.size()*(population.size() + 1))/2);
 
-		ArrayList<rankedIndividual> fitnessEvaluations = new ArrayList<>(population.size());
+		// System.out.println("Total: " + totalRank);
+
+		ArrayList<rankedIndividual> fitnessEvaluations = new ArrayList<>();
 		for(int i = 0; i < population.size(); i++) {
 			rankedIndividual newIndividual = new rankedIndividual();
-			newIndividual.individual = population.get(i);
-			newIndividual.fitness = evaluateFitness(population.get(i));
+			newIndividual.setIndividual(population.get(i));
+			newIndividual.setFitness(evaluateFitness(population.get(i)));
+			// System.out.println("New Fitness: " + newIndividual.getFitness());
 			fitnessEvaluations.add(newIndividual);
+			// System.out.println("Size: " + fitnessEvaluations.size());
+			// System.out.println("Fitness of New: " + fitnessEvaluations.get(fitnessEvaluations.size()-1).getFitness());
 		}
+
+		// for (int i = 0; i < fitnessEvaluations.size(); i++) {
+		// 	System.out.println("I: " + i);
+	 //    	System.out.println("Fitness B4: " + fitnessEvaluations.get(i).getFitness());
+	 //    }
 
 		Collections.sort(fitnessEvaluations, new Comparator<rankedIndividual>() {
 	        @Override public int compare(rankedIndividual i1, rankedIndividual i2) {
-	            return i1.fitness- i2.fitness;
+	            return i1.getFitness() - i2.getFitness();
 	        }
 	    });
 
-	    int totalPop = population.size();
+	    // for (int i = 0; i < fitnessEvaluations.size(); i++) {
+	    // 	System.out.println("Fitness: " + fitnessEvaluations.get(i).fitness);
+	    // }
 
-	    while (totalPop > 0) {
+	    for (int i = 0; i < fitnessEvaluations.size(); i++) {
+			fitnessEvaluations.get(i).setProbability(((double)(i+1) / totalRank));
+	    }
 
+	  //   for (int i = 0; i < fitnessEvaluations.size(); i++) {
+			// System.out.println("Probability: " + fitnessEvaluations.get(i).getProbability());
+	  //   }
+
+	    while (selected.size() < population.size()) {
+	    	double cumulativeSum = 0;
 	    	double random = generator.nextDouble();
-
 	    	for (int i = 0; i < fitnessEvaluations.size(); i++) {
-
-	    		double prob = fitnessEvaluations.get(i).fitness/(double)totalRank;
-
-	    		if (random > prob) {
-	    			selected.add(fitnessEvaluations.get(i).individual);
+	    		cumulativeSum += fitnessEvaluations.get(i).getProbability();
+	    		if (random < cumulativeSum) {
+	    			selected.add(fitnessEvaluations.get(i).getIndividual());
 	    			break;
 	    		}
 	    	}
-
-	    	totalPop--;
-
 	    }
 
 		return selected;
@@ -389,24 +430,76 @@ public class EvolAlg {
 	public static ArrayList<ArrayList<Integer>> bs(ArrayList<ArrayList<Integer>> population) {
 		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
 
+		// System.out.println("Here1");
+
+
+		// System.out.println("NUmber of Clauses: " + numberOfClauses);
+
 		double denominator = 0;
+		double adjustedFitness;
 		for(int i = 0; i < population.size(); i++) {
-			denominator += Math.pow(Math.E, evaluateFitness(population.get(i)));
+			adjustedFitness = (double)evaluateFitness(population.get(i))/numberOfClauses;
+			denominator += Math.exp(adjustedFitness);
 		}
 
+		ArrayList<rankedIndividual> fitnessEvaluations = new ArrayList<>();
+		double numerator;
+		double prob;
 		for(int i = 0; i < population.size(); i++) {
-			ArrayList<Integer> ind = population.get(i);
-			double indFitnesss = evaluateFitness(ind);
-
-			double numerator = Math.pow(Math.E,indFitnesss);
-			double prob = numerator/denominator;
-
-			if(generator.nextDouble() < prob) {
-				selected.add(ind);
-			}
+			adjustedFitness = (double)evaluateFitness(population.get(i))/numberOfClauses;
+			numerator = Math.pow(Math.E, adjustedFitness);
+			prob = numerator/denominator;
+			// System.out.println("Probability B4: " + prob);
+			rankedIndividual newIndividual = new rankedIndividual();
+			newIndividual.setIndividual(population.get(i));
+			newIndividual.setProbability(prob);
+			fitnessEvaluations.add(newIndividual);
+			// System.out.println("Probability: " + newIndividual.getProbability());
 		}
+
+		// System.out.println("Fitness Ev");
+
+		// for (int i = 0; i < fitnessEvaluations.size(); i++) {
+		// 	System.out.println("I: " + i);
+		// 	System.out.println("Probability: " + fitnessEvaluations.get(i).getProbability());
+	 //    }
+
+	    // System.out.println("Here6");
+
+		Collections.sort(fitnessEvaluations, new Comparator<rankedIndividual>() {
+	        @Override public int compare(rankedIndividual i1, rankedIndividual i2) {
+	        	if (i1.getProbability()<i2.getProbability()) {
+	        		return -1;
+	        	}
+	        	else if (i1.getProbability()>i2.getProbability()) {
+	        		return 1;
+	        	}
+	        	return 0;
+	        }
+	    });
+
+	    // System.out.println("Here4");
+
+	  //   for (int i = 0; i < fitnessEvaluations.size(); i++) {
+			// System.out.println("Probability Sorted: " + fitnessEvaluations.get(i).getProbability());
+	  //   }
+
+	    // System.out.println("Here5");
+
+	    while (selected.size() < population.size()) {
+	    	double cumulativeSum = 0;
+	    	double random = generator.nextDouble();
+	    	for (int i = 0; i < fitnessEvaluations.size(); i++) {
+	    		cumulativeSum += fitnessEvaluations.get(i).getProbability();
+	    		if (random < cumulativeSum) {
+	    			selected.add(fitnessEvaluations.get(i).getIndividual());
+	    			break;
+	    		}
+	    	}
+	    }
 
 		return selected;
+
 	}
 
 	public static ArrayList<Double> pbil(int indPerIteration, double posLearningRate, 
@@ -454,10 +547,10 @@ public class EvolAlg {
 				}
 			}
 
-			if (mostFit != fitnessEvaluations.get(bestVectorIndex)) {
-				mostFit = fitnessEvaluations.get(bestVectorIndex);
-				// System.out.println("FITNESS CHANGE");
-			}
+			// if (mostFit != fitnessEvaluations.get(bestVectorIndex)) {
+			// 	mostFit = fitnessEvaluations.get(bestVectorIndex);
+			// 	// System.out.println("FITNESS CHANGE");
+			// }
 
 			// System.out.println("Most fit: " + fitnessEvaluations.get(bestVectorIndex));
 			// System.out.println("Least fit: " + fitnessEvaluations.get(worstVectorIndex));
