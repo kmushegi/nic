@@ -1,6 +1,6 @@
 #!/bin/bash
 
-make p > out.txt
+make p > out.txt #p or g to be supplied as a parameter
 
 if [ ! -f out.txt ]; then
 	echo "Output File Not Found!"
