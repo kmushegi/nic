@@ -12,8 +12,7 @@ if [ ! -f sol.txt ]; then
 	exit 1
 fi
 
-if cmp -s out.txt sol.txt
-then
+if cmp -s out.txt sol.txt; then
 	echo "The files match"
 else
 	echo "The files do not match"
