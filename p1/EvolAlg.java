@@ -510,14 +510,16 @@ public class EvolAlg {
 		for(int i = 0; i < numberOfVariables; i++) {
 			probVector.add(0.5);
 		}
-		
-		ArrayList<ArrayList<Integer>> samples = new ArrayList<>(indPerIteration);
-		ArrayList<Integer> fitnessEvaluations = new ArrayList<>(); //The higher the value, the better the fitness.
 
 		int mostFit = 0;
 
+		int bestVectorIndex, worstVectorIndex;
+
 		while(numIterations > 0) {
 			//generate individuals
+			ArrayList<ArrayList<Integer>> samples = new ArrayList<>();
+			ArrayList<Integer> fitnessEvaluations = new ArrayList<>();
+
 			for(int i = 0; i < indPerIteration; i++) { //for each individual
 				ArrayList<Integer> sample = new ArrayList<>();
 				for(int j = 0; j < numberOfVariables; j++) { //for each variable
@@ -533,8 +535,10 @@ public class EvolAlg {
 				// System.out.println("Fitness: " + fitnessEvaluations.get(i));
 			}
 
-			int bestVectorIndex, worstVectorIndex;
-			bestVectorIndex = worstVectorIndex = 0;
+			// System.out.println("Samples Size: " + samples.size());
+
+			bestVectorIndex = 0;
+			worstVectorIndex = 0;
 
 			for (int i = 1; i < fitnessEvaluations.size(); i++) {
 				if (fitnessEvaluations.get(i) < fitnessEvaluations.get(worstVectorIndex)) {
@@ -547,9 +551,12 @@ public class EvolAlg {
 				}
 			}
 
+			System.out.println("Best Index: " + bestVectorIndex);
+			System.out.println("Worst Index: " + worstVectorIndex);
+
 			// if (mostFit != fitnessEvaluations.get(bestVectorIndex)) {
 			// 	mostFit = fitnessEvaluations.get(bestVectorIndex);
-			// 	// System.out.println("FITNESS CHANGE");
+			// 	System.out.println("FITNESS CHANGE");
 			// }
 
 			// System.out.println("Most fit: " + fitnessEvaluations.get(bestVectorIndex));
@@ -584,6 +591,20 @@ public class EvolAlg {
 								(mutationDir * mutationAmt)));
 				}
 			}
+
+			for (int i = 0; i < numberOfVariables; i++) {
+				if (probVector.get(i) > 0.9) {
+						probVector.set(i,0.9);
+				} 
+				else if (probVector.get(i) < 0.1) {
+					probVector.set(i,0.1);
+				}	
+			}
+
+			// System.out.println("Prob Vector: ");
+			// for(int i = 0; i < numberOfVariables; i++) {
+			// 	System.out.println("Variable " + i + ": " + probVector.get(i));
+			// }
 
 			numIterations--;
 
