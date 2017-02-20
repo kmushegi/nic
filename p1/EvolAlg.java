@@ -100,7 +100,6 @@ public class EvolAlg {
 		}
 		readAndPrintParams(args);
 		readFormula(problemFilePath);
-		printFormula();
 
 		ArrayList<Double> sol = new ArrayList<>();
 
@@ -546,8 +545,8 @@ public class EvolAlg {
 				}
 			}
 
-			System.out.println("Best Index: " + bestVectorIndex);
-			System.out.println("Worst Index: " + worstVectorIndex);
+			// System.out.println("Best Index: " + bestVectorIndex);
+			// System.out.println("Worst Index: " + worstVectorIndex);
 
 			// if (mostFit != fitnessEvaluations.get(bestVectorIndex)) {
 			// 	mostFit = fitnessEvaluations.get(bestVectorIndex);
@@ -652,15 +651,19 @@ public class EvolAlg {
 		System.out.println("# of Satisfied Clauses: " + satisfied);
 
 		double percentage = (double)satisfied / (double)numClauses * 100;
-		System.out.println("% of Satisfied Clauses: " + percentage + "%");
+		System.out.println("% of Satisfied Clauses: " + percentage + "%\n");
 
+		int lineCounter = 0;
 		for(int i = 0; i < processed.size(); i++) {
-			System.out.print(processed.get(i));
-			if(i % 10 == 0) {
+			System.out.print("v"+(i+1)+": "+processed.get(i)+"\t");
+			if(lineCounter == 9) {
 				System.out.println(); //ten variables per line
+				lineCounter = 0;
+			} else {
+				lineCounter++;
 			}
 		}
-		System.out.println("\n");
+		System.out.print("\n");
 		//we currently don't support this statistic.
 		System.out.println("Iteration: " + iteration);
 
@@ -669,9 +672,7 @@ public class EvolAlg {
 	public static void readAndPrintParams(String[] args) {
 		problemFilePath = args[0];
 
-		System.out.print("Algorithm: ");
 		if(args[7].equals("g")) {
-			System.out.println("GA");
 			whichAlgorithm = true;
 
 			numberOfIndividualsInThePopulation = Integer.parseInt(args[1]);
@@ -681,16 +682,15 @@ public class EvolAlg {
 			mutationProbability = Double.parseDouble(args[5]);
 			numberOfGenerations = Integer.parseInt(args[6]);
 
-			System.out.println("Problem File Path: " + problemFilePath
-				+ "\n# of Individuals In the Population: " + numberOfIndividualsInThePopulation
-				+ "\nBreeding Pool Selection: " + breedingPoolSelectionMethod
-				+ "\nCrossover Method: " + crossoverMethod
-				+ "\nCrossover Probability: " + crossoverProbability
-				+ "\nMutation Probability: " + mutationProbability
-				+ "\nNumber of Generations: " + numberOfGenerations);
+			// System.out.println("Problem File Path: " + problemFilePath
+			// 	+ "\n# of Individuals In the Population: " + numberOfIndividualsInThePopulation
+			// 	+ "\nBreeding Pool Selection: " + breedingPoolSelectionMethod
+			// 	+ "\nCrossover Method: " + crossoverMethod
+			// 	+ "\nCrossover Probability: " + crossoverProbability
+			// 	+ "\nMutation Probability: " + mutationProbability
+			// 	+ "\nNumber of Generations: " + numberOfGenerations);
 
 		} else if(args[7].equals("p")) {
-			System.out.println("PBIL");
 			whichAlgorithm = false;
 
 			numberOfIndividualsToGenerate = Integer.parseInt(args[1]);
@@ -700,13 +700,13 @@ public class EvolAlg {
 			mutationAmount = Double.parseDouble(args[5]);
 			numberOfIterations = Integer.parseInt(args[6]);
 
-			System.out.println("Problem File Path: " + problemFilePath
-				+ "\n# of Individuals to Generate: " + numberOfIndividualsToGenerate
-				+ "\nPositive Learning Rate: " + positiveLearningRate
-				+ "\nNegative Learning Rate: " + negativeLearningRate
-				+ "\nMutation Probability: " + mutationProbability
-				+ "\nMutation Amount: " + mutationAmount
-				+ "\nNumber of Iterations: " + numberOfIterations);
+			// System.out.println("Problem File Path: " + problemFilePath
+			// 	+ "\n# of Individuals to Generate: " + numberOfIndividualsToGenerate
+			// 	+ "\nPositive Learning Rate: " + positiveLearningRate
+			// 	+ "\nNegative Learning Rate: " + negativeLearningRate
+			// 	+ "\nMutation Probability: " + mutationProbability
+			// 	+ "\nMutation Amount: " + mutationAmount
+			// 	+ "\nNumber of Iterations: " + numberOfIterations);
 			
 		} else {
 			System.out.println("Algorithm specified incorrectly");
