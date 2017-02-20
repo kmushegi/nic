@@ -1,13 +1,8 @@
-Job File: maxsat-problems/maxsat-random/highgirth/5SAT/HG-5SAT-V50-C900-1.cnf
-# of Variables: 50
-# of Clauses: 900
-# of Satisfied Clauses: 899
-% of Satisfied Clauses: 99.8888888888889%
+Job File: maxsat-problems/maxsat-random/highgirth/5SAT/*.cnk
+# of Variables: 0
+# of Clauses: 0
+# of Satisfied Clauses: 0
+% of Satisfied Clauses: NaN%
 
-v1: 0	v2: 0	v3: 1	v4: 0	v5: 0	v6: 1	v7: 0	v8: 0	v9: 0	v10: 1	
-v11: 0	v12: 0	v13: 1	v14: 0	v15: 1	v16: 1	v17: 0	v18: 0	v19: 1	v20: 1	
-v21: 0	v22: 0	v23: 0	v24: 1	v25: 1	v26: 1	v27: 1	v28: 1	v29: 1	v30: 0	
-v31: 1	v32: 0	v33: 0	v34: 0	v35: 0	v36: 0	v37: 1	v38: 0	v39: 1	v40: 0	
-v41: 1	v42: 1	v43: 0	v44: 1	v45: 0	v46: 1	v47: 1	v48: 0	v49: 1	v50: 1	
 
 Iteration: -1
