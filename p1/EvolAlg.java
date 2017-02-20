@@ -7,8 +7,6 @@ Stephen Majercik
 Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 
 */
-//comment 1
-
 
 import java.io.*;
 import java.util.*;
@@ -106,9 +104,6 @@ public class EvolAlg {
 
 		ArrayList<Double> sol = new ArrayList<>();
 
-		//IDEA: supply parameters into each algorithm so that global variables are only
-		//used in the function call in order to avoid confusion
-		//TODO: get feedback on this from Marcus & Ernesto
 		if(whichAlgorithm) {
 			//run GA
 			ArrayList<Integer> temp;
