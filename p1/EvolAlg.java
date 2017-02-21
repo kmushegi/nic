@@ -71,8 +71,8 @@ public class EvolAlg {
 
 	private static double mutationProbability;
 
-	private static int bestIteration;
-	private static int currIteration;
+	private static int bestIteration = 0;
+	private static int currIteration = 0;
 
 	//GA Parameters
 	private static int numberOfIndividualsInThePopulation;
@@ -133,7 +133,7 @@ public class EvolAlg {
 
 		timeElapsedSeconds = (timeFinish - timeStart) / 1000000000.0;
 
-		output(problemFilePath, numberOfVariables, numberOfClauses, -1, timeElapsedSeconds, sol);
+		output(problemFilePath, numberOfVariables, numberOfClauses, bestIteration, timeElapsedSeconds, sol);
 	}
 
 	public static int evaluateFitness(ArrayList<Integer> sample) {
@@ -170,14 +170,12 @@ public class EvolAlg {
 	}
 
 	public static int bestSolutionIndex(ArrayList<Integer> fitnessEvaluations) {
-
 		int bestSolutionIndex = 0;
 		int currentMax = fitnessEvaluations.get(0);
 		for(int i = 1; i < fitnessEvaluations.size(); i++) {
 			if(fitnessEvaluations.get(i) > currentMax) {
 				bestSolutionIndex = i;
 				currentMax = fitnessEvaluations.get(i);
-				bestIteration = currIteration;
 			}
 		}
 
@@ -197,11 +195,11 @@ public class EvolAlg {
 		}
 
 		ArrayList<Integer> best = population.get(bestSolutionIndex(fitnessEvaluations));
+		int currentBestFitness = -1;
 
 		ArrayList<ArrayList<Integer>> parents = new ArrayList<>();
 
 		while(numGenerations > 0) {
-
 			currIteration++;
 			// System.out.println("Parents Size: " + parents.size());
 
@@ -270,7 +268,14 @@ public class EvolAlg {
 			}
 
 			best = children.get(bestSolutionIndex(childrenFitnessEvaluations));
-
+			int newBestFit = evaluateFitness(best);
+			
+			if(currentBestFitness < newBestFit){
+				System.out.println("Best Iteration: " + bestIteration);
+				System.out.println("Current Best Fitness: " + currentBestFitness);
+				bestIteration = currIteration;
+				currentBestFitness = newBestFit;
+			}
 			// System.out.println("Fitness: " + evaluateFitness(best));
 
 			population = children;
@@ -524,9 +529,8 @@ public class EvolAlg {
 		int bestVectorIndex, worstVectorIndex;
 
 		while(numIterations > 0) {
-
 			currIteration++;
-
+			//System.out.println(currIteration);
 			//generate individuals
 			ArrayList<ArrayList<Integer>> samples = new ArrayList<>();
 			ArrayList<Integer> fitnessEvaluations = new ArrayList<>();
@@ -684,7 +688,7 @@ public class EvolAlg {
 		//we currently don't support this statistic.
 		// System.out.println("Iteration: " + iteration);
 
-		System.out.print(numberOfClauses + " "+ satisfied + " " + percentage + " " + bestIteration + " " + seconds);
+		System.out.print(numberOfClauses + " "+ satisfied + " " + percentage + " " + iteration + " " + seconds);
 	}
 
 	public static void readAndPrintParams(String[] args) {
