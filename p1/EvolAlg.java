@@ -528,6 +528,8 @@ public class EvolAlg {
 
 		int bestVectorIndex, worstVectorIndex;
 
+		int currentBestFitness = -1;
+
 		while(numIterations > 0) {
 			currIteration++;
 			//System.out.println(currIteration);
@@ -564,6 +566,15 @@ public class EvolAlg {
 					// System.out.println("Better fitness: " + fitnessEvaluations.get(bestVectorIndex) + "<" + fitnessEvaluations.get(i));
 					bestVectorIndex = i;
 				}
+			}
+
+			int newBestFit = fitnessEvaluations.get(bestVectorIndex);
+			
+			if(currentBestFitness < newBestFit){
+				// System.out.println("Best Iteration: " + bestIteration);
+				// System.out.println("Current Best Fitness: " + currentBestFitness);
+				bestIteration = currIteration;
+				currentBestFitness = newBestFit;
 			}
 
 			// System.out.println("Best Index: " + bestVectorIndex);
@@ -743,7 +754,15 @@ public class EvolAlg {
 				if(line.charAt(0) == 'p') {
 					String[] tokens = line.split(" ");
 					numberOfVariables = Integer.parseInt(tokens[2]);
-					numberOfClauses = Integer.parseInt(tokens[3]);
+
+					if (tokens[3] != null && !tokens[3].isEmpty()) {
+						numberOfClauses = Integer.parseInt(tokens[3]);
+					}
+
+					else {
+						numberOfClauses = Integer.parseInt(tokens[4]);
+					}
+
 				} else if(line.charAt(0) != 'c' && line.charAt(0) != 'p') {
 					ArrayList<Integer> temp = new ArrayList<>();
 					String[] tokens = line.split(" ");
