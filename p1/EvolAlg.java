@@ -92,6 +92,10 @@ public class EvolAlg {
 	//Util
 	private static Random generator = new Random();
 
+	private static long timeStart;
+	private static long timeFinish;
+	private static double timeElapsedSeconds;
+
 
 	public static void main(String[] args) {
 		if(args.length != 8) {
@@ -106,22 +110,27 @@ public class EvolAlg {
 		if(whichAlgorithm) {
 			//run GA
 			ArrayList<Integer> temp;
+			timeStart = System.nanoTime();
 			temp = ga(numberOfIndividualsInThePopulation, breedingPoolSelectionMethod,
 					crossoverMethod, crossoverProbability, mutationProbability,
 					numberOfGenerations);
-
+			timeFinish = System.nanoTime();
 			//maintain type consistency
 			for(Integer i : temp) {
 				sol.add(i.doubleValue());
 			}
 		} else {
 			//run PBIL
+			timeStart = System.nanoTime();
 			sol = pbil(numberOfIndividualsToGenerate, positiveLearningRate,
 						negativeLearningRate, mutationProbability, mutationAmount,
 						numberOfIterations);
+			timeFinish = System.nanoTime();
 		}
 
-		output(problemFilePath, numberOfVariables, numberOfClauses, -1, sol);
+		timeElapsedSeconds = (timeFinish - timeStart) / 1000000000.0;
+
+		output(problemFilePath, numberOfVariables, numberOfClauses, -1, timeElapsedSeconds, sol);
 	}
 
 	public static int evaluateFitness(ArrayList<Integer> sample) {
@@ -630,7 +639,7 @@ public class EvolAlg {
 	}
 
 	public static void output(String problemFP, int numVars, int numClauses, 
-							  int iteration, ArrayList<Double> sol) {
+							  int iteration, double seconds, ArrayList<Double> sol) {
 		// System.out.println("Job File: "+problemFP);
 		// System.out.println("# of Variables: " + numVars);
 		// System.out.println("# of Clauses: " + numClauses);
@@ -666,7 +675,7 @@ public class EvolAlg {
 		// System.out.print("\n");
 		//we currently don't support this statistic.
 		// System.out.println("Iteration: " + iteration);
-		System.out.print(numberOfClauses + " "+ satisfied + " " + percentage);
+		System.out.print(numberOfClauses + " "+ satisfied + " " + percentage + " " + seconds);
 	}
 
 	public static void readAndPrintParams(String[] args) {
