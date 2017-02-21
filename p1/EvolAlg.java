@@ -684,7 +684,7 @@ public class EvolAlg {
 		//we currently don't support this statistic.
 		// System.out.println("Iteration: " + iteration);
 
-		System.out.print(numberOfClauses + " "+ satisfied + " " + percentage + " " + seconds);
+		System.out.print(numberOfClauses + " "+ satisfied + " " + percentage + " " + bestIteration + " " + seconds);
 	}
 
 	public static void readAndPrintParams(String[] args) {
