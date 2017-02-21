@@ -71,6 +71,9 @@ public class EvolAlg {
 
 	private static double mutationProbability;
 
+	private static int bestIteration;
+	private static int currIteration;
+
 	//GA Parameters
 	private static int numberOfIndividualsInThePopulation;
 	private static String breedingPoolSelectionMethod;
@@ -165,6 +168,7 @@ public class EvolAlg {
 			if(fitnessEvaluations.get(i) > currentMax) {
 				bestSolutionIndex = i;
 				currentMax = fitnessEvaluations.get(i);
+				bestIteration = currIteration;
 			}
 		}
 
@@ -189,6 +193,7 @@ public class EvolAlg {
 
 		while(numGenerations > 0) {
 
+			currIteration++;
 			// System.out.println("Parents Size: " + parents.size());
 
 			//Select parents
@@ -510,6 +515,9 @@ public class EvolAlg {
 		int bestVectorIndex, worstVectorIndex;
 
 		while(numIterations > 0) {
+
+			currIteration++;
+
 			//generate individuals
 			ArrayList<ArrayList<Integer>> samples = new ArrayList<>();
 			ArrayList<Integer> fitnessEvaluations = new ArrayList<>();
@@ -666,7 +674,7 @@ public class EvolAlg {
 		// System.out.print("\n");
 		//we currently don't support this statistic.
 		// System.out.println("Iteration: " + iteration);
-		System.out.print(numberOfClauses + " "+ satisfied + " " + percentage);
+		System.out.print(numberOfClauses + " "+ satisfied + " " + percentage + " " + bestIteration);
 	}
 
 	public static void readAndPrintParams(String[] args) {
