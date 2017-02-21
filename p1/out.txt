@@ -1,8 +1,0 @@
-Job File: maxsat-problems/maxsat-random/highgirth/5SAT/*.cnk
-# of Variables: 0
-# of Clauses: 0
-# of Satisfied Clauses: 0
-% of Satisfied Clauses: NaN%
-
-
-Iteration: -1
