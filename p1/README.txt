@@ -1,0 +1,84 @@
+Evolutionary Algorithms for MAXSAT
+Project 1
+Marcus Christiansen
+Ernesto Garcia
+Konstantine Mushegian
+Feb. 21, 2017
+
+-----------------------------------
+
+The code in this repository contains implementations of two well-known
+evolutionary algorithms: a Genetic Algorithm (GA) and a Population Based 
+Incremental Learning algorithm (PBIL). Implementation is located i EvolAlg.java.
+
+Both algorithms allow and require parameters for successful execution; the format
+and ordering of parameters is specified below. You can run both algorithms by
+supplying the correct parameters to EvolAlg.
+
+GA
+----------
+java EvolAlg path-to-.cnf 100 bs uc 0.7 0.01 1000 g
+
+
+1. the name of the file containing the problem
+2. the number of individuals in the population
+3. the method for selecting the breeding pool
+	- rs
+	- ts
+	- bs
+4. the crossover method to use
+	- 1c
+	- uc
+5. the crossover probability
+6. the mutation probability
+7. the number of generations to run
+8. g for Genetic Algorithm
+
+
+PBIL
+----------
+java EvolAlg path-to-.cnf 100 0.1 0.075 0.02 0.05 1000 p
+
+
+1. the name of the file containing the problem
+2. the number of individuals to generate in an iteration
+3. the positive learning rate
+4. the negative learning rate
+5. the mutation probability
+6. the mutation amount
+7. the number of iterations to run
+8. p for PBIL
+
+
+***** ALTERNATIVELY *****
+
+You can use the included Makefile so that you don't have to keep running an
+extremely long command. You can change the parameters in the Makefile.
+
+GA
+----------
+make g
+
+PBIL
+----------
+make p
+
+
+***** MASS TESTING *****
+
+If it is your goal to run the program on a large number of problems, you can use
+the included bash script - test.sh which takes one parameter "pbil" or "ga" on
+execution.
+
+./test ga or ./test pbil
+
+If the terminal returns permission error you have to run the following command
+in order to add execution privileges to test.sh file:
+
+chmox +x test.sh
+
+The folder with the problems can be specified inside the script, which just
+executes the program repeatedly. The parameters to the algorithms can also be
+changed inside the script.
+
+
