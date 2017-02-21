@@ -271,8 +271,8 @@ public class EvolAlg {
 			int newBestFit = evaluateFitness(best);
 			
 			if(currentBestFitness < newBestFit){
-				System.out.println("Best Iteration: " + bestIteration);
-				System.out.println("Current Best Fitness: " + currentBestFitness);
+				// System.out.println("Best Iteration: " + bestIteration);
+				// System.out.println("Current Best Fitness: " + currentBestFitness);
 				bestIteration = currIteration;
 				currentBestFitness = newBestFit;
 			}
