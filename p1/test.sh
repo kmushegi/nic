@@ -2,7 +2,7 @@
 
 #parameters to script pbil or ga
 
-FILES="maxsat-problems/maxsat-random/highgirth/3SAT/*.cnf"
+FILES="sample-problems/*.cnf"
 
 for f in $FILES
 do
