@@ -201,7 +201,6 @@ public class EvolAlg {
 
 		while(numGenerations > 0) {
 			currIteration++;
-			// System.out.println("Parents Size: " + parents.size());
 
 			//Select parents
 			if(selection.equals("rs")) { //rank selection
@@ -216,15 +215,6 @@ public class EvolAlg {
 			else {
 				System.exit(1);
 			}
-
-			// System.out.println("Parents Size: " + parents.size());
-
-			// for (int i = 0; i < parents.size(); i++) {
-			// 	System.out.println("Parent " + i + " Size: " + parents.get(i).size());
-			// }
-			// System.out.println();
-
-			// System.out.println("Parents Size: " + parents.size());
 
 			ArrayList<ArrayList<Integer>> children = new ArrayList<>();
 			Child newChildren = new Child();
@@ -247,40 +237,22 @@ public class EvolAlg {
 				children.add(c1); //Add children to children array list
 				children.add(c2);
 
-				// System.out.println(c1);
-				// System.out.println(c2);
-
-				// System.out.println("Children Size: " + children.size());
-
 			}
-
-			// System.out.println("Children Size: " + children.size());
-
-			// for (int i = 0; i < children.size(); i++) {
-			// 	System.out.println(children.get(i));
-			// }
-
 
 			ArrayList<Integer> childrenFitnessEvaluations = new ArrayList<>();
 			for(int i = 0; i < children.size(); i++) {
 				childrenFitnessEvaluations.add(evaluateFitness(children.get(i)));
-				// System.out.println()
 			}
 
 			best = children.get(bestSolutionIndex(childrenFitnessEvaluations));
 			int newBestFit = evaluateFitness(best);
 			
 			if(currentBestFitness < newBestFit){
-				// System.out.println("Best Iteration: " + bestIteration);
-				// System.out.println("Current Best Fitness: " + currentBestFitness);
 				bestIteration = currIteration;
 				currentBestFitness = newBestFit;
 			}
-			// System.out.println("Fitness: " + evaluateFitness(best));
 
 			population = children;
-
-			// System.out.println("Population Size: " + population.size());
 
 			numGenerations--;
 		}
@@ -298,8 +270,6 @@ public class EvolAlg {
 				child.set(i, 1);
 			}
 		}
-
-		// System.out.println("Child Size: " + child.size());
 
 		return child;
 	}
@@ -324,9 +294,6 @@ public class EvolAlg {
 				c.addToChild2(parent2.get(i));
 			}
 		}
-
-		// System.out.println("Child 1 Size: " + c.child1.size());
-		// System.out.println("Child 2 Size: " + c.child2.size());
 
 		return c;
 	}
@@ -366,28 +333,18 @@ public class EvolAlg {
 	}
 
 	public static ArrayList<ArrayList<Integer>> rs(ArrayList<ArrayList<Integer>> population) {
-		//Want selected.size == population.size
+
 		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
 
 		int totalRank = ((population.size()*(population.size() + 1))/2);
-
-		// System.out.println("Total: " + totalRank);
 
 		ArrayList<rankedIndividual> fitnessEvaluations = new ArrayList<>();
 		for(int i = 0; i < population.size(); i++) {
 			rankedIndividual newIndividual = new rankedIndividual();
 			newIndividual.setIndividual(population.get(i));
 			newIndividual.setFitness(evaluateFitness(population.get(i)));
-			// System.out.println("New Fitness: " + newIndividual.getFitness());
 			fitnessEvaluations.add(newIndividual);
-			// System.out.println("Size: " + fitnessEvaluations.size());
-			// System.out.println("Fitness of New: " + fitnessEvaluations.get(fitnessEvaluations.size()-1).getFitness());
 		}
-
-		// for (int i = 0; i < fitnessEvaluations.size(); i++) {
-		// 	System.out.println("I: " + i);
-	 //    	System.out.println("Fitness B4: " + fitnessEvaluations.get(i).getFitness());
-	 //    }
 
 		Collections.sort(fitnessEvaluations, new Comparator<rankedIndividual>() {
 	        @Override public int compare(rankedIndividual i1, rankedIndividual i2) {
@@ -395,17 +352,9 @@ public class EvolAlg {
 	        }
 	    });
 
-	    // for (int i = 0; i < fitnessEvaluations.size(); i++) {
-	    // 	System.out.println("Fitness: " + fitnessEvaluations.get(i).fitness);
-	    // }
-
 	    for (int i = 0; i < fitnessEvaluations.size(); i++) {
 			fitnessEvaluations.get(i).setProbability(((double)(i+1) / totalRank));
 	    }
-
-	  //   for (int i = 0; i < fitnessEvaluations.size(); i++) {
-			// System.out.println("Probability: " + fitnessEvaluations.get(i).getProbability());
-	  //   }
 
 	    while (selected.size() < population.size()) {
 	    	double cumulativeSum = 0;
@@ -443,11 +392,6 @@ public class EvolAlg {
 	public static ArrayList<ArrayList<Integer>> bs(ArrayList<ArrayList<Integer>> population) {
 		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
 
-		// System.out.println("Here1");
-
-
-		// System.out.println("NUmber of Clauses: " + numberOfClauses);
-
 		double denominator = 0;
 		double adjustedFitness;
 		for(int i = 0; i < population.size(); i++) {
@@ -462,22 +406,11 @@ public class EvolAlg {
 			adjustedFitness = (double)evaluateFitness(population.get(i))/numberOfClauses;
 			numerator = Math.pow(Math.E, adjustedFitness);
 			prob = numerator/denominator;
-			// System.out.println("Probability B4: " + prob);
 			rankedIndividual newIndividual = new rankedIndividual();
 			newIndividual.setIndividual(population.get(i));
 			newIndividual.setProbability(prob);
 			fitnessEvaluations.add(newIndividual);
-			// System.out.println("Probability: " + newIndividual.getProbability());
 		}
-
-		// System.out.println("Fitness Ev");
-
-		// for (int i = 0; i < fitnessEvaluations.size(); i++) {
-		// 	System.out.println("I: " + i);
-		// 	System.out.println("Probability: " + fitnessEvaluations.get(i).getProbability());
-	 //    }
-
-	    // System.out.println("Here6");
 
 		Collections.sort(fitnessEvaluations, new Comparator<rankedIndividual>() {
 	        @Override public int compare(rankedIndividual i1, rankedIndividual i2) {
@@ -490,14 +423,6 @@ public class EvolAlg {
 	        	return 0;
 	        }
 	    });
-
-	    // System.out.println("Here4");
-
-	  //   for (int i = 0; i < fitnessEvaluations.size(); i++) {
-			// System.out.println("Probability Sorted: " + fitnessEvaluations.get(i).getProbability());
-	  //   }
-
-	    // System.out.println("Here5");
 
 	    while (selected.size() < population.size()) {
 	    	double cumulativeSum = 0;
@@ -532,7 +457,6 @@ public class EvolAlg {
 
 		while(numIterations > 0) {
 			currIteration++;
-			//System.out.println(currIteration);
 			//generate individuals
 			ArrayList<ArrayList<Integer>> samples = new ArrayList<>();
 			ArrayList<Integer> fitnessEvaluations = new ArrayList<>();
@@ -540,30 +464,21 @@ public class EvolAlg {
 			for(int i = 0; i < indPerIteration; i++) { //for each individual
 				ArrayList<Integer> sample = new ArrayList<>();
 				for(int j = 0; j < numberOfVariables; j++) { //for each variable
-
-					// double random = generator.nextDouble();
-					// System.out.println("Random: " + random);
-
 					sample.add(((generator.nextDouble() > probVector.get(j)) ? 0 : 1));
 				}
 
 				samples.add(sample);
 				fitnessEvaluations.add(evaluateFitness(samples.get(i)));
-				// System.out.println("Fitness: " + fitnessEvaluations.get(i));
 			}
-
-			// System.out.println("Samples Size: " + samples.size());
 
 			bestVectorIndex = 0;
 			worstVectorIndex = 0;
 
 			for (int i = 1; i < fitnessEvaluations.size(); i++) {
 				if (fitnessEvaluations.get(i) < fitnessEvaluations.get(worstVectorIndex)) {
-					// System.out.println("Worse fitness: " + fitnessEvaluations.get(worstVectorIndex) + ">" + fitnessEvaluations.get(i));
 					worstVectorIndex = i;
 				}
 				if (fitnessEvaluations.get(i) > fitnessEvaluations.get(bestVectorIndex)) {
-					// System.out.println("Better fitness: " + fitnessEvaluations.get(bestVectorIndex) + "<" + fitnessEvaluations.get(i));
 					bestVectorIndex = i;
 				}
 			}
@@ -571,37 +486,14 @@ public class EvolAlg {
 			int newBestFit = fitnessEvaluations.get(bestVectorIndex);
 			
 			if(currentBestFitness < newBestFit){
-				// System.out.println("Best Iteration: " + bestIteration);
-				// System.out.println("Current Best Fitness: " + currentBestFitness);
 				bestIteration = currIteration;
 				currentBestFitness = newBestFit;
 			}
-
-			// System.out.println("Best Index: " + bestVectorIndex);
-			// System.out.println("Worst Index: " + worstVectorIndex);
-
-			// if (mostFit != fitnessEvaluations.get(bestVectorIndex)) {
-			// 	mostFit = fitnessEvaluations.get(bestVectorIndex);
-			// 	System.out.println("FITNESS CHANGE");
-			// }
-
-			// System.out.println("Most fit: " + fitnessEvaluations.get(bestVectorIndex));
-			// System.out.println("Least fit: " + fitnessEvaluations.get(worstVectorIndex));
-
-			// System.out.println("Prob Vector: ");
-			// for(int i = 0; i < numberOfVariables; i++) {
-			// 	System.out.println(probVector.get(i));
-			// }
 
 			for (int i = 0; i < numberOfVariables; i++) {
 				probVector.set(i,(probVector.get(i) * (1.0 - posLearningRate) + 
 								(samples.get(bestVectorIndex).get(i) * posLearningRate)));
 			}
-
-			// System.out.println("Prob Vector: ");
-			// for(int i = 0; i < numberOfVariables; i++) {
-			// 	System.out.println(probVector.get(i));
-			// }
 
 			for (int i = 0; i < numberOfVariables; i++) {
 				if (samples.get(bestVectorIndex).get(i) != samples.get(worstVectorIndex).get(i)) {
@@ -627,33 +519,7 @@ public class EvolAlg {
 				}	
 			}
 
-			// System.out.println("Prob Vector: ");
-			// for(int i = 0; i < numberOfVariables; i++) {
-			// 	System.out.println("Variable " + i + ": " + probVector.get(i));
-			// }
-
 			numIterations--;
-
-			// ArrayList<Integer> processed = new ArrayList<>();
-
-			// // System.out.println("Prob vector");
-
-			// for(int i = 0; i < probVector.size(); i++) {
-
-			// 	// System.out.println(probVector.get(i));
-
-			// 	if(probVector.get(i) > 0.5) {
-			// 		processed.add(1);
-			// 	} else {
-			// 		processed.add(0);
-			// 	}
-			// }
-
-			// System.out.println();	
-			// System.out.println();		
-
-			// int satisfied = evaluateFitness(processed);
-			// System.out.println("# of Satisfied Clauses: " + satisfied);
 
 		}
 		
@@ -663,9 +529,6 @@ public class EvolAlg {
 
 	public static void output(String problemFP, int numVars, int numClauses, 
 							  int iteration, double seconds, ArrayList<Double> sol) {
-		// System.out.println("Job File: "+problemFP);
-		// System.out.println("# of Variables: " + numVars);
-		// System.out.println("# of Clauses: " + numClauses);
 
 		//create the solution vector, i.e. process the probabilities, maybe
 		//this should be done before calling output
@@ -680,24 +543,18 @@ public class EvolAlg {
 		}
 
 		int satisfied = evaluateFitness(processed);
-		// System.out.println("# of Satisfied Clauses: " + satisfied);
 
 		double percentage = (double)satisfied / (double)numClauses * 100;
-		// System.out.println("% of Satisfied Clauses: " + percentage + "%\n");
 
 		int lineCounter = 0;
 		for(int i = 0; i < processed.size(); i++) {
-			// System.out.print("v"+(i+1)+": "+processed.get(i)+"\t");
 			if(lineCounter == 9) {
-				//System.out.println(); //ten variables per line
 				lineCounter = 0;
 			} else {
 				lineCounter++;
 			}
 		}
-		// System.out.print("\n");
 		//we currently don't support this statistic.
-		// System.out.println("Iteration: " + iteration);
 
 		System.out.print(numberOfClauses + " "+ satisfied + " " + percentage + " " + iteration + " " + seconds);
 	}
