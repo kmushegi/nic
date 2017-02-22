@@ -31,15 +31,15 @@ compile();
 #GA Parameters
 selections = ["ts","rs","bs"]
 crossovers = ["1c","uc"]
-crossoverprobabilities = [0.5,0.6,0.7,0.8,0.9]
-ga_mutationprobabilities = [0.0025,0.005,0.01,0.05,0.1,0.15]
+crossoverprobabilities = [0.6,0.7,0.8]
+ga_mutationprobabilities = [0.01,0.05,0.1]
 
 #PBIL Parameters
-numberofindividuals = [50,100,150,200,250]
-positivelearningrates = [0.025,0.05,0.1,0.15,0.2]
-negativelearningrates = [0.025,0.05,0.075,0.1,0.125]
-pbil_mutationprobabilities = [0.01,0.02,0.03,0.04,0.05]
-mutationamounts = [0.03,0.04,0.05,0.06,0.07]
+numberofindividuals = [100,175,250]
+positivelearningrates = [0.1,0.25,0.4]
+negativelearningrates = [0.075,0.25,0.4]
+pbil_mutationprobabilities = [0.02,0.1,0.35]
+mutationamounts = [0.05,0.2,0.4]
 
 whichAlgorithm = sys.argv[1];
 
