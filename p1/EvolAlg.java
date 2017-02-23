@@ -234,10 +234,10 @@ public class EvolAlg {
 			Child newChildren = new Child();
 
 			for (int i = 0; i < parents.size(); i+=2) {
-				if (crossover.equals("1c")) {
+				if (crossover.equals("1c")) { //One point crossover
 					newChildren = onepoint(parents.get(i), parents.get(i+1), 
 												crossoverProbability);
-				} else if (crossover.equals("uc")) {
+				} else if (crossover.equals("uc")) { //Uniform crossover
 					newChildren = uniform(parents.get(i), parents.get(i+1), 
 												crossoverProbability);
 				} else {
@@ -247,7 +247,7 @@ public class EvolAlg {
 				ArrayList<Integer> c1 = newChildren.child1;
 				ArrayList<Integer> c2 = newChildren.child2;
 
-				c1 = mutateChild(c1);
+				c1 = mutateChild(c1); //Mutating children
 				c2 = mutateChild(c2);
 
 				children.add(c1); //Add children to children array list
@@ -263,6 +263,7 @@ public class EvolAlg {
 			best = children.get(bestSolutionIndex(childrenFitnessEvaluations));
 			int newBestFit = evaluateFitness(best);
 			
+			//Determining if the new best is better than the current best
 			if(currentBestFitness < newBestFit){
 				bestIteration = currIteration;
 				currentBestFitness = newBestFit;
@@ -306,7 +307,7 @@ public class EvolAlg {
 
 		int randIndex = generator.nextInt(parent1.size());
 		for(int i = 0; i < parent1.size(); i++){
-			if(i >= randIndex){
+			if(i >= randIndex){ //Crossing over from index randIndex onwards
 				c.addToChild1(parent2.get(i));
 				c.addToChild2(parent1.get(i));
 			}
@@ -367,6 +368,7 @@ public class EvolAlg {
 			fitnessEvaluations.add(newIndividual);
 		}
 
+		//Soring the rankedIndividual array list based on their fitness
 		Collections.sort(fitnessEvaluations, new Comparator<rankedIndividual>() {
 	        @Override public int compare(rankedIndividual i1, rankedIndividual i2) {
 	            return i1.getFitness() - i2.getFitness();
@@ -434,6 +436,7 @@ public class EvolAlg {
 			fitnessEvaluations.add(newIndividual);
 		}
 
+		//Soring the rankedIndividual array list based on their probability of selection
 		Collections.sort(fitnessEvaluations, new Comparator<rankedIndividual>() {
 	        @Override public int compare(rankedIndividual i1, rankedIndividual i2) {
 	        	if (i1.getProbability()<i2.getProbability()) {
@@ -473,9 +476,7 @@ public class EvolAlg {
 		}
 
 		int mostFit = 0;
-
 		int bestVectorIndex, worstVectorIndex;
-
 		int currentBestFitness = -1;
 
 		while(numIterations > 0) {
