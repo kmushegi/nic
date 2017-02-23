@@ -42,24 +42,31 @@ def analyzedata(sd):
 	times = []
 	iterations = []
 
-	for filename in os.listdir(sd):
-		if filename.endswith(".txt"):
+	for filename in os.listdir(sd): #for every file in the directory
+		if filename.endswith(".txt"): #with extension .txt
 			files.append(filename)
 
 			temp_percents = []
 			temp_times = []
 			temp_iterations = []
-			with open(sd+"/"+filename) as f:
-				for line in f:
-					if line != "\n":
-						line = line.replace("\n","")
 
+			with open(sd+"/"+filename) as f: #read file line by line
+				lineCount = 0
+				for line in f:
+					if line != "\n": #if its not just an empty line
+						line = line.replace("\n","")
+						#print line
+						lineCount += 1 #count number of lines of error checking
 						tokens = line.split(" ")
 
 						temp_percents.append(tokens[2])
 						temp_iterations.append(tokens[3])
 						temp_times.append(tokens[4])
 						#print tokens[2]
+
+			if lineCount != 48: #there are 48 problems per experiment
+				print "Number of Lines Looks Sketchy. != 48. Exiting.."
+				sys.exit()
 
 			curr_avg_p = findAverage(temp_percents)
 			curr_avg_t = findAverage(temp_times)
