@@ -6,10 +6,17 @@ Stephen Majercik
 
 Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 
+The code in this file contains the implementation of Genetic Algorithm and
+Population Based Incremental Learning Algorithm, as part of Project 1.
 */
 
+//java imports
 import java.io.*;
 import java.util.*;
+
+//*****************************************************
+//					HELPER CLASSES					  *
+//*****************************************************
 
 class Child {
 	public ArrayList<Integer> child1;
@@ -611,7 +618,7 @@ public class EvolAlg {
 				if(line.charAt(0) == 'p') {
 					String[] tokens = line.split(" ");
 					numberOfVariables = Integer.parseInt(tokens[2]);
-					
+
 					if (tokens[3] != null && !tokens[3].isEmpty()) {
 						numberOfClauses = Integer.parseInt(tokens[3]);
 					}
