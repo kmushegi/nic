@@ -50,7 +50,8 @@ mutationamounts = [0.05,0.2,0.4]
 
 whichAlgorithm = sys.argv[1];
 
-if(whichAlgorithm != "pbil" and whichAlgorithm != "ga" and whichAlgorithm != "ga-extended"):
+if(whichAlgorithm != "pbil" and whichAlgorithm != "ga" and \
+	whichAlgorithm != "ga-extended" and whichAlgorithm != "pbil-extended"):
 	print "Argument Specified Incorrectly. Supply 'pbil' or 'ga'"
 	sys.exit()
 
@@ -87,6 +88,13 @@ elif(whichAlgorithm == "ga-extended"): #ga-100-ts-uc-0.8-0.01.txt
 					runGA(fp,100,"ts","uc",c,m,1000)
 				else:
 					continue
+elif(whichAlgorithm == "pbil-extended"):
+	for filename in os.listdir(problemdir):
+		if filename.endswith(".cnf"):
+			fp = problemdir + "/" + filename
+			runPBIL(fp,0,0,0,0,0,1000)
+		else:
+			continue
 
 
 
