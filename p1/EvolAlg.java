@@ -377,8 +377,8 @@ public class EvolAlg {
 		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
 
 		while(selected.size() < population.size()) {
-			ArrayList<Integer> option1 = population.get(generator.nextInt(numberOfVariables));
-			ArrayList<Integer> option2 = population.get(generator.nextInt(numberOfVariables));
+			ArrayList<Integer> option1 = population.get(generator.nextInt(population.size()));
+			ArrayList<Integer> option2 = population.get(generator.nextInt(population.size()));
 
 			int f1 = evaluateFitness(option1);
 			int f2 = evaluateFitness(option2);
@@ -611,7 +611,7 @@ public class EvolAlg {
 				if(line.charAt(0) == 'p') {
 					String[] tokens = line.split(" ");
 					numberOfVariables = Integer.parseInt(tokens[2]);
-
+					
 					if (tokens[3] != null && !tokens[3].isEmpty()) {
 						numberOfClauses = Integer.parseInt(tokens[3]);
 					}
