@@ -68,14 +68,17 @@ class rankedIndividual {
 
 }
 
+//*****************************************************
+//					  MAIN CLASS					  *
+//*****************************************************
+
 public class EvolAlg {
 
 	//General Parameters
-	private static String problemFilePath;
+	private static String problemFilePath; //location of .cnf file
 	private static Boolean whichAlgorithm; // 1 - GA, 0 - PBIL
 	private static int numberOfVariables;
 	private static int numberOfClauses;
-
 	private static double mutationProbability;
 
 	private static int bestIteration = 0;
@@ -102,6 +105,7 @@ public class EvolAlg {
 	//Util
 	private static Random generator = new Random();
 
+	//Timekeeping
 	private static long timeStart;
 	private static long timeFinish;
 	private static double timeElapsedSeconds;
@@ -115,16 +119,17 @@ public class EvolAlg {
 		readAndPrintParams(args);
 		readFormula(problemFilePath);
 
-		ArrayList<Double> sol = new ArrayList<>();
+		ArrayList<Double> sol = new ArrayList<>(); //solution list
 
-		if(whichAlgorithm) {
-			//run GA
+		if(whichAlgorithm) { //run GA
 			ArrayList<Integer> temp;
+
 			timeStart = System.nanoTime();
 			temp = ga(numberOfIndividualsInThePopulation, breedingPoolSelectionMethod,
 					crossoverMethod, crossoverProbability, mutationProbability,
 					numberOfGenerations);
 			timeFinish = System.nanoTime();
+
 			//maintain type consistency
 			for(Integer i : temp) {
 				sol.add(i.doubleValue());
@@ -138,21 +143,22 @@ public class EvolAlg {
 			timeFinish = System.nanoTime();
 		}
 
-		timeElapsedSeconds = (timeFinish - timeStart) / 1000000000.0;
+		timeElapsedSeconds = (timeFinish - timeStart) / 1000000000.0; //ns to seconds
 
-		output(problemFilePath, numberOfVariables, numberOfClauses, bestIteration, timeElapsedSeconds, sol);
+		output(problemFilePath, numberOfVariables, numberOfClauses, 
+							bestIteration, timeElapsedSeconds, sol);
 	}
 
+	//fitness = number of clauses satisfied
 	public static int evaluateFitness(ArrayList<Integer> sample) {
-		//Fitness = number of clauses met
-		//Space = or
-		//negative = not
 		int fitness = 0;
 
 		for (int i = 0; i < formula.size(); i++) { //For each clause
 			for (int j = 0; j < formula.get(i).size(); j++) { //For each variable in clause
-				if ((formula.get(i).get(j) > 0 && sample.get(Math.abs(formula.get(i).get(j))-1) == 1) 
-						|| (formula.get(i).get(j) < 0 && sample.get(Math.abs(formula.get(i).get(j))-1) == 0)) {
+				if ((formula.get(i).get(j) > 0 
+						&& sample.get(Math.abs(formula.get(i).get(j))-1) == 1) 
+						|| (formula.get(i).get(j) < 0 
+						&& sample.get(Math.abs(formula.get(i).get(j))-1) == 0)) {
 					fitness++;
 					break;
 				}
@@ -162,6 +168,7 @@ public class EvolAlg {
 		return fitness;
 	}
 
+	//randomly generate population with 50% probability of being 1 or 0
 	public static ArrayList<ArrayList<Integer>> initializePopulation(int inds) {
 		ArrayList<ArrayList<Integer>> pp = new ArrayList<>();
 
@@ -176,6 +183,7 @@ public class EvolAlg {
 		return pp;
 	}
 
+	//compute the index of the best solution so far
 	public static int bestSolutionIndex(ArrayList<Integer> fitnessEvaluations) {
 		int bestSolutionIndex = 0;
 		int currentMax = fitnessEvaluations.get(0);
@@ -190,6 +198,7 @@ public class EvolAlg {
 
 	}
 
+	//Genetic Algorithm Implementation
 	public static ArrayList<Integer> ga(int indInPopulation, String selection,
 							String crossover, double crossoverProb, 
 							double mutationProb, int numGenerations) {
@@ -611,6 +620,7 @@ public class EvolAlg {
 		}
 	}
 
+	//Space = or | negative number = not (~)
 	public static void readFormula(String problemFP) {
 		try(BufferedReader br = new BufferedReader(new FileReader(problemFP))) {
 			String line;
