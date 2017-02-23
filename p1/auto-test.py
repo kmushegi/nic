@@ -14,7 +14,7 @@ def runGA(filename, numIndividuals, selection, crossover, crossprob, mutprob, nu
 			" g >> " + "stats/ga-" + str(numIndividuals) + "-" + selection + "-" + crossover + "-" + \
 			str(crossprob) + "-" + str(mutprob) + ".txt"
 	os.system(cmd)
-	os.system("echo \"\\n\" >> " + "stats/ga-" + str(numIndividuals) + "-" + selection + "-" + crossover + \
+	os.system("echo \"\n\" >> " + "stats/ga-" + str(numIndividuals) + "-" + selection + "-" + crossover + \
 			"-" + str(crossprob) + "-" + str(mutprob) + ".txt")
 
 def runPBIL(filename, indsPerIter, posLR, negLR, mutprob, mutamt, numiterations):
