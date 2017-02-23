@@ -2,12 +2,14 @@ import sys
 import os
 
 problemdir = "sample-problems"
-statisdir = "stats/"
+statsdir = "stats/"
 
+#compile the project
 def compile():
 	cmd = "javac EvolAlg.java"
 	os.system(cmd)
 
+#run Genetic Algorithm with given parameters and write statistics to an appropriately named file
 def runGA(filename, numIndividuals, selection, crossover, crossprob, mutprob, numgenerations):
 	cmd = "java EvolAlg " + filename + " " + str(numIndividuals) + " " + selection + " " + \
 			str(crossover) + " " + str(crossprob) + " " + str(mutprob) + " " + str(numgenerations) + \
@@ -17,6 +19,7 @@ def runGA(filename, numIndividuals, selection, crossover, crossprob, mutprob, nu
 	os.system("echo \"\n\" >> " + "stats/ga-" + str(numIndividuals) + "-" + selection + "-" + crossover + \
 			"-" + str(crossprob) + "-" + str(mutprob) + ".txt")
 
+#run PBIL Algorithm with given parameters and write statistics to an appropriately named file
 def runPBIL(filename, indsPerIter, posLR, negLR, mutprob, mutamt, numiterations):
 	cmd = "java EvolAlg " + filename + " " + str(indsPerIter) + " " + str(posLR) + " " + \
 			str(negLR) + " " + str(mutprob) + " " + str(mutamt) + " " + str(numiterations) + \
@@ -28,13 +31,13 @@ def runPBIL(filename, indsPerIter, posLR, negLR, mutprob, mutamt, numiterations)
 
 compile();
 
-#GA Parameters
+#GA Parameters to experiment with
 selections = ["ts","rs","bs"]
 crossovers = ["1c","uc"]
 crossoverprobabilities = [0.6,0.7,0.8]
 ga_mutationprobabilities = [0.01,0.05,0.1]
 
-#PBIL Parameters
+#PBIL Parameters to experiment with
 numberofindividuals = [100,175,250]
 positivelearningrates = [0.1,0.25,0.4]
 negativelearningrates = [0.075,0.25,0.4]

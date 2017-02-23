@@ -10,7 +10,6 @@ The code in this file contains the implementation of Genetic Algorithm and
 Population Based Incremental Learning Algorithm, as part of Project 1.
 */
 
-//java imports
 import java.io.*;
 import java.util.*;
 
@@ -125,9 +124,10 @@ public class EvolAlg {
 			ArrayList<Integer> temp;
 
 			timeStart = System.nanoTime();
-			temp = ga(numberOfIndividualsInThePopulation, breedingPoolSelectionMethod,
-					crossoverMethod, crossoverProbability, mutationProbability,
-					numberOfGenerations);
+			temp = ga(numberOfIndividualsInThePopulation, 
+						breedingPoolSelectionMethod, crossoverMethod, 
+						crossoverProbability, mutationProbability,
+						numberOfGenerations);
 			timeFinish = System.nanoTime();
 
 			//maintain type consistency
@@ -138,8 +138,8 @@ public class EvolAlg {
 			//run PBIL
 			timeStart = System.nanoTime();
 			sol = pbil(numberOfIndividualsToGenerate, positiveLearningRate,
-						negativeLearningRate, mutationProbability, mutationAmount,
-						numberOfIterations);
+						negativeLearningRate, mutationProbability, 
+						mutationAmount, numberOfIterations);
 			timeFinish = System.nanoTime();
 		}
 
@@ -155,11 +155,12 @@ public class EvolAlg {
 
 		for (int i = 0; i < formula.size(); i++) { //For each clause
 			for (int j = 0; j < formula.get(i).size(); j++) { //For each variable in clause
-				if ((formula.get(i).get(j) > 0 
+				if ((formula.get(i).get(j) > 0 //if clause is satisfied
 						&& sample.get(Math.abs(formula.get(i).get(j))-1) == 1) 
 						|| (formula.get(i).get(j) < 0 
-						&& sample.get(Math.abs(formula.get(i).get(j))-1) == 0)) {
-					fitness++;
+						&& sample.get(Math.abs(formula.get(i).get(j))-1) == 0)) 
+				{
+					fitness++; //increase fitness value
 					break;
 				}
 			}
@@ -198,7 +199,7 @@ public class EvolAlg {
 
 	}
 
-	//Genetic Algorithm Implementation
+	//Genetic Algorithm Implementation, following pseudocode in the paper
 	public static ArrayList<Integer> ga(int indInPopulation, String selection,
 							String crossover, double crossoverProb, 
 							double mutationProb, int numGenerations) {
@@ -221,14 +222,11 @@ public class EvolAlg {
 			//Select parents
 			if(selection.equals("rs")) { //rank selection
 				parents = rs(population);
-			} 
-			else if(selection.equals("ts")) { //tournament selection
+			} else if(selection.equals("ts")) { //tournament selection
 				parents = ts(population);
-			}
-			else if(selection.equals("bs")) { //boltzmann selection
+			} else if(selection.equals("bs")) { //boltzmann selection
 				parents = bs(population);
-			}
-			else {
+			} else {
 				System.exit(1);
 			}
 
@@ -237,9 +235,11 @@ public class EvolAlg {
 
 			for (int i = 0; i < parents.size(); i+=2) {
 				if (crossover.equals("1c")) {
-					newChildren = onepoint(parents.get(i), parents.get(i+1), crossoverProbability);
+					newChildren = onepoint(parents.get(i), parents.get(i+1), 
+												crossoverProbability);
 				} else if (crossover.equals("uc")) {
-					newChildren = uniform(parents.get(i), parents.get(i+1), crossoverProbability);
+					newChildren = uniform(parents.get(i), parents.get(i+1), 
+												crossoverProbability);
 				} else {
 					System.exit(1);
 				}
@@ -276,10 +276,12 @@ public class EvolAlg {
 		return best;
 	}
 
+	//mutate child with provided probability
 	public static ArrayList<Integer> mutateChild(ArrayList<Integer> child) {
 
 		for (int i = 0; i < child.size(); i++) {
-			if ((child.get(i) == 1) && (generator.nextDouble() < mutationProbability)) { //child at i is 1
+			if ((child.get(i) == 1) && 
+				(generator.nextDouble() < mutationProbability)) { //child at i is 1
 				child.set(i, 0);
 			}
 			else if (generator.nextDouble() < mutationProbability) { //child at i is 0
@@ -290,8 +292,10 @@ public class EvolAlg {
 		return child;
 	}
 
-	public static Child onepoint(ArrayList<Integer> parent1, ArrayList<Integer> parent2, 
-												double crossoverProbability) {
+	//one-point crossover as specified in the project handout
+	public static Child onepoint(ArrayList<Integer> parent1, 
+								 ArrayList<Integer> parent2, 
+								 double crossoverProbability) {
 		Child c = new Child();
 
 		if (generator.nextDouble() > crossoverProbability) {
@@ -299,6 +303,7 @@ public class EvolAlg {
 			c.child2 = parent2;
 			return c;
 		}
+
 		int randIndex = generator.nextInt(parent1.size());
 		for(int i = 0; i < parent1.size(); i++){
 			if(i >= randIndex){
@@ -314,12 +319,11 @@ public class EvolAlg {
 		return c;
 	}
 
-	//Check is cross over.
-	//Equal prob pick from parent.
-	public static Child uniform(ArrayList<Integer> parent1, ArrayList<Integer> parent2, 
-												double crossoverProbability) {
+	//uniform crossover as specified in the project handout
+	public static Child uniform(ArrayList<Integer> parent1, 
+								ArrayList<Integer> parent2, 
+								double crossoverProbability) {
 		Child c = new Child();
-
 
 		if (generator.nextDouble() > crossoverProbability) {
 			c.child1 = parent1;
@@ -348,6 +352,7 @@ public class EvolAlg {
 		return c;
 	}
 
+	//rank selection as specified in the project handout
 	public static ArrayList<ArrayList<Integer>> rs(ArrayList<ArrayList<Integer>> population) {
 
 		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
@@ -388,7 +393,7 @@ public class EvolAlg {
 
 	}
 
-	//M = 2, K = 1
+	//tournament selection as specified in the project handout, M = 2, K = 1
 	public static ArrayList<ArrayList<Integer>> ts(ArrayList<ArrayList<Integer>> population) {
 		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
 
@@ -405,6 +410,7 @@ public class EvolAlg {
 		return selected;
 	}
 
+	//boltzmann selection as specified in the project handout
 	public static ArrayList<ArrayList<Integer>> bs(ArrayList<ArrayList<Integer>> population) {
 		ArrayList<ArrayList<Integer>> selected = new ArrayList<>();
 
@@ -456,6 +462,7 @@ public class EvolAlg {
 
 	}
 
+	//PBIL Algorithm Implementation, following pseudocode in the paper
 	public static ArrayList<Double> pbil(int indPerIteration, double posLearningRate, 
 							double negLearningRate, double mutationProb,
 							double mutationAmt, int numIterations) {
@@ -473,13 +480,14 @@ public class EvolAlg {
 
 		while(numIterations > 0) {
 			currIteration++;
-			//generate individuals
+
 			ArrayList<ArrayList<Integer>> samples = new ArrayList<>();
 			ArrayList<Integer> fitnessEvaluations = new ArrayList<>();
 
 			for(int i = 0; i < indPerIteration; i++) { //for each individual
 				ArrayList<Integer> sample = new ArrayList<>();
 				for(int j = 0; j < numberOfVariables; j++) { //for each variable
+					//generate an individual w/ value T/F based on probability vector
 					sample.add(((generator.nextDouble() > probVector.get(j)) ? 0 : 1));
 				}
 
@@ -501,11 +509,12 @@ public class EvolAlg {
 
 			int newBestFit = fitnessEvaluations.get(bestVectorIndex);
 			
-			if(currentBestFitness < newBestFit){
+			if(currentBestFitness < newBestFit) { //update best iteration as necessary
 				bestIteration = currIteration;
 				currentBestFitness = newBestFit;
 			}
 
+			//update the probability vector
 			for (int i = 0; i < numberOfVariables; i++) {
 				probVector.set(i,(probVector.get(i) * (1.0 - posLearningRate) + 
 								(samples.get(bestVectorIndex).get(i) * posLearningRate)));
@@ -526,6 +535,8 @@ public class EvolAlg {
 				}
 			}
 
+
+			//avoid extreme values in the probability vector
 			for (int i = 0; i < numberOfVariables; i++) {
 				if (probVector.get(i) > 0.9) {
 						probVector.set(i,0.9);
@@ -543,12 +554,16 @@ public class EvolAlg {
 
 	}
 
+	//output results in the format required by the project handout
 	public static void output(String problemFP, int numVars, int numClauses, 
 							  int iteration, double seconds, ArrayList<Double> sol) {
 
-		//create the solution vector, i.e. process the probabilities, maybe
-		//this should be done before calling output
-		ArrayList<Integer> processed = new ArrayList<>(); //placeholder
+		// System.out.println("Job File: "+problemFP);
+		// System.out.println("# of Variables: " + numVars);
+ 		// System.out.println("# of Clauses: " + numClauses);
+
+		//create the solution vector, i.e. process the probabilities
+		ArrayList<Integer> processed = new ArrayList<>();
 
 		for(int i = 0; i < sol.size(); i++) {
 			if(sol.get(i) > 0.5) {
@@ -559,22 +574,28 @@ public class EvolAlg {
 		}
 
 		int satisfied = evaluateFitness(processed);
-
+		// System.out.println("# of Satisfied Clauses: " + satisfied);
+		//compute percentage of satisfied clauses
 		double percentage = (double)satisfied / (double)numClauses * 100;
+		// System.out.println("% of Satisfied Clauses: " + percentage + "%\n");
 
 		int lineCounter = 0;
 		for(int i = 0; i < processed.size(); i++) {
+			// System.out.print("v"+(i+1)+": "+processed.get(i)+"\t");
 			if(lineCounter == 9) {
+				//System.out.println(); //ten variables per line
 				lineCounter = 0;
 			} else {
 				lineCounter++;
 			}
 		}
-		//we currently don't support this statistic.
+		// System.out.print("\n");
+		// System.out.println("Iteration: " + iteration);
 
 		System.out.print(numberOfClauses + " "+ satisfied + " " + percentage + " " + iteration + " " + seconds);
 	}
 
+	//parse command line arguments to the program based on specified algorithm
 	public static void readAndPrintParams(String[] args) {
 		problemFilePath = args[0];
 
@@ -629,6 +650,7 @@ public class EvolAlg {
 					String[] tokens = line.split(" ");
 					numberOfVariables = Integer.parseInt(tokens[2]);
 
+					//some problems are formatted with an extra space
 					if (tokens[3] != null && !tokens[3].isEmpty()) {
 						numberOfClauses = Integer.parseInt(tokens[3]);
 					}

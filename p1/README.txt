@@ -82,3 +82,13 @@ executes the program repeatedly. The parameters to the algorithms can also be
 changed inside the script.
 
 
+***** MASS TESTING 2 *****
+
+If it is your goal to run the program on a curated list of problems experimenting
+with parameters then you can use the include Python script - auto-test.py which 
+taekes one parameter "pbil" or "ga" on execution.
+
+python auto-test.py pbil or python auto-test.py ga
+
+The statistics from runs will be writtent to stats/ folder in the project folder.
+
