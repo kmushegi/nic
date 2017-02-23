@@ -37,6 +37,10 @@ crossovers = ["1c","uc"]
 crossoverprobabilities = [0.6,0.7,0.8]
 ga_mutationprobabilities = [0.01,0.05,0.1]
 
+#GA Extended Params
+cpe = [0.4,0.5,0.6,0.7,0.8]
+mpe = [0.01,0.02,0.03,0.04,0.05,0.1]
+
 #PBIL Parameters to experiment with
 numberofindividuals = [100,175,250]
 positivelearningrates = [0.1,0.25,0.4]
@@ -46,11 +50,7 @@ mutationamounts = [0.05,0.2,0.4]
 
 whichAlgorithm = sys.argv[1];
 
-if(whichAlgorithm == "pbil"):
-	print "Running PBIL"
-elif(whichAlgorithm == "ga"):
-	print "Running GA"
-else:
+if(whichAlgorithm != "pbil" and whichAlgorithm != "ga" and whichAlgorithm != "ga-extended"):
 	print "Argument Specified Incorrectly. Supply 'pbil' or 'ga'"
 	sys.exit()
 
@@ -78,6 +78,17 @@ elif(whichAlgorithm == "ga"):
 							runGA(fp,100,s,crs,cp,mutp,1000)
 						else:
 							continue
+elif(whichAlgorithm == "ga-extended"): #ga-100-ts-uc-0.8-0.01.txt
+	for c in cpe:
+		for m in mpe:
+			for filename in os.listdir(problemdir):
+				if filename.endswith(".cnf"):
+					fp = problemdir + "/" + filename
+					runGA(fp,100,"ts","uc",c,m,1000)
+				else:
+					continue
+
+
 
 
 
