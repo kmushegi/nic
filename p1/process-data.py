@@ -1,7 +1,7 @@
 import sys
 import os
 
-statsdir = "stats-pbil"
+statsdir = "stats-pbil-final"
 
 def findMaxIndex(pcs):
 	maxIndex = 0
