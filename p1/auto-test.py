@@ -88,11 +88,11 @@ elif(whichAlgorithm == "ga-extended"): #ga-100-ts-uc-0.8-0.01.txt
 					runGA(fp,100,"ts","uc",c,m,1000)
 				else:
 					continue
-elif(whichAlgorithm == "pbil-extended"):
+elif(whichAlgorithm == "pbil-extended"): #pbil-250-0.1-0.075-0.1-0.05-1000.txt
 	for filename in os.listdir(problemdir):
 		if filename.endswith(".cnf"):
 			fp = problemdir + "/" + filename
-			runPBIL(fp,0,0,0,0,0,1000)
+			runPBIL(fp,250,0.1,0.075,0.1,0.05,1000)
 		else:
 			continue
 
