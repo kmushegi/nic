@@ -51,7 +51,8 @@ mutationamounts = [0.05,0.2,0.4]
 whichAlgorithm = sys.argv[1];
 
 if(whichAlgorithm != "pbil" and whichAlgorithm != "ga" and \
-	whichAlgorithm != "ga-extended" and whichAlgorithm != "pbil-extended"):
+	whichAlgorithm != "ga-extended" and whichAlgorithm != "pbil-extended" \
+	and whichAlgorithm != "ga-extended-2"):
 	print "Argument Specified Incorrectly. Supply 'pbil' or 'ga'"
 	sys.exit()
 
