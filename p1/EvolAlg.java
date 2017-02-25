@@ -559,9 +559,9 @@ public class EvolAlg {
 	public static void output(String problemFP, int numVars, int numClauses, 
 							  int iteration, double seconds, ArrayList<Double> sol) {
 
-		// System.out.println("Job File: "+problemFP);
-		// System.out.println("# of Variables: " + numVars);
- 		// System.out.println("# of Clauses: " + numClauses);
+		System.out.println("Job File: "+problemFP);
+		System.out.println("# of Variables: " + numVars);
+ 		System.out.println("# of Clauses: " + numClauses);
 
 		//create the solution vector, i.e. process the probabilities
 		ArrayList<Integer> processed = new ArrayList<>();
@@ -575,25 +575,27 @@ public class EvolAlg {
 		}
 
 		int satisfied = evaluateFitness(processed);
-		// System.out.println("# of Satisfied Clauses: " + satisfied);
+		System.out.println("# of Satisfied Clauses: " + satisfied);
+		
 		//compute percentage of satisfied clauses
 		double percentage = (double)satisfied / (double)numClauses * 100;
-		// System.out.println("% of Satisfied Clauses: " + percentage + "%\n");
+		System.out.println("% of Satisfied Clauses: " + percentage + "%\n");
 
 		int lineCounter = 0;
 		for(int i = 0; i < processed.size(); i++) {
-			// System.out.print("v"+(i+1)+": "+processed.get(i)+"\t");
+			System.out.print("v"+(i+1)+": "+processed.get(i)+"\t");
 			if(lineCounter == 9) {
-				//System.out.println(); //ten variables per line
+				System.out.println(); //ten variables per line
 				lineCounter = 0;
 			} else {
 				lineCounter++;
 			}
 		}
-		// System.out.print("\n");
-		// System.out.println("Iteration: " + iteration);
+		System.out.print("\n");
+		System.out.println("Iteration: " + iteration);
 
-		System.out.print(numberOfClauses + " "+ satisfied + " " + percentage + " " + iteration + " " + seconds);
+		//testing print
+		// System.out.print(numberOfClauses + " "+ satisfied + " " + percentage + " " + iteration + " " + seconds);
 	}
 
 	//parse command line arguments to the program based on specified algorithm
