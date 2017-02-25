@@ -7,6 +7,10 @@ Feb. 21, 2017
 
 -----------------------------------
 
+Our final report is 'evolutionary-algorithms-maxsat.pdf', and the figures used are 'cp.png' and 'mp.png'.
+
+-----------------------------------
+
 The code in this repository contains implementations of two well-known
 evolutionary algorithms: a Genetic Algorithm (GA) and a Population Based 
 Incremental Learning algorithm (PBIL). Implementation is located i EvolAlg.java.
