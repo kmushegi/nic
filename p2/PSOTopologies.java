@@ -23,8 +23,11 @@ public class PSOTopologies {
 	private static int functionDimensionality = 30; //fixed but can be specifed on CL
 
 	//Messages
-	private static String incorrectParams = "Parameters were not supplied correctly. Refer to man below:";
-	private static String paramsOrder = "Param Order: gl/ri/vn/ra swarmSize numIterations rok/ack/ras funcDimensionality";
+	private static String incorrectParams = "Parameters were not supplied " 
+											+ "correctly. Refer to man below:";
+	private static String paramsOrder = "Param Order: gl/ri/vn/ra swarmSize "
+											+ "numIterations rok/ack/ras " 
+											+ "funcDimensionality";
 
 	public static void main(String[] args) {
 		readParams(args);
