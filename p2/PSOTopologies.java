@@ -13,6 +13,48 @@ Neighborhood Topologies in Particle Swarm Optimization, as part of Project 2.
 import java.io.*;
 import java.util.*;
 
+class Particle {
+	public int x;
+	public int y;
+	public int v;
+
+	Particle() {
+		x = -1;
+		y = -1;
+		v = 0;
+	}
+
+	Particle(int nx, int ny, int nv) {
+		x = nx;
+		y = ny;
+		v = nv;
+	}
+
+	void setX(int nx) {
+		x = nx;
+	}
+
+	void setY(int ny) {
+		y = ny;
+	}
+
+	void setV(int nv) {
+		v = nv;
+	}
+
+	int getX() {
+		return x;
+	}
+
+	int getY() {
+		return y;
+	}
+
+	int getV() {
+		return v;
+	}
+}
+
 public class PSOTopologies {
 
 	//Parameters in order of acceptance from CL
