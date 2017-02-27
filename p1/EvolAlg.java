@@ -112,7 +112,7 @@ public class EvolAlg {
 
 	public static void main(String[] args) {
 		if(args.length != 8) {
-			System.out.println("Parameters were not supplied correctly");
+			System.out.println("Parameters were not supplied incorrectly");
 			System.exit(1); //exit with error
 		}
 		readAndPrintParams(args);

@@ -34,6 +34,7 @@ public class PSOTopologies {
 			whichFunction = args[3];
 			functionDimensionality = Integer.parseInt(args[4]);
 		} else {
+			System.out.println("Parameters were not supplied incorrectly");
 			System.exit(1); //exit with error
 		}
 		printParams();
