@@ -19,8 +19,8 @@ class Particle {
 	public int v;
 
 	Particle() {
-		x = -1;
-		y = -1;
+		x = 0;
+		y = 0;
 		v = 0;
 	}
 
