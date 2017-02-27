@@ -58,11 +58,12 @@ class Particle {
 public class PSOTopologies {
 
 	//Parameters in order of acceptance from CL
+	//some parameters are fixed byt can be specified on CL
 	private static String whichTopology;
 	private static int swarmSize;
-	private static int numberOfIterations = 10000; //fixed but can be specifed on CL
+	private static int numberOfIterations = 10000;
 	private static String whichFunction;
-	private static int functionDimensionality = 30; //fixed but can be specifed on CL
+	private static int functionDimensionality = 30;
 
 	//Messages
 	private static String incorrectParams = "Parameters were not supplied " 
