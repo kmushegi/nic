@@ -10,8 +10,6 @@ The code in this file contains the implementation of the Particle class.
 */
 
 
-
-
 import java.io.*;
 import java.util.*;
 
@@ -31,10 +29,10 @@ class Particle {
 	private static Random generator = new Random();
 
 	Particle(int d) {
-		this.location = new ArrayList<>(d);
-		this.velocity = new ArrayList<>(d);
-		this.personalBestLocation = new ArrayList<>(d);
-		this.neighborhoodBestLocation = new ArrayList<>(d);
+		this.location = new ArrayList<>();
+		this.velocity = new ArrayList<>();
+		this.personalBestLocation = new ArrayList<>();
+		this.neighborhoodBestLocation = new ArrayList<>();
 		this.dim = d;
 	}
 

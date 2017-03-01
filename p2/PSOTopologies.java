@@ -45,13 +45,17 @@ public class PSOTopologies {
 	public static void main(String[] args) {
 		readParams(args);
 		printParams();
+
 		initializeBounds(whichFunction);
 		initializeParticles();
 		initializeTopology(whichTopology);
+
+		PSO(whichFunction, whichTopology, particles, numberOfIterations);
 	}
 
-	public static void runPSO() {
-
+	public static void PSO(String function, String topology,
+						ArrayList<Integer> particles, int iterations) {
+		
 	}
 
 	public static void initializeTopology(String topology) {
