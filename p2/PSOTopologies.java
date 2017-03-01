@@ -54,8 +54,8 @@ public class PSOTopologies {
 	}
 
 	public static void PSO(String function, String topology,
-						ArrayList<Integer> particles, int iterations) {
-		
+						ArrayList<Particle> particles, int iterations) {
+
 	}
 
 	public static void initializeTopology(String topology) {
