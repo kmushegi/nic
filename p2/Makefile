@@ -2,9 +2,10 @@ JC = javac
 JV = java
 
 PSO = PSOTopologies.java
+PARTICLE = Particle.java
 
 default: 
-	$(JC) $(PSO)
+	$(JC) $(PSO) $(PARTICLE)
 
 run-default:
 	@$(JV) PSOTopologies gl 50 rok

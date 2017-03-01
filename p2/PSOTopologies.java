@@ -13,57 +13,6 @@ Neighborhood Topologies in Particle Swarm Optimization, as part of Project 2.
 import java.io.*;
 import java.util.*;
 
-class Particle {
-	public ArrayList<Double> location;
-	public ArrayList<Double> velocity;
-	public ArrayList<Integer> neighbors; //stored by particle number, i?
-
-	public ArrayList<Double> personalBestLocation;
-	public double personalBestValue;
-
-	public ArrayList<Double> neighborhoodBestLocation;
-	public double neighborhoodBestValue;
-
-	public int dim;
-
-	private static Random generator = new Random();
-
-	Particle(int d) {
-		this.location = new ArrayList<>(d);
-		this.velocity = new ArrayList<>(d);
-		this.personalBestLocation = new ArrayList<>(d);
-		this.neighborhoodBestLocation = new ArrayList<>(d);
-		this.dim = d;
-	}
-
-	public Particle initializeParticle(double minSpeed, double maxSpeed,
-									double minLocation, double maxLocation,
-									double bound) {
-		for(int i = 0; i < this.dim; i++) {
-			double x_i = bound * generator.nextDouble();
-
-			while(x_i < minLocation || x_i > maxLocation) {
-				x_i = bound * generator.nextDouble();
-			}
-
-			this.location.add(x_i);
-			//this.velocity = ; //initialize velocity
-			this.personalBestValue = -Double.MAX_VALUE;
-			this.neighborhoodBestValue = -Double.MAX_VALUE;
-		}
-		personalBestLocation = location;
-		return this;
-	}
-
-	public void setNeighborhood(ArrayList<Integer> n) {
-		this.neighbors = n;
-	}
-
-	public int getDimension() {
-		return dim;
-	}
-}
-
 public class PSOTopologies {
 
 	private static final double CONSTRICTION_FACTOR = 0.7298;
@@ -99,6 +48,10 @@ public class PSOTopologies {
 		initializeBounds(whichFunction);
 		initializeParticles();
 		initializeTopology(whichTopology);
+	}
+
+	public static void runPSO() {
+
 	}
 
 	public static void initializeTopology(String topology) {
