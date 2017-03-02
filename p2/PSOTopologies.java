@@ -16,6 +16,8 @@ import java.util.*;
 public class PSOTopologies {
 
 	private static final double CONSTRICTION_FACTOR = 0.7298;
+	private static final double PHI1 = 2.05;
+	private static final double PHI2 = 2.05;  
 	private static final double BOUND = 500; //Generalized Schwefel 2.6
 
 	//Parameters in order of acceptance from CL
@@ -34,6 +36,8 @@ public class PSOTopologies {
 
 	//Containers
 	private static ArrayList<Particle> particles;
+	private static ArrayList<Double> bestL;
+	private static double bestV;
 
 	//Messages
 	private static String incorrectParams = "Parameters were not supplied " 
@@ -41,6 +45,9 @@ public class PSOTopologies {
 	private static String paramsOrder = "Param Order: gl/ri/vn/ra swarmSize "
 											+ "numIterations rok/ack/ras " 
 											+ "funcDimensionality";
+
+	//Util
+	private static Random generator = new Random();
 
 	public static void main(String[] args) {
 		readParams(args);
@@ -56,9 +63,52 @@ public class PSOTopologies {
 	public static void PSO(String function, String topology,
 						ArrayList<Particle> particles, int iterations) {
 
+		while(iterations > 0) {
+			iterations--;
+
+			for(int i = 0; i < particles.size(); i++) {
+
+				Particle currentParticle = particles.get(i);
+				for(int j = 0; j < currentParticle.getDimension(); j++) {
+					double pa = currentParticle.personalBestLocation.get(j) 
+								- currentParticle.location.get(j);
+
+					double ga = currentParticle.neighborhoodBestLocation.get(j)
+								- currentParticle.location.get(j);
+
+					double vi1 = (currentParticle.velocity.get(j)
+							+ (generator.nextDouble() * PHI1 * pa)
+							+ (generator.nextDouble() * PHI2 * ga));
+					vi1 *= CONSTRICTION_FACTOR;
+
+					//update velocity
+					particles.get(i).velocity.set(j,vi1);
+					currentParticle.velocity.set(j,vi1);
+
+					//update position based on velocity
+					particles.get(i).location.set(j,(particles.get(i).location.get(j)+vi1));
+					currentParticle.location.set(j,(particles.get(i).location.get(j)+vi1));
+				}
+
+
+				double currPositionValue = eval(function,currentParticle);
+
+				if(currPositionValue < currentParticle.personalBestValue) {
+					particles.get(i).personalBestValue = currPositionValue;
+					particles.get(i).personalBestLocation = particles.get(i).location;
+				}
+
+				if(currentParticle.neighborhoodBestValue < bestV) {
+					bestV = currentParticle.neighborhoodBestValue;
+					bestL =currentParticle.neighborhoodBestLocation;
+				}
+			}
+
+		}
+
 	}
 
-	public double eval(String function, Particle p) {
+	public static  double eval(String function, Particle p) {
 		double eval = 0.0;
 
 		if(function.equals("rok")) {
@@ -73,7 +123,7 @@ public class PSOTopologies {
 		return eval;
 	}
 
-	public double evalRosenblock(Particle p) {
+	public static double evalRosenblock(Particle p) {
 		double ev = 0.0;
 
 		for(int i = 0; i < p.getDimension() - 1; i++) {
@@ -87,7 +137,7 @@ public class PSOTopologies {
 	}
 
 
-	public double evalRastrigin(Particle p) {
+	public static double evalRastrigin(Particle p) {
 		double ev = 0.0;
 
 		for(int i = 0; i < p.getDimension(); i++) {
@@ -98,7 +148,7 @@ public class PSOTopologies {
 		return ev;
 	}
 
-	public double evalAckley(Particle p) {
+	public static double evalAckley(Particle p) {
 		double ev = 0.0;
 
 		double firstSum = 0.0;
