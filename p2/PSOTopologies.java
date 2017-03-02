@@ -18,7 +18,7 @@ public class PSOTopologies {
 	private static final double CONSTRICTION_FACTOR = 0.7298;
 	private static final double PHI1 = 2.05;
 	private static final double PHI2 = 2.05;  
-	private static final double BOUND = 500; //Generalized Schwefel 2.6
+	private static final double BOUND = 400; //Generalized Schwefel 2.6
 
 	//Parameters in order of acceptance from CL
 	//some parameters are fixed byt can be specified on CL
@@ -35,7 +35,7 @@ public class PSOTopologies {
 	private static double maxLocation;
 
 	//Containers
-	private static ArrayList<Particle> particles;
+	private static ArrayList<Particle> particles = new ArrayList<>();
 	private static ArrayList<Double> bestL;
 	private static double bestV;
 
