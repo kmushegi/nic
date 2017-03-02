@@ -169,15 +169,35 @@ public class PSOTopologies {
 	public static void initializeTopology(String topology) {
 		if(topology.equals("gl")) {
 			//init global topology, these should be separate functions
+			initializeGlobalTopology();
 		} else if(topology.equals("ri")) {
 			//init ring topology
+			initializeRingTopology();
 		} else if(topology.equals("vn")) {
 			//init von neumann topology
+			initializeVonNeumannTopology();
 		} else if(topology.equals("ra")) {
 			//init random topology
+			initializeRandomTopology();
 		} else {
 			printErrorAndExit();
 		}
+	}
+
+	public static void initializeGlobalTopology() {
+
+	}
+
+	public static void initializeRingTopology() {
+		
+	}
+
+	public static void initializeVonNeumannTopology() {
+		
+	}
+
+	public static void initializeRandomTopology() {
+		
 	}
 
 	public static void initializeParticles() {
