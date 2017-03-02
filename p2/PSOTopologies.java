@@ -58,6 +58,64 @@ public class PSOTopologies {
 
 	}
 
+	public double eval(String function, Particle p) {
+		double eval = 0.0;
+
+		if(function.equals("rok")) {
+			eval = evalRosenblock(p);
+		} else if(function.equals("ack")) {
+			eval = evalAckley(p);
+		} else if(function.equals("ras")) {
+			eval = evalRastrigin(p);
+		} else {
+			printErrorAndExit();
+		}
+		return eval;
+	}
+
+	public double evalRosenblock(Particle p) {
+		double ev = 0.0;
+
+		for(int i = 0; i < p.getDimension() - 1; i++) {
+			double c_i = p.location.get(i);
+			double c_iplusone = p.location.get(i+1);
+			ev += (100 * Math.pow((c_iplusone - c_i*c_i),2.0) 
+					+ Math.pow((c_i-1.0),2.0));
+		}
+
+		return ev;
+	}
+
+
+	public double evalRastrigin(Particle p) {
+		double ev = 0.0;
+
+		for(int i = 0; i < p.getDimension(); i++) {
+			double c_i = p.location.get(i);
+			ev += (c_i * c_i - 10.0*Math.cos(2.0*Math.PI*c_i) + 10.0);
+		}
+
+		return ev;
+	}
+
+	public double evalAckley(Particle p) {
+		double ev = 0.0;
+
+		double firstSum = 0.0;
+		double secondSum = 0.0;
+
+		for(int i = 0; i < p.getDimension(); i++) {
+			double c_i = p.location.get(i);
+
+			firstSum += Math.pow(c_i,2);
+			secondSum += Math.cos(2.0*Math.PI*c_i);
+		}
+
+		ev =  -20.0 * Math.exp(-0.2 * Math.sqrt(firstSum/2.0)) 
+				- Math.exp(secondSum/2.0) + 20.0 + Math.E;
+		return ev;
+	}
+
 	public static void initializeTopology(String topology) {
 		if(topology.equals("gl")) {
 			//init global topology, these should be separate functions
