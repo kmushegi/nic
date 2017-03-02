@@ -31,8 +31,8 @@ class Particle {
 	Particle(int d) {
 		this.location = new ArrayList<>();
 		this.velocity = new ArrayList<>();
-		this.personalBestLocation = new ArrayList<>();
-		this.neighborhoodBestLocation = new ArrayList<>();
+		this.personalBestLocation = new ArrayList<>(d);
+		this.neighborhoodBestLocation = new ArrayList<>(d);
 		this.dim = d;
 	}
 
@@ -47,7 +47,8 @@ class Particle {
 			}
 
 			this.location.add(x_i);
-			//this.velocity = ; //initialize velocity
+			this.velocity.add(minSpeed + generator.nextDouble() //checked eqn.
+									* (maxSpeed - minSpeed)); //with PM
 			this.personalBestValue = -Double.MAX_VALUE;
 			this.neighborhoodBestValue = -Double.MAX_VALUE;
 		}
