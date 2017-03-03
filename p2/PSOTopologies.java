@@ -19,6 +19,9 @@ public class PSOTopologies {
 	private static final double PHI1 = 2.05;
 	private static final double PHI2 = 2.05;  
 	private static final double BOUND = 400; //Generalized Schwefel 2.6
+	
+	private static final int ringNeighborSize = 2;
+	private static final int randNeighborSize = 5;
 
 	//Parameters in order of acceptance from CL
 	//some parameters are fixed byt can be specified on CL
@@ -36,9 +39,9 @@ public class PSOTopologies {
 
 	//Containers
 	private static ArrayList<Particle> particles = new ArrayList<>();
+	private static ArrayList<Integer> neighborhood;
 	private static ArrayList<Double> bestL;
 	private static double bestV;
-
 	//Messages
 	private static String incorrectParams = "Parameters were not supplied " 
 											+ "correctly. Refer to man below:";
@@ -186,11 +189,40 @@ public class PSOTopologies {
 	}
 
 	public static void initializeGlobalTopology() {
+		neighborhood = new ArrayList<Integer>(swarmSize - 1);
 
+		//For every particle
+		for(int i = 0; i < swarmSize; i++){
+			//There are swarmSize - 1 neighbors
+			for(int k = 0; k < swarmSize - 1; k++){
+				//Not neighbors with themselves
+				if(i == k){
+					continue;
+				}
+				neighborhood.set(k,i);
+			}
+			particles.get(i).setNeighborhood(neighborhood);
+		}
 	}
 
 	public static void initializeRingTopology() {
-		
+		neighborhood = new ArrayList<Integer>(ringNeighborSize);
+
+		//For every particle
+		for(int i = 0; i < swarmSize; i++){
+			if(i == 0){
+				neighborhood.set(0 , (swarmSize - 1));
+				neighborhood.set(1 , (i + 1));
+			} else if (i == (swarmSize - 1)){
+				neighborhood.set(0 , (i - 1));
+				neighborhood.set(1 , 0);
+			}else{
+				neighborhood.set(0 , (i - 1));
+				neighborhood.set(1 , (i + 1));
+			}
+			particles.get(i).setNeighborhood(neighborhood);		
+			// System.out.print("Particle: "+ i + "\n"+"neighborhood: " + neighborhood);
+		}
 	}
 
 	public static void initializeVonNeumannTopology() {

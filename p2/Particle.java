@@ -45,7 +45,6 @@ class Particle {
 			while(x_i < minLocation || x_i > maxLocation) {
 				x_i = bound * generator.nextDouble();
 			}
-
 			this.location.add(x_i);
 			this.velocity.add(minSpeed + generator.nextDouble() //checked eqn.
 									* (maxSpeed - minSpeed)); //with PM
