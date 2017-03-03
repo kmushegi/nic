@@ -8,10 +8,10 @@ default:
 	$(JC) $(PSO) $(PARTICLE)
 
 run-default:
-	@$(JV) PSOTopologies gl 50 rok
+	@$(JV) PSOTopologies gl 49 rok
 
 run-custom:
-	@$(JV) PSOTopologies gl 50 5000 rok 25
+	@$(JV) PSOTopologies gl 49 5000 rok 25
 
 clean:
 	rm *.class
