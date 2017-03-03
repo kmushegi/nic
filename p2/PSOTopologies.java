@@ -45,6 +45,7 @@ public class PSOTopologies {
 	private static String paramsOrder = "Param Order: gl/ri/vn/ra swarmSize "
 											+ "numIterations rok/ack/ras " 
 											+ "funcDimensionality";
+	private static String swarmSizeError = "Choose swarm size of 16,30 or 49";
 
 	//Util
 	private static Random generator = new Random();
@@ -243,6 +244,11 @@ public class PSOTopologies {
 			numberOfIterations = Integer.parseInt(args[2]);
 			whichFunction = args[3];
 			functionDimensionality = Integer.parseInt(args[4]);
+		}
+
+		if(swarmSize != 16 && swarmSize != 30 && swarmSize != 49) {
+			System.out.println(swarmSizeError);
+			printErrorAndExit();
 		}
 	}
 
