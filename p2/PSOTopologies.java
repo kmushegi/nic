@@ -250,9 +250,9 @@ public class PSOTopologies {
 						if(x == k){
 							continue;
 						}
-					neighborhood.set(k,i);
+					neighborhood.set(k,temp.get(x));
 					}
-					particles.get(i).setNeighborhood(neighborhood);
+					particles.get(temp.get(x)).setNeighborhood(neighborhood);
 				}
 			}else if(i % 5 != 0){
 				temp.set((i % 5) , inds.get(i));
