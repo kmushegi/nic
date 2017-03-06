@@ -210,10 +210,10 @@ public class PSOTopologies {
 
 		//For every particle
 		for(int i = 0; i < swarmSize; i++){
-			if(i == 0){
+			if(i == 0){	//If first particle in array
 				neighborhood.set(0 , (swarmSize - 1));
 				neighborhood.set(1 , (i + 1));
-			} else if (i == (swarmSize - 1)){
+			}else if (i == (swarmSize - 1)){ //If last particle
 				neighborhood.set(0 , (i - 1));
 				neighborhood.set(1 , 0);
 			}else{
@@ -230,8 +230,35 @@ public class PSOTopologies {
 	}
 
 	public static void initializeRandomTopology() {
-		
-	}
+		neighborhood = new ArrayList<Integer>(randNeighborSize - 1);
+		ArrayList<Integer> temp = new ArrayList<Integer>(randNeighborSize);
+
+		//Will make an array of randomly ordered indeces
+		ArrayList<Integer> inds = new ArrayList<Integer>();
+		for (int i = 0; i < swarmSize; i++){
+			inds.add(i);
+		}
+		Collections.shuffle(inds);
+
+		//Adds the first index to first neighborhood
+		temp.set(0 , inds.get(0));
+		for (int i = 1; i < inds.size(); i++){
+			if(i % 5 == 0){ //When a neighborhood is formed in temp
+				for(int x = 0; x < temp.size(); x++){ //Make each particles neigborhood using temp
+					for(int k = 0; k < (temp.size() - 1); k++){
+						//Not neighbors with themselves
+						if(x == k){
+							continue;
+						}
+					neighborhood.set(k,i);
+					}
+					particles.get(i).setNeighborhood(neighborhood);
+				}
+			}else if(i % 5 != 0){
+				temp.set((i % 5) , inds.get(i));
+			}
+		}	
+	}	
 
 	public static void initializeParticles() {
 		for(int i = 0; i < swarmSize; i++) {
