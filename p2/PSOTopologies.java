@@ -73,39 +73,37 @@ public class PSOTopologies {
 
 			for(int i = 0; i < particles.size(); i++) {
 
-				Particle currentParticle = particles.get(i);
-				for(int j = 0; j < currentParticle.getDimension(); j++) {
-					double pa = currentParticle.personalBestLocation[j] 
-								- currentParticle.location[j];
+				// Particle currentParticle = particles.get(i);
+				for(int j = 0; j < particles.get(i).getDimension(); j++) {
+					double pa = particles.get(i).personalBestLocation[j] 
+								- particles.get(i).location[j];
 
-					double ga = currentParticle.neighborhoodBestLocation[j]
-								- currentParticle.location[j];
+					double ga = particles.get(i).neighborhoodBestLocation[j]
+								- particles.get(i).location[j];
 
-					double vi1 = (currentParticle.velocity[j]
+					double vi1 = (particles.get(i).velocity[j]
 							+ (generator.nextDouble() * PHI1 * pa)
 							+ (generator.nextDouble() * PHI2 * ga));
 					vi1 *= CONSTRICTION_FACTOR;
 
 					//update velocity
 					particles.get(i).velocity[j] = vi1;
-					currentParticle.velocity[j] = vi1;
 
 					//update position based on velocity
 					particles.get(i).location[j] = (particles.get(i).location[j] + vi1);
-					currentParticle.location[j] = (particles.get(i).location[j] + vi1);
 				}
 
 
-				double currPositionValue = eval(function,currentParticle);
+				double currPositionValue = eval(function,particles.get(i));
 
-				if(currPositionValue < currentParticle.personalBestValue) {
+				if(currPositionValue < particles.get(i).personalBestValue) {
 					particles.get(i).personalBestValue = currPositionValue;
 					particles.get(i).personalBestLocation = particles.get(i).location;
 				}
 
-				if(currentParticle.neighborhoodBestValue < bestV) {
-					bestV = currentParticle.neighborhoodBestValue;
-					bestL = currentParticle.neighborhoodBestLocation;
+				if(particles.get(i).neighborhoodBestValue < bestV) {
+					bestV = particles.get(i).neighborhoodBestValue;
+					bestL = particles.get(i).neighborhoodBestLocation;
 				}
 			}
 		}
