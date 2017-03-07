@@ -193,7 +193,7 @@ public class PSOTopologies {
 			int counter =0;
 			for(int k = 0; k < swarmSize - 1; k++){
 				//Not neighbors with themselves
-				counter++
+				counter++;
 				if(i == k){
 					counter--;
 					continue;
@@ -223,7 +223,7 @@ public class PSOTopologies {
 			}
 
 			printIntArray(neighborhood);
-			particles[i].setNeighborhood(neighborhood);		
+			particles.get(i).setNeighborhood(neighborhood);		
 		}
 	}
 
