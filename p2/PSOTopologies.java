@@ -309,6 +309,21 @@ public class PSOTopologies {
 		bestL = new double[functionDimensionality];
 	}
 
+	public static void printIntArray(double[] v) {
+		int lineCounter = 0;
+		for(int i = 0; i < v.length; i++) {
+
+			System.out.print(v[i] + "\t");
+			if(lineCounter == 9) {
+				System.out.println(); //ten variables per line
+				lineCounter = 0;
+			} else {
+				lineCounter++;
+			}
+		}
+		System.out.print("\n");
+	}
+
 	public static void printDoubleArray(double[] v) {
 		int lineCounter = 0;
 		for(int i = 0; i < v.length; i++) {
