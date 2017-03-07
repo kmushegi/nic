@@ -72,8 +72,6 @@ public class PSOTopologies {
 			iterations--;
 
 			for(int i = 0; i < particles.size(); i++) {
-
-				// Particle currentParticle = particles.get(i);
 				for(int j = 0; j < particles.get(i).getDimension(); j++) {
 					double pa = particles.get(i).personalBestLocation[j] 
 								- particles.get(i).location[j];
