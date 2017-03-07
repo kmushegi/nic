@@ -14,14 +14,14 @@ import java.io.*;
 import java.util.*;
 
 class Particle {
-	public ArrayList<Double> location;
-	public ArrayList<Double> velocity;
-	public ArrayList<Integer> neighbors; //stored by particle number, i?
+	public double location[];
+	public double velocity[];
+	public int neighbors[]; //stored by particle number, i?
 
-	public ArrayList<Double> personalBestLocation;
+	public double personalBestLocation[];
 	public double personalBestValue;
 
-	public ArrayList<Double> neighborhoodBestLocation;
+	public double neighborhoodBestLocation[];
 	public double neighborhoodBestValue;
 
 	public int dim;
@@ -29,10 +29,10 @@ class Particle {
 	private static Random generator = new Random();
 
 	Particle(int d) {
-		this.location = new ArrayList<>();
-		this.velocity = new ArrayList<>();
-		this.personalBestLocation = new ArrayList<>(d);
-		this.neighborhoodBestLocation = new ArrayList<>(d);
+		this.location = new double[d];
+		this.velocity = new double[d];
+		this.personalBestLocation = new double[d];
+		this.neighborhoodBestLocation = new double[d];
 		this.dim = d;
 	}
 
@@ -45,8 +45,8 @@ class Particle {
 			while(x_i < minLocation || x_i > maxLocation) {
 				x_i = bound * generator.nextDouble();
 			}
-			this.location.add(x_i);
-			this.velocity.add(minSpeed + generator.nextDouble() //checked eqn.
+			this.location[i] = x_i;
+			this.velocity[i] = (minSpeed + generator.nextDouble() //checked eqn.
 									* (maxSpeed - minSpeed)); //with PM
 			this.personalBestValue = -Double.MAX_VALUE;
 			this.neighborhoodBestValue = -Double.MAX_VALUE;
@@ -55,7 +55,7 @@ class Particle {
 		return this;
 	}
 
-	public void setNeighborhood(ArrayList<Integer> n) {
+	public void setNeighborhood(int[] n) {
 		this.neighbors = n;
 	}
 

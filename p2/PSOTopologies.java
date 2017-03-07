@@ -40,7 +40,7 @@ public class PSOTopologies {
 	//Containers
 	private static ArrayList<Particle> particles = new ArrayList<>();
 	private static ArrayList<Integer> neighborhood;
-	private static ArrayList<Double> bestL;
+	private static double bestL[];
 	private static double bestV;
 	//Messages
 	private static String incorrectParams = "Parameters were not supplied " 
@@ -62,6 +62,7 @@ public class PSOTopologies {
 		initializeTopology(whichTopology);
 
 		PSO(whichFunction, whichTopology, particles, numberOfIterations);
+		printDoubleArray(bestL);
 	}
 
 	public static void PSO(String function, String topology,
@@ -74,24 +75,24 @@ public class PSOTopologies {
 
 				Particle currentParticle = particles.get(i);
 				for(int j = 0; j < currentParticle.getDimension(); j++) {
-					double pa = currentParticle.personalBestLocation.get(j) 
-								- currentParticle.location.get(j);
+					double pa = currentParticle.personalBestLocation[j] 
+								- currentParticle.location[j];
 
-					double ga = currentParticle.neighborhoodBestLocation.get(j)
-								- currentParticle.location.get(j);
+					double ga = currentParticle.neighborhoodBestLocation[j]
+								- currentParticle.location[j];
 
-					double vi1 = (currentParticle.velocity.get(j)
+					double vi1 = (currentParticle.velocity[j]
 							+ (generator.nextDouble() * PHI1 * pa)
 							+ (generator.nextDouble() * PHI2 * ga));
 					vi1 *= CONSTRICTION_FACTOR;
 
 					//update velocity
-					particles.get(i).velocity.set(j,vi1);
-					currentParticle.velocity.set(j,vi1);
+					particles.get(i).velocity[j] = vi1;
+					currentParticle.velocity[j] = vi1;
 
 					//update position based on velocity
-					particles.get(i).location.set(j,(particles.get(i).location.get(j)+vi1));
-					currentParticle.location.set(j,(particles.get(i).location.get(j)+vi1));
+					particles.get(i).location[j] = (particles.get(i).location[j] + vi1);
+					currentParticle.location[j] = (particles.get(i).location[j] + vi1);
 				}
 
 
@@ -104,10 +105,9 @@ public class PSOTopologies {
 
 				if(currentParticle.neighborhoodBestValue < bestV) {
 					bestV = currentParticle.neighborhoodBestValue;
-					bestL =currentParticle.neighborhoodBestLocation;
+					bestL = currentParticle.neighborhoodBestLocation;
 				}
 			}
-
 		}
 
 	}
@@ -131,8 +131,8 @@ public class PSOTopologies {
 		double ev = 0.0;
 
 		for(int i = 0; i < p.getDimension() - 1; i++) {
-			double c_i = p.location.get(i);
-			double c_iplusone = p.location.get(i+1);
+			double c_i = p.location[i];
+			double c_iplusone = p.location[(i+1)];
 			ev += (100 * Math.pow((c_iplusone - c_i*c_i),2.0) 
 					+ Math.pow((c_i-1.0),2.0));
 		}
@@ -145,7 +145,7 @@ public class PSOTopologies {
 		double ev = 0.0;
 
 		for(int i = 0; i < p.getDimension(); i++) {
-			double c_i = p.location.get(i);
+			double c_i = p.location[i];
 			ev += (c_i * c_i - 10.0*Math.cos(2.0*Math.PI*c_i) + 10.0);
 		}
 
@@ -159,7 +159,7 @@ public class PSOTopologies {
 		double secondSum = 0.0;
 
 		for(int i = 0; i < p.getDimension(); i++) {
-			double c_i = p.location.get(i);
+			double c_i = p.location[i];
 
 			firstSum += Math.pow(c_i,2);
 			secondSum += Math.cos(2.0*Math.PI*c_i);
@@ -189,7 +189,7 @@ public class PSOTopologies {
 	}
 
 	public static void initializeGlobalTopology() {
-		neighborhood = new ArrayList<Integer>(swarmSize - 1);
+		int neighborhood[] = new int[swarmSize - 1];
 
 		//For every particle
 		for(int i = 0; i < swarmSize; i++){
@@ -199,26 +199,26 @@ public class PSOTopologies {
 				if(i == k){
 					continue;
 				}
-				neighborhood.set(k,i);
+				neighborhood[k] = i;
 			}
 			particles.get(i).setNeighborhood(neighborhood);
 		}
 	}
 
 	public static void initializeRingTopology() {
-		neighborhood = new ArrayList<Integer>(ringNeighborSize);
+		int neighborhood[] = new int[ringNeighborSize];
 
 		//For every particle
 		for(int i = 0; i < swarmSize; i++){
 			if(i == 0){	//If first particle in array
-				neighborhood.set(0 , (swarmSize - 1));
-				neighborhood.set(1 , (i + 1));
+				neighborhood[0] = (swarmSize - 1);
+				neighborhood[1] = (i + 1);
 			}else if (i == (swarmSize - 1)){ //If last particle
-				neighborhood.set(0 , (i - 1));
-				neighborhood.set(1 , 0);
+				neighborhood[0] = (i - 1);
+				neighborhood[1] = 0;
 			}else{
-				neighborhood.set(0 , (i - 1));
-				neighborhood.set(1 , (i + 1));
+				neighborhood[0] = (i - 1);
+				neighborhood[1] = (i + 1);
 			}
 			particles.get(i).setNeighborhood(neighborhood);		
 			// System.out.print("Particle: "+ i + "\n"+"neighborhood: " + neighborhood);
@@ -230,7 +230,7 @@ public class PSOTopologies {
 	}
 
 	public static void initializeRandomTopology() {
-		neighborhood = new ArrayList<Integer>(randNeighborSize - 1);
+		int neighborhood[] = new int[randNeighborSize - 1];
 		ArrayList<Integer> temp = new ArrayList<Integer>(randNeighborSize);
 
 		//Will make an array of randomly ordered indeces
@@ -250,7 +250,7 @@ public class PSOTopologies {
 						if(x == k){
 							continue;
 						}
-					neighborhood.set(k,temp.get(x));
+					neighborhood[k] = temp.get(x);
 					}
 					particles.get(temp.get(x)).setNeighborhood(neighborhood);
 				}
@@ -309,6 +309,23 @@ public class PSOTopologies {
 			System.out.println(swarmSizeError);
 			printErrorAndExit();
 		}
+
+		bestL = new double[functionDimensionality];
+	}
+
+	public static void printDoubleArray(double[] v) {
+		int lineCounter = 0;
+		for(int i = 0; i < v.length; i++) {
+
+			System.out.print(v[i] + "\t");
+			if(lineCounter == 9) {
+				System.out.println(); //ten variables per line
+				lineCounter = 0;
+			} else {
+				lineCounter++;
+			}
+		}
+		System.out.print("\n");
 	}
 
 	public static void printErrorAndExit() {
