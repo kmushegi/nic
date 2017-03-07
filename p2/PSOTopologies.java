@@ -190,13 +190,18 @@ public class PSOTopologies {
 		//For every particle
 		for(int i = 0; i < swarmSize; i++){
 			//There are swarmSize - 1 neighbors
+			int counter =0;
 			for(int k = 0; k < swarmSize - 1; k++){
 				//Not neighbors with themselves
+				counter++
 				if(i == k){
+					counter--;
 					continue;
 				}
-				neighborhood[k] = i;
+				neighborhood[counter] = k;
 			}
+			//System.out.println(i , "neighborhood: ");
+			printIntArray(neighborhood);
 			particles.get(i).setNeighborhood(neighborhood);
 		}
 	}
@@ -216,8 +221,9 @@ public class PSOTopologies {
 				neighborhood[0] = (i - 1);
 				neighborhood[1] = (i + 1);
 			}
-			particles.get(i).setNeighborhood(neighborhood);		
-			// System.out.print("Particle: "+ i + "\n"+"neighborhood: " + neighborhood);
+
+			printIntArray(neighborhood);
+			particles[i].setNeighborhood(neighborhood);		
 		}
 	}
 
@@ -309,7 +315,7 @@ public class PSOTopologies {
 		bestL = new double[functionDimensionality];
 	}
 
-	public static void printIntArray(double[] v) {
+	public static void printIntArray(int[] v) {
 		int lineCounter = 0;
 		for(int i = 0; i < v.length; i++) {
 
