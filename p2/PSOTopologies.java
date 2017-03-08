@@ -103,7 +103,7 @@ public class PSOTopologies {
 
 
 				double currPositionValue = eval(function,particles.get(i));
-				System.out.println("Current Position Value: " + currPositionValue);
+				// System.out.println("Current Position Value: " + currPositionValue);
 
 				if(currPositionValue <= particles.get(i).personalBestValue) {
 					particles.get(i).personalBestValue = currPositionValue;
@@ -114,7 +114,7 @@ public class PSOTopologies {
 						bestL = Arrays.copyOf(particles.get(i).location,functionDimensionality);
 					}
 				}
-
+				System.out.println("Best Value: " + bestV);
 				// for(int nh = 0; nh < particles.get(i).neighbors.length; nh++) {
 				// 	Particle nbor = particles.get(particles.get(i).neighbors[nh]);
 				// 	double nborValue = eval(function, nbor);
@@ -222,7 +222,7 @@ public class PSOTopologies {
 		//For every particle
 		for(int i = 0; i < swarmSize; i++){
 			//There are swarmSize - 1 neighbors
-			int counter =0;
+			int counter = 0;
 			for(int k = 0; k < swarmSize - 1; k++){
 				//Not neighbors with themselves
 				counter++;
@@ -352,7 +352,7 @@ public class PSOTopologies {
 		for(int i = 0; i < v.length; i++) {
 
 			System.out.print(v[i] + "\t");
-			if(lineCounter == 9) {
+			if(lineCounter == 4) {
 				System.out.println(); //ten variables per line
 				lineCounter = 0;
 			} else {
@@ -367,7 +367,7 @@ public class PSOTopologies {
 		for(int i = 0; i < v.length; i++) {
 
 			System.out.print(v[i] + "\t");
-			if(lineCounter == 9) {
+			if(lineCounter == 4) {
 				System.out.println(); //ten variables per line
 				lineCounter = 0;
 			} else {
