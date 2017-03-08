@@ -41,7 +41,7 @@ public class PSOTopologies {
 	private static ArrayList<Particle> particles = new ArrayList<>();
 	private static ArrayList<Integer> neighborhood;
 	private static double bestL[];
-	private static double bestV;
+	private static double bestV = Double.MAX_VALUE;
 	//Messages
 	private static String incorrectParams = "Parameters were not supplied " 
 											+ "correctly. Refer to man below:";
@@ -53,6 +53,11 @@ public class PSOTopologies {
 	//Util
 	private static Random generator = new Random();
 
+	//Timekeeping
+	private static long timeStart;
+	private static long timeFinish;
+	private static double timeElapsedSeconds;
+
 	public static void main(String[] args) {
 		readParams(args);
 		printParams();
@@ -61,11 +66,16 @@ public class PSOTopologies {
 		initializeParticles();
 		initializeTopology(whichTopology);
 
-		PSO(whichFunction, whichTopology, particles, numberOfIterations);
+		timeStart = System.nanoTime();
+		pso(whichFunction, whichTopology, particles, numberOfIterations);
+		timeFinish = System.nanoTime();
+
+		timeElapsedSeconds = (timeFinish - timeStart) / 1000000000.0; //ns to seconds
+		System.out.println("Time Elapsed: " + timeElapsedSeconds + " seconds");
 		printDoubleArray(bestL);
 	}
 
-	public static void PSO(String function, String topology,
+	public static void pso(String function, String topology,
 						ArrayList<Particle> particles, int iterations) {
 
 		while(iterations > 0) {
@@ -93,34 +103,56 @@ public class PSOTopologies {
 
 
 				double currPositionValue = eval(function,particles.get(i));
+				System.out.println("Current Position Value: " + currPositionValue);
 
-				if(currPositionValue < particles.get(i).personalBestValue) {
+				if(currPositionValue <= particles.get(i).personalBestValue) {
 					particles.get(i).personalBestValue = currPositionValue;
-					particles.get(i).personalBestLocation = particles.get(i).location;
+					particles.get(i).personalBestLocation = Arrays.copyOf(particles.get(i).location,functionDimensionality);
+
+					if(particles.get(i).personalBestValue <= bestV) {
+						bestV = particles.get(i).personalBestValue;
+						bestL = Arrays.copyOf(particles.get(i).location,functionDimensionality);
+					}
 				}
 
-				if(particles.get(i).neighborhoodBestValue < bestV) {
-					bestV = particles.get(i).neighborhoodBestValue;
-					bestL = particles.get(i).neighborhoodBestLocation;
-				}
+				// for(int nh = 0; nh < particles.get(i).neighbors.length; nh++) {
+				// 	Particle nbor = particles.get(particles.get(i).neighbors[nh]);
+				// 	double nborValue = eval(function, nbor);
+
+				// 	if(currPositionValue <= particles.get(i).neighborhoodBestValue) {
+				// 		particles.get(i).neighborhoodBestLocation = particles.get(i).location;
+				// 		particles.get(i).neighborhoodBestValue = currPositionValue;
+				// 	}
+
+				// 	if(nborValue <= particles.get(i).neighborhoodBestValue) {
+				// 		particles.get(i).neighborhoodBestLocation = nbor.location;
+				// 		particles.get(i).neighborhoodBestValue = nborValue;
+				// 		//update neighborhood best here
+
+				// 		for(int nhl = 0; nhl < particles.get(i).neighbors.length; nhl++) {
+				// 			particles.get(particles.get(i).neighbors[nhl]).neighborhoodBestLocation = particles.get(i).location;
+				// 			particles.get(particles.get(i).neighbors[nhl]).neighborhoodBestValue = particles.get(i).neighborhoodBestValue;
+				// 		}
+				// 	}
+
+				// }
 			}
 		}
-
 	}
 
-	public static  double eval(String function, Particle p) {
-		double eval = 0.0;
+	public static double eval(String function, Particle p) {
+		double ev = 0.0;
 
 		if(function.equals("rok")) {
-			eval = evalRosenblock(p);
+			ev = evalRosenblock(p);
 		} else if(function.equals("ack")) {
-			eval = evalAckley(p);
+			ev = evalAckley(p);
 		} else if(function.equals("ras")) {
-			eval = evalRastrigin(p);
+			ev = evalRastrigin(p);
 		} else {
 			printErrorAndExit();
 		}
-		return eval;
+		return ev;
 	}
 
 	public static double evalRosenblock(Particle p) {

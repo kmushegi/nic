@@ -1,4 +1,4 @@
-JC = javac
+JC = javac -Werror -Xlint:all
 JV = java
 
 PSO = PSOTopologies.java

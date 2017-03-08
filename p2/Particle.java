@@ -36,7 +36,7 @@ class Particle {
 		this.dim = d;
 	}
 
-	public Particle initializeParticle(double minSpeed, double maxSpeed,
+	public void initializeParticle(double minSpeed, double maxSpeed,
 									double minLocation, double maxLocation,
 									double bound) {
 		for(int i = 0; i < this.dim; i++) {
@@ -45,18 +45,18 @@ class Particle {
 			while(x_i < minLocation || x_i > maxLocation) {
 				x_i = bound * generator.nextDouble();
 			}
+
 			this.location[i] = x_i;
 			this.velocity[i] = (minSpeed + generator.nextDouble() //checked eqn.
 									* (maxSpeed - minSpeed)); //with PM
-			this.personalBestValue = -Double.MAX_VALUE;
-			this.neighborhoodBestValue = -Double.MAX_VALUE;
+			this.personalBestValue = Double.MAX_VALUE;
+			this.neighborhoodBestValue = Double.MAX_VALUE;
 		}
-		personalBestLocation = location;
-		return this;
+		this.personalBestLocation = location;
 	}
 
 	public void setNeighborhood(int[] n) {
-		this.neighbors = n;
+		this.neighbors = Arrays.copyOf(n,n.length);
 	}
 
 	public int getDimension() {
