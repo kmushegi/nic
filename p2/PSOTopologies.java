@@ -224,17 +224,23 @@ public class PSOTopologies {
 			//There are swarmSize - 1 neighbors
 			int counter = 0;
 			for(int k = 0; k < swarmSize - 1; k++){
+				//if(i == 1){
+				//	System.out.println("i: " + i +" k: " + k);
+				//}
 				//Not neighbors with themselves
 				counter++;
-				if(i == k){
-					counter--;
+
+				int crossed = 0;
+				if(i == counter && crossed == 0){
+					crossed = 1;
+					k = k-1;
 					continue;
 				}
-				neighborhood[counter] = k;
+				neighborhood[k] = counter;
 			}
 			//System.out.println(i , "neighborhood: ");
 			printIntArray(neighborhood);
-			particles.get(i).setNeighborhood(neighborhood);
+			particles.get(i).setNeighborhood(neighborhood);		
 		}
 	}
 
