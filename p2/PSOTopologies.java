@@ -115,28 +115,28 @@ public class PSOTopologies {
 						bestL = Arrays.copyOf(particles.get(i).location,functionDimensionality);
 					}
 				}
-				//System.out.println("Best Value: " + bestV);
-				// for(int nh = 0; nh < particles.get(i).neighbors.length; nh++) {
-				// 	Particle nbor = particles.get(particles.get(i).neighbors[nh]);
-				// 	double nborValue = eval(function, nbor);
+				System.out.println("Best Value: " + bestV);
+				for(int nh = 0; nh < particles.get(i).neighbors.length; nh++) {
+					Particle nbor = particles.get(particles.get(i).neighbors[nh]);
+					double nborValue = eval(function, nbor);
 
-				// 	if(currPositionValue <= particles.get(i).neighborhoodBestValue) {
-				// 		particles.get(i).neighborhoodBestLocation = particles.get(i).location;
-				// 		particles.get(i).neighborhoodBestValue = currPositionValue;
-				// 	}
+					if(currPositionValue <= particles.get(i).neighborhoodBestValue) {
+						particles.get(i).neighborhoodBestLocation = particles.get(i).location;
+						particles.get(i).neighborhoodBestValue = currPositionValue;
+					}
 
-				// 	if(nborValue <= particles.get(i).neighborhoodBestValue) {
-				// 		particles.get(i).neighborhoodBestLocation = nbor.location;
-				// 		particles.get(i).neighborhoodBestValue = nborValue;
-				// 		//update neighborhood best here
+					if(nborValue <= particles.get(i).neighborhoodBestValue) {
+						particles.get(i).neighborhoodBestLocation = nbor.location;
+						particles.get(i).neighborhoodBestValue = nborValue;
+						//update neighborhood best here
 
-				// 		for(int nhl = 0; nhl < particles.get(i).neighbors.length; nhl++) {
-				// 			particles.get(particles.get(i).neighbors[nhl]).neighborhoodBestLocation = particles.get(i).location;
-				// 			particles.get(particles.get(i).neighbors[nhl]).neighborhoodBestValue = particles.get(i).neighborhoodBestValue;
-				// 		}
-				// 	}
+						for(int nhl = 0; nhl < particles.get(i).neighbors.length; nhl++) {
+							particles.get(particles.get(i).neighbors[nhl]).neighborhoodBestLocation = particles.get(i).location;
+							particles.get(particles.get(i).neighbors[nhl]).neighborhoodBestValue = particles.get(i).neighborhoodBestValue;
+						}
+					}
 
-				// }
+				}
 			}
 		}
 	}
@@ -281,11 +281,12 @@ public class PSOTopologies {
 		}
 		Collections.shuffle(inds);
 
+		int particleCounter = 0;
 		//Adds the first index to first neighborhood
 		int tempCounter = 0;
-		temp[tempCounter] = inds.get(0);
-		tempCounter++;
-		for (int i = 1; i < inds.size(); i++){
+		// temp[tempCounter] = inds.get(0);
+		// tempCounter++;
+		for (int i = 0; i < inds.size(); i++) {
 			if(tempCounter == randNeighborSize) { //When a neighborhood is formed in temp
 				System.out.print("Neighborhood Formed:");
 				for(int z = 0; z < temp.length; z++) {
@@ -307,13 +308,16 @@ public class PSOTopologies {
 					System.out.print("Particle " + temp[temp_p] + " Neighborhood: ");
 					printIntArray(integerArrayListToIntArray(neighborhood));
 					particles.get(temp[temp_p]).setNeighborhood(integerArrayListToIntArray(neighborhood));
+					particleCounter++;
 					neighborhood.clear();
 				}
-			} else if(i % 5 != 0){
+			} else {
 				temp[tempCounter] = inds.get(i);
 				tempCounter++;
 			}
 		}	
+		System.out.println("Inds size: " + inds.size());
+		System.out.println("Particle Counter: " + particleCounter);
 	}	
 
 	public static void initializeParticles() {
