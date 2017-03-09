@@ -268,11 +268,8 @@ public class PSOTopologies {
 	}
 
 	public static void initializeRandomTopology() {
-<<<<<<< Updated upstream
-		ArrayList<Integer> neighborhood = new ArrayList<>();
-=======
+
 		int neighborhood[] = new int[randNeighborSize - 1];
->>>>>>> Stashed changes
 		int temp[] = new int[randNeighborSize];
 
 		//Will make an array of randomly ordered indeces
@@ -284,7 +281,6 @@ public class PSOTopologies {
 
 		int particleCounter = 0;
 		//Adds the first index to first neighborhood
-<<<<<<< Updated upstream
 		int tempCounter = 0;
 		// temp[tempCounter] = inds.get(0);
 		// tempCounter++;
