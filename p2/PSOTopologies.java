@@ -270,32 +270,47 @@ public class PSOTopologies {
 	}
 
 	public static void initializeRandomTopology() {
-		int neighborhood[] = new int[randNeighborSize - 1];
-		ArrayList<Integer> temp = new ArrayList<Integer>(randNeighborSize);
+		ArrayList<Integer> neighborhood = new ArrayList<>();
+		int temp[] = new int[randNeighborSize];
 
 		//Will make an array of randomly ordered indeces
 		ArrayList<Integer> inds = new ArrayList<Integer>();
-		for (int i = 0; i < swarmSize; i++){
+		for(int i = 0; i < swarmSize; i++){
 			inds.add(i);
 		}
 		Collections.shuffle(inds);
 
 		//Adds the first index to first neighborhood
-		temp.set(0 , inds.get(0));
+		int tempCounter = 0;
+		temp[tempCounter] = inds.get(0);
+		tempCounter++;
 		for (int i = 1; i < inds.size(); i++){
-			if(i % 5 == 0){ //When a neighborhood is formed in temp
-				for(int x = 0; x < temp.size(); x++){ //Make each particles neigborhood using temp
-					for(int k = 0; k < (temp.size() - 1); k++){
-						//Not neighbors with themselves
-						if(x == k){
-							continue;
-						}
-					neighborhood[k] = temp.get(x);
-					}
-					particles.get(temp.get(x)).setNeighborhood(neighborhood);
+			if(tempCounter == randNeighborSize) { //When a neighborhood is formed in temp
+				System.out.print("Neighborhood Formed:");
+				for(int z = 0; z < temp.length; z++) {
+					System.out.print(temp[z] + " ");
 				}
-			}else if(i % 5 != 0){
-				temp.set((i % 5) , inds.get(i));
+				System.out.println();
+
+				tempCounter = 0;
+				for(int temp_p = 0; temp_p < temp.length; temp_p++) { //Make each particles neigborhood using temp
+					System.out.println("Setting neighborhood of: " + temp[temp_p]);
+
+					for(int n = 0; n < temp.length; n++){
+						if(temp[temp_p] != temp[n]) { //cannot be your own neighbor
+							neighborhood.add(temp[n]);
+						} else {
+							// System.out.println("Cannot be your own neighbor");
+						}
+					}
+					System.out.print("Particle " + temp[temp_p] + " Neighborhood: ");
+					printIntArray(integerArrayListToIntArray(neighborhood));
+					particles.get(temp[temp_p]).setNeighborhood(integerArrayListToIntArray(neighborhood));
+					neighborhood.clear();
+				}
+			} else if(i % 5 != 0){
+				temp[tempCounter] = inds.get(i);
+				tempCounter++;
 			}
 		}	
 	}	
@@ -330,6 +345,14 @@ public class PSOTopologies {
 		}
 	}
 
+	public static int[] integerArrayListToIntArray(ArrayList<Integer> v) {
+		int[] intArray = new int[v.size()];
+		for (int i = 0; i < v.size(); i++) {
+    		intArray[i] = v.get(i);
+		}
+		return intArray;
+	}
+
 	public static void readParams(String[] args) {
 		if(args.length != 3 && args.length != 5) {
 			printErrorAndExit();
@@ -356,7 +379,6 @@ public class PSOTopologies {
 	public static void printIntArray(int[] v) {
 		int lineCounter = 0;
 		for(int i = 0; i < v.length; i++) {
-
 			System.out.print(v[i] + "\t");
 			if(lineCounter == 4) {
 				System.out.println(); //ten variables per line
