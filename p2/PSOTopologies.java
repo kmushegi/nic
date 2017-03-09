@@ -225,9 +225,6 @@ public class PSOTopologies {
 			//There are swarmSize - 1 neighbors
 			int counter = 0;
 			for(int k = 0; k < swarmSize - 1; k++){
-				//if(i == 1){
-				//	System.out.println("i: " + i +" k: " + k);
-				//}
 				//Not neighbors with themselves
 				counter++;
 
@@ -261,7 +258,7 @@ public class PSOTopologies {
 				neighborhood[1] = (i + 1);
 			}
 
-			printIntArray(neighborhood);
+			//printIntArray(neighborhood);
 			particles.get(i).setNeighborhood(neighborhood);		
 		}
 	}
@@ -271,7 +268,11 @@ public class PSOTopologies {
 	}
 
 	public static void initializeRandomTopology() {
+<<<<<<< Updated upstream
 		ArrayList<Integer> neighborhood = new ArrayList<>();
+=======
+		int neighborhood[] = new int[randNeighborSize - 1];
+>>>>>>> Stashed changes
 		int temp[] = new int[randNeighborSize];
 
 		//Will make an array of randomly ordered indeces
@@ -283,6 +284,7 @@ public class PSOTopologies {
 
 		int particleCounter = 0;
 		//Adds the first index to first neighborhood
+<<<<<<< Updated upstream
 		int tempCounter = 0;
 		// temp[tempCounter] = inds.get(0);
 		// tempCounter++;
@@ -314,6 +316,33 @@ public class PSOTopologies {
 			} else {
 				temp[tempCounter] = inds.get(i);
 				tempCounter++;
+=======
+		temp[0] = inds.get(0);
+		for (int i = 1; i < inds.size(); i++){
+			if(i % 5 == 0){ //When a neighborhood is formed in temp
+				System.out.println("neighborhood is: ");
+				printIntArray(temp);
+
+				for(int x = 0; x < temp.length; x++){ //Particle x's neighborhood is being built
+					int tracker = 0;
+					for(int k = 0; k < temp.length; k++){ //k loops through the current temp
+						//Not neighbors with themselves
+						if(temp[x] == temp[k]){
+							continue;
+						}
+						if(tracker == -1){
+							tracker++;
+						}
+						neighborhood[tracker] = temp[k];
+						tracker++;
+					}
+					printIntArray(neighborhood);
+					particles.get(temp[x]).setNeighborhood(neighborhood);
+				}
+			temp[0] = inds.get(i);
+			}else if(i % 5 != 0){
+				temp[(i % 5)] = inds.get(i);
+>>>>>>> Stashed changes
 			}
 		}	
 		System.out.println("Inds size: " + inds.size());
