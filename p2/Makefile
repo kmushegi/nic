@@ -11,7 +11,7 @@ run-default:
 	@$(JV) PSOTopologies ra 49 rok
 
 run-custom:
-	@$(JV) PSOTopologies ri 49 100000 rok 10
+	@$(JV) PSOTopologies ra 49 100000 rok 10
 
 clean:
 	rm *.class

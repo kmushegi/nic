@@ -72,6 +72,7 @@ public class PSOTopologies {
 
 		timeElapsedSeconds = (timeFinish - timeStart) / 1000000000.0; //ns to seconds
 		System.out.println("Time Elapsed: " + timeElapsedSeconds + " seconds");
+		System.out.println("Best Value: " + bestV);
 		printDoubleArray(bestL);
 	}
 
