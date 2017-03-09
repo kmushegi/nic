@@ -8,7 +8,7 @@ default:
 	$(JC) $(PSO) $(PARTICLE)
 
 run-default:
-	@$(JV) PSOTopologies ri 49 rok
+	@$(JV) PSOTopologies gl 49 rok
 
 run-custom:
 	@$(JV) PSOTopologies ri 49 100000 rok 10

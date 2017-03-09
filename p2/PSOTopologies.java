@@ -114,7 +114,7 @@ public class PSOTopologies {
 						bestL = Arrays.copyOf(particles.get(i).location,functionDimensionality);
 					}
 				}
-				System.out.println("Best Value: " + bestV);
+				//System.out.println("Best Value: " + bestV);
 				// for(int nh = 0; nh < particles.get(i).neighbors.length; nh++) {
 				// 	Particle nbor = particles.get(particles.get(i).neighbors[nh]);
 				// 	double nborValue = eval(function, nbor);
@@ -239,7 +239,7 @@ public class PSOTopologies {
 				neighborhood[k] = counter;
 			}
 			//System.out.println(i , "neighborhood: ");
-			printIntArray(neighborhood);
+			//printIntArray(neighborhood);
 			particles.get(i).setNeighborhood(neighborhood);		
 		}
 	}
