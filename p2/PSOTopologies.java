@@ -278,41 +278,6 @@ public class PSOTopologies {
 			inds.add(i);
 		}
 		Collections.shuffle(inds);
-
-		int particleCounter = 0;
-		//Adds the first index to first neighborhood
-		int tempCounter = 0;
-		// temp[tempCounter] = inds.get(0);
-		// tempCounter++;
-		for (int i = 0; i < inds.size(); i++) {
-			if(tempCounter == randNeighborSize) { //When a neighborhood is formed in temp
-				System.out.print("Neighborhood Formed:");
-				for(int z = 0; z < temp.length; z++) {
-					System.out.print(temp[z] + " ");
-				}
-				System.out.println();
-
-				tempCounter = 0;
-				for(int temp_p = 0; temp_p < temp.length; temp_p++) { //Make each particles neigborhood using temp
-					System.out.println("Setting neighborhood of: " + temp[temp_p]);
-
-					for(int n = 0; n < temp.length; n++){
-						if(temp[temp_p] != temp[n]) { //cannot be your own neighbor
-							neighborhood.add(temp[n]);
-						} else {
-							// System.out.println("Cannot be your own neighbor");
-						}
-					}
-					System.out.print("Particle " + temp[temp_p] + " Neighborhood: ");
-					printIntArray(integerArrayListToIntArray(neighborhood));
-					particles.get(temp[temp_p]).setNeighborhood(integerArrayListToIntArray(neighborhood));
-					particleCounter++;
-					neighborhood.clear();
-				}
-			} else {
-				temp[tempCounter] = inds.get(i);
-				tempCounter++;
-=======
 		temp[0] = inds.get(0);
 		for (int i = 1; i < inds.size(); i++){
 			if(i % 5 == 0){ //When a neighborhood is formed in temp
@@ -338,11 +303,10 @@ public class PSOTopologies {
 			temp[0] = inds.get(i);
 			}else if(i % 5 != 0){
 				temp[(i % 5)] = inds.get(i);
->>>>>>> Stashed changes
 			}
 		}	
-		System.out.println("Inds size: " + inds.size());
-		System.out.println("Particle Counter: " + particleCounter);
+		//System.out.println("Inds size: " + inds.size());
+		//System.out.println("Particle Counter: " + particleCounter);
 	}	
 
 	public static void initializeParticles() {
