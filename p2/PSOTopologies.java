@@ -116,7 +116,7 @@ public class PSOTopologies {
 						bestL = Arrays.copyOf(particles.get(i).location,functionDimensionality);
 					}
 				}
-				System.out.println("Best Value: " + bestV);
+				//System.out.println("Best Value: " + bestV);
 				for(int nh = 0; nh < particles.get(i).neighbors.length; nh++) {
 					Particle nbor = particles.get(particles.get(i).neighbors[nh]);
 					double nborValue = eval(function, nbor);
@@ -225,20 +225,16 @@ public class PSOTopologies {
 		for(int i = 0; i < swarmSize; i++){
 			//There are swarmSize - 1 neighbors
 			int counter = 0;
-			for(int k = 0; k < swarmSize - 1; k++){
+			for(int k = 0; k < swarmSize ; k++){
 				//Not neighbors with themselves
-				counter++;
-
-				int crossed = 0;
-				if(i == counter && crossed == 0){
-					crossed = 1;
-					k = k-1;
+				if(i == k){
 					continue;
 				}
-				neighborhood[k] = counter;
+				neighborhood[counter] = k;
+				counter++;
 			}
-			//System.out.println(i , "neighborhood: ");
-			//printIntArray(neighborhood);
+			System.out.println(i + "neighborhood: ");
+			printIntArray(neighborhood);
 			particles.get(i).setNeighborhood(neighborhood);		
 		}
 	}
