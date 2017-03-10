@@ -66,6 +66,7 @@ public class PSOTopologies {
 		initializeParticles();
 		initializeTopology(whichTopology);
 
+
 		timeStart = System.nanoTime();
 		pso(whichFunction, whichTopology, particles, numberOfIterations);
 		timeFinish = System.nanoTime();
@@ -276,14 +277,17 @@ public class PSOTopologies {
 		ArrayList<Integer> inds = new ArrayList<Integer>();
 		for(int i = 0; i < swarmSize; i++){
 			inds.add(i);
+			System.out.println("particle" +i);
 		}
 		Collections.shuffle(inds);
 		temp[0] = inds.get(0);
 		for (int i = 1; i < inds.size(); i++){
-			if(i % 5 == 0){ //When a neighborhood is formed in temp
-				System.out.println("neighborhood is: ");
+			if(i % 5 == 0 || (i == inds.size()-1) ){ //When a neighborhood is formed in temp
+				//System.out.println("neighborhood is: ");
 				printIntArray(temp);
-
+				if(i == inds.size()-1){
+					temp[4] = inds.get(i);
+				}
 				for(int x = 0; x < temp.length; x++){ //Particle x's neighborhood is being built
 					int tracker = 0;
 					for(int k = 0; k < temp.length; k++){ //k loops through the current temp
@@ -294,17 +298,25 @@ public class PSOTopologies {
 						if(tracker == -1){
 							tracker++;
 						}
+						//System.out.println(x);
 						neighborhood[tracker] = temp[k];
 						tracker++;
 					}
-					printIntArray(neighborhood);
+
+					//printIntArray(neighborhood);
 					particles.get(temp[x]).setNeighborhood(neighborhood);
 				}
-			temp[0] = inds.get(i);
+
+				temp[0] = inds.get(i);
 			}else if(i % 5 != 0){
 				temp[(i % 5)] = inds.get(i);
 			}
 		}	
+		for (int i = 0; i < particles.size(); i++){
+			System.out.println("particle" +i);
+			printIntArray(particles.get(i).neighbors);
+
+		} 
 		//System.out.println("Inds size: " + inds.size());
 		//System.out.println("Particle Counter: " + particleCounter);
 	}	
