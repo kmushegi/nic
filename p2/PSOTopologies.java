@@ -63,7 +63,7 @@ public class PSOTopologies {
 
 	public static void main(String[] args) {
 		readParams(args);
-		printParams();
+		// printParams();
 
 		initializeBounds(whichFunction);
 		initializeParticles();
@@ -74,9 +74,10 @@ public class PSOTopologies {
 		timeFinish = System.nanoTime();
 
 		timeElapsedSeconds = (timeFinish - timeStart) / 1000000000.0; //ns to seconds
-		System.out.println("Time Elapsed: " + timeElapsedSeconds + " seconds");
-		System.out.println("Best Value: " + bestV);
-		printDoubleArray(bestL);
+		// System.out.println("Time Elapsed: " + timeElapsedSeconds + " seconds");
+		// System.out.println("Best Value: " + bestV);
+		System.out.println(timeElapsedSeconds + " " + bestV);
+		// printDoubleArray(bestL);
 	}
 
 	public static void pso(String function, String topology,
