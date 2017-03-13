@@ -62,4 +62,9 @@ class Particle {
 	public int getDimension() {
 		return dim;
 	}
+
+	public void setLoc(int i, double newLoc) {
+		this.location[i] = newLoc;
+	}
+
 }

@@ -23,7 +23,7 @@ public class PSOTopologies {
 	private static final double BOUND = 400; //Generalized Schwefel 2.6
 	
 	private static final int ringNeighborSize = 2;
-	private static final int randNeighborSize = 5;
+	private static final int randNeighborSize = 4;
 	private static final int vnNeighborSize = 4;
 
 	//Parameters in order of acceptance from CL
@@ -69,7 +69,6 @@ public class PSOTopologies {
 		initializeParticles();
 		initializeTopology(whichTopology);
 
-
 		timeStart = System.nanoTime();
 		pso(whichFunction, whichTopology, particles, numberOfIterations);
 		timeFinish = System.nanoTime();
@@ -84,7 +83,6 @@ public class PSOTopologies {
 						ArrayList<Particle> particles, int iterations) {
 
 		while(iterations > 0) {
-			iterations--;
 
 			for(int i = 0; i < particles.size(); i++) {
 				for(int j = 0; j < particles.get(i).getDimension(); j++) {
@@ -119,7 +117,9 @@ public class PSOTopologies {
 						bestL = Arrays.copyOf(particles.get(i).location,functionDimensionality);
 					}
 				}
-				//System.out.println("Best Value: " + bestV);
+				
+				// System.out.println("Best Value: " + bestV);
+
 				for(int nh = 0; nh < particles.get(i).neighbors.length; nh++) {
 					Particle nbor = particles.get(particles.get(i).neighbors[nh]);
 					double nborValue = eval(function, nbor);
@@ -142,6 +142,9 @@ public class PSOTopologies {
 
 				}
 			}
+
+			iterations--;
+
 		}
 	}
 
@@ -162,24 +165,25 @@ public class PSOTopologies {
 
 	public static double evalRosenblock(Particle p) {
 		double ev = 0.0;
+		double c_i, c_iplusone;
 
 		for(int i = 0; i < p.getDimension() - 1; i++) {
-			double c_i = p.location[i];
-			double c_iplusone = p.location[(i+1)];
-			ev += (100 * Math.pow((c_iplusone - c_i*c_i),2.0) 
+			c_i = p.location[i];
+			c_iplusone = p.location[(i+1)];
+			ev += ((100 * (Math.pow((c_iplusone - (c_i*c_i)),2.0))) 
 					+ Math.pow((c_i-1.0),2.0));
 		}
 
 		return ev;
 	}
 
-
 	public static double evalRastrigin(Particle p) {
 		double ev = 0.0;
+		double c_i;
 
 		for(int i = 0; i < p.getDimension(); i++) {
-			double c_i = p.location[i];
-			ev += (c_i * c_i - 10.0*Math.cos(2.0*Math.PI*c_i) + 10.0);
+			c_i = p.location[i];
+			ev += ((c_i * c_i) - 10.0*Math.cos(2.0*Math.PI*c_i) + 10.0);
 		}
 
 		return ev;
@@ -191,15 +195,16 @@ public class PSOTopologies {
 		double firstSum = 0.0;
 		double secondSum = 0.0;
 
-		for(int i = 0; i < p.getDimension(); i++) {
-			double c_i = p.location[i];
+		double c_i;
 
+		for(int i = 0; i < p.getDimension(); i++) {
+			c_i = p.location[i];
 			firstSum += Math.pow(c_i,2);
 			secondSum += Math.cos(2.0*Math.PI*c_i);
 		}
 
-		ev =  -20.0 * Math.exp(-0.2 * Math.sqrt(firstSum/2.0)) 
-				- Math.exp(secondSum/2.0) + 20.0 + Math.E;
+		ev =  -20.0 * Math.exp(-0.2 * Math.sqrt(firstSum/p.getDimension())) 
+				- Math.exp(secondSum/p.getDimension()) + 20.0 + Math.E;
 		return ev;
 	}
 
@@ -236,8 +241,8 @@ public class PSOTopologies {
 				neighborhood[counter] = k;
 				counter++;
 			}
-			System.out.println(i + "neighborhood: ");
-			printIntArray(neighborhood);
+			// System.out.println(i + "neighborhood: ");
+			// printIntArray(neighborhood);
 			particles.get(i).setNeighborhood(neighborhood);		
 		}
 	}
@@ -258,150 +263,111 @@ public class PSOTopologies {
 				neighborhood[1] = (i + 1);
 			}
 
-			printIntArray(neighborhood);
+			// printIntArray(neighborhood);
 			particles.get(i).setNeighborhood(neighborhood);		
 		}
 	}
 
 	public static void initializeVonNeumannTopology() {
 		int neighborhood[] = new int[vnNeighborSize];
-		//System.out.println(swarmSize);
-		int numRows = 0;
-		int numCols = 0;
-
-		//The problem is here i dont know why it is not initializing the table of indices
-		if(swarmSize == 16){
-			int[][] table =  new int[4][4];
-			numRows = 4;
-			numCols =4;
-		}else if (swarmSize == 30){
-			int[][] table =  new int[5][6];
-			numRows = 5;
-			numCols =6;
-		}else if (swarmSize == 49){
-			int[][] table =  new int[7][7];
-			numRows = 7;
-			numCols =7;
-		}else{
-			int[][] table =  new int[2][2];
-		}
+		int gridDimension = (int) Math.ceil(Math.sqrt(swarmSize));
+		int[][] grid = new int[gridDimension][gridDimension];
 
 		//Populating the grid for vn
-		for (int i = 0; i < swarmSize; i++){
-			int row = 0;
-
-			table[row][i%numCols] = i;
-			
-			if((i % numCols == 0) && i == 0){
-				continue;
-			}else if((i% (numCols - 1))==0){
-				row++;
-			}
-
-		}
-		//printIntArray(grid);
-
-		for(int j = 0; j < table.length; j++){
-			for(int i = 0; i < table[j].length; i++){
-				if(j == 0){
-					neighborhood[2] = table[table.length -1][i];
-					neighborhood[3] = table[j+1][i];
-					if(i == 0){	//If first particle in array
-						neighborhood[0] = (swarmSize - 1);
-						neighborhood[1] = (i + 1);
-					}else if (i == (swarmSize - 1)){ //If last particle
-						neighborhood[0] = (i - 1);
-						neighborhood[1] = 0;
-					}else{
-						neighborhood[0] = (i - 1);
-						neighborhood[1] = (i + 1);
-					}					
-				}else if(j == (table.length -1)){
-					neighborhood[2] = table[j-1][i];
-					neighborhood[3] = table[0][i];
-					if(i == 0){	//If first particle in array
-						neighborhood[0] = (swarmSize - 1);
-						neighborhood[1] = (i + 1);
-					}else if (i == (swarmSize - 1)){ //If last particle
-						neighborhood[0] = (i - 1);
-						neighborhood[1] = 0;
-					}else{
-						neighborhood[0] = (i - 1);
-						neighborhood[1] = (i + 1);
-					}
-
-				}else{
-					neighborhood[2] = table[j-1][i];
-					neighborhood[3] = table[j+1][i];
-					if(i == 0){	//If first particle in array
-						neighborhood[0] = (swarmSize - 1);
-						neighborhood[1] = (i + 1);
-					}else if (i == (swarmSize - 1)){ //If last particle
-						neighborhood[0] = (i - 1);
-						neighborhood[1] = 0;
-					}else{
-						neighborhood[0] = (i - 1);
-						neighborhood[1] = (i + 1);
-					}
-					printIntArray(neighborhood);
-					particles.get(i).setNeighborhood(neighborhood);		
-				
+		int particleIndex = 0;
+		for (int i = 0; i < gridDimension; i++){
+			for (int j = 0; j < gridDimension; j++) {
+				if (particleIndex > swarmSize - 1) {
+					grid[i][j] = -1;
+				}
+				else {
+					grid[i][j] = particleIndex;
+					particleIndex++;
 				}
 			}
+		}
+
+		int colIndex, rowIndex;
+		for (int i = 0; i < gridDimension; i++) {
+			for (int j = 0; j < gridDimension; j++) {
+
+				if (grid[i][j] == -1) {
+					break;
+				}
+
+				//LEFT
+				colIndex = j-1;
+				while (colIndex < 0 || grid[i][colIndex] == -1) {
+					if (colIndex < 0) {
+						colIndex = gridDimension - 1;
+					}
+					else {
+						colIndex--;
+					}
+				}
+				neighborhood[0] = grid[i][colIndex];
+
+				//RIGHT
+				colIndex = j+1;
+				while (colIndex > gridDimension - 1 || grid[i][colIndex] == -1) {
+					if (colIndex > gridDimension - 1) {
+						colIndex = 0;
+					}
+					else {
+						colIndex++;
+					}
+				}
+				neighborhood[1] = grid[i][colIndex];
+
+				//UP
+				rowIndex = i-1;
+				while (rowIndex < 0 || grid[rowIndex][j] == -1) {
+					if (rowIndex < 0) {
+						rowIndex = gridDimension - 1;
+					}
+					else {
+						rowIndex--;
+					}
+				}
+				neighborhood[2] = grid[rowIndex][j];
+
+				//DOWN
+				rowIndex = i+1;
+				while (rowIndex > gridDimension - 1 || grid[rowIndex][j] == -1) {
+					if (rowIndex > gridDimension - 1) {
+						rowIndex = 0;
+					}
+					else {
+						rowIndex++;
+					}
+				}
+				neighborhood[3] = grid[rowIndex][j];
+
+				// System.out.println("Particle " + grid[i][j]);
+				// System.out.println("Left: " + neighborhood[0]);
+				// System.out.println("Right: " + neighborhood[1]);
+				// System.out.println("Up: " + neighborhood[2]);
+				// System.out.println("Down: " + neighborhood[3]);
+				
+				// System.out.println();
+
+				particles.get((i * gridDimension) + j).setNeighborhood(neighborhood);	
+			}
+			// System.out.println("NEW line");
 		}
 		
 	}
 
 	public static void initializeRandomTopology() {
+		int neighborhood[] = new int[randNeighborSize];
 
-		int neighborhood[] = new int[randNeighborSize - 1];
-		int temp[] = new int[randNeighborSize];
-
-		//Will make an array of randomly ordered indeces
-		ArrayList<Integer> inds = new ArrayList<Integer>();
-		for(int i = 0; i < swarmSize; i++){
-			inds.add(i);
-		}
-		Collections.shuffle(inds);
-		
-
-		temp[0] = inds.get(0); //adds firts element for first neioghborhood
-		for (int i = 1; i < inds.size(); i++){
-			if(i % 5 == 0 || (i == inds.size()-1) ){ //When a neighborhood is formed in temp
-				//System.out.println("neighborhood is: ");
-				if(i == inds.size()-1){ //checks last  neioghborhood
-					temp[4] = inds.get(i);
-				}
-				printIntArray(temp);
-				for(int x = 0; x < temp.length; x++){ //Particle x's neighborhood is being built
-					int tracker = 0;
-					for(int k = 0; k < temp.length; k++){ //k loops through the current temp
-						//Not neighbors with themselves
-						if(temp[x] == temp[k]){
-							continue;
-						}
-						//if(tracker == -1){
-							//tracker++;
-						//}
-						//System.out.println(x);
-						neighborhood[tracker] = temp[k];
-						tracker++;
-					}
-
-					printIntArray(neighborhood);
-					particles.get(temp[x]).setNeighborhood(neighborhood);
-				}
-
-				temp[0] = inds.get(i);
-			}else if(i % 5 != 0){
-				temp[(i % 5)] = inds.get(i);
+		for(int i = 0; i < particles.size(); i++) {
+			for(int neighborhoodIndex = 0; neighborhoodIndex < randNeighborSize; neighborhoodIndex++) {
+				neighborhood[neighborhoodIndex] = generator.nextInt(particles.size()-1); //range between 0 and particles.size() - 1
 			}
-		}	
-		for (int i = 0; i < particles.size(); i++){
+			particles.get(i).setNeighborhood(neighborhood);
+		}
 
-		} 
-		//System.out.println("Inds size: " + inds.size());
-		//System.out.println("Particle Counter: " + particleCounter);
 	}	
 
 	public static void initializeParticles() {
@@ -457,10 +423,10 @@ public class PSOTopologies {
 			functionDimensionality = Integer.parseInt(args[4]);
 		}
 
-		if(swarmSize != 16 && swarmSize != 30 && swarmSize != 49) {
-			System.out.println(swarmSizeError);
-			printErrorAndExit();
-		}
+		// if(swarmSize != 16 && swarmSize != 30 && swarmSize != 49) {
+		// 	System.out.println(swarmSizeError);
+		// 	printErrorAndExit();
+		// }
 
 		bestL = new double[functionDimensionality];
 	}
