@@ -83,7 +83,6 @@ public class PSOTopologies {
 						ArrayList<Particle> particles, int iterations) {
 
 		while(iterations > 0) {
-
 			for(int i = 0; i < particles.size(); i++) {
 				for(int j = 0; j < particles.get(i).getDimension(); j++) {
 					double pa = particles.get(i).personalBestLocation[j] 
@@ -95,7 +94,18 @@ public class PSOTopologies {
 					double vi1 = (particles.get(i).velocity[j]
 							+ (generator.nextDouble() * PHI1 * pa)
 							+ (generator.nextDouble() * PHI2 * ga));
+
 					vi1 *= CONSTRICTION_FACTOR;
+
+					System.out.println("Velocity: " + vi1);
+
+					if (vi1 > maxVelocity) {
+						vi1 = maxVelocity;
+					}
+
+					else if (vi1 < minVelocity) {
+						vi1 = minVelocity;
+					}
 
 					//update velocity
 					particles.get(i).velocity[j] = vi1;
@@ -106,7 +116,6 @@ public class PSOTopologies {
 
 
 				double currPositionValue = eval(function,particles.get(i));
-				// System.out.println("Current Position Value: " + currPositionValue);
 
 				if(currPositionValue <= particles.get(i).personalBestValue) {
 					particles.get(i).personalBestValue = currPositionValue;
@@ -114,6 +123,7 @@ public class PSOTopologies {
 
 					if(particles.get(i).personalBestValue <= bestV) {
 						bestV = particles.get(i).personalBestValue;
+						// System.out.println("New Best: " + bestV);
 						bestL = Arrays.copyOf(particles.get(i).location,functionDimensionality);
 					}
 				}
@@ -123,6 +133,11 @@ public class PSOTopologies {
 				for(int nh = 0; nh < particles.get(i).neighbors.length; nh++) {
 					Particle nbor = particles.get(particles.get(i).neighbors[nh]);
 					double nborValue = eval(function, nbor);
+
+					if(currPositionValue <= particles.get(i).neighborhoodBestValue) {
+						particles.get(i).neighborhoodBestLocation = Arrays.copyOf(particles.get(i).location, functionDimensionality);
+						particles.get(i).neighborhoodBestValue = currPositionValue;
+					}
 
 					if(nborValue <= particles.get(i).neighborhoodBestValue) {
 						particles.get(i).neighborhoodBestLocation = nbor.location;
@@ -136,13 +151,6 @@ public class PSOTopologies {
 					}
 
 				}
-
-
-				if(currPositionValue <= particles.get(i).neighborhoodBestValue) {
-					particles.get(i).neighborhoodBestLocation = Arrays.copyOf(particles.get(i).location, functionDimensionality);
-					particles.get(i).neighborhoodBestValue = currPositionValue;
-				}
-
 			}
 
 			iterations--;
@@ -172,7 +180,7 @@ public class PSOTopologies {
 		for(int i = 0; i < p.getDimension() - 1; i++) {
 			c_i = p.location[i];
 			c_iplusone = p.location[(i+1)];
-			ev += ((100 * (Math.pow((c_iplusone - (c_i*c_i)),2.0))) 
+			ev += ((100.0 * (Math.pow((c_iplusone - Math.pow(c_i, 2.0)),2.0))) 
 					+ Math.pow((c_i-1.0),2.0));
 		}
 
