@@ -25,12 +25,15 @@ def findAverage(pcs):
 
 def analyzeData(sd):
 	files = []
-	times = []
-	values = []
+	
+	w, h = 20, 11;
+	medians = [[0 for x in range(w)] for y in range(h)] 
 
 	for filename in os.listdir(sd):
 		if filename.endswith(".txt"):
 			files.append(filename)
+
+			print(filename)
 
 			temp_times = []
 			temp_values = []
@@ -41,25 +44,30 @@ def analyzeData(sd):
 					if line != "\n":
 						line = line.replace("\n","")
 						#print line
-						lineCount += 1
 
 						tokens = line.split(" ")
-						#print(tokens[0] + " " + tokens[1])
 						temp_times.append(tokens[0])
-						temp_values.append(tokens[1])
+						temp_values.append(float(tokens[1]))
 
-			curr_avg_t = findAverage(temp_times)
+						for x in range(2, len(tokens)-1):
+							medians[x-2][lineCount] = float(tokens[x])
+
+						lineCount += 1
+
+			counter = 0
+			for i in medians:
+				medianRow = i
+				medianRow = sorted(medianRow)
+				print("Median at " + str(counter) + ": " + str((medianRow[10] + medianRow[9])/2))
+				counter+=1
+
 			curr_avg_v = findAverage(temp_values)
+			print("Average Best Value: " + str(curr_avg_v))
+			temp_values = sorted(temp_values)
+			print("Median Best Value : " + str((temp_values[10] + temp_values[9])/2))
+			print("\n")
 
-			times.append(curr_avg_t)
-			values.append(curr_avg_v)
-
-	print("Number of Files " + str(len(files)))
-	min_time_index = findMinIndex(times)
-	min_value_index = findMinIndex(values)
-
-	print("Least Avg. Time: \t" + files[min_time_index] + "\t with " + str(times[min_time_index]) + "s")
-	print("Best Avg. Value: \t" + files[min_value_index] + "\t with" + str(values[min_value_index]))
+analyzeData(statsdir)
 
 analyzeData(statsdir)
 
