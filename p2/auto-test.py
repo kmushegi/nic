@@ -16,7 +16,7 @@ def runPSO(whichTopology, swarmSize, iterations, whichFunction, dimensions):
 compile()
 
 swarm_size = [16,30,49]
-topology = ["gl","ri","vn","ra"]
+topology = ["ri","vn","ra","gl"]
 functions = ["rok","ack","ras"]
 
 dimensions = 30
@@ -26,4 +26,5 @@ runs = 20
 for s in swarm_size:
 	for t in topology:
 		for f in functions:
-			runPSO(t,s,iterations,f,dimensions)
+			for r in range(runs):
+				runPSO(t,s,iterations,f,dimensions)
