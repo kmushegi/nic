@@ -9,7 +9,7 @@ default:
 
 run-default:
 
-	@$(JV) PSOTopologies ri 50 rok
+	@$(JV) PSOTopologies gl 50 rok
 
 run-custom:
 	@$(JV) PSOTopologies ra 49 100000 rok 10

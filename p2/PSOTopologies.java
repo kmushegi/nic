@@ -32,7 +32,7 @@ public class PSOTopologies {
 	private static int swarmSize;
 	private static int numberOfIterations = 10000;
 	private static String whichFunction;
-	private static int functionDimensionality = 30;
+	private static int functionDimensionality = 2;
 
 	//Params
 	private static double minVelocity;
@@ -68,7 +68,7 @@ public class PSOTopologies {
 		initializeBounds(whichFunction);
 		initializeParticles();
 		initializeTopology(whichTopology);
-
+// 
 		timeStart = System.nanoTime();
 		pso(whichFunction, whichTopology, particles, numberOfIterations);
 		timeFinish = System.nanoTime();
@@ -96,32 +96,18 @@ public class PSOTopologies {
 							+ (generator.nextDouble() * PHI1 * pa)
 							+ (generator.nextDouble() * PHI2 * ga));
 
-					vi1 *= CONSTRICTION_FACTOR;
+					//Update velocity
+					particles.get(i).velocity[j] = CONSTRICTION_FACTOR*(particles.get(i).velocity[j] + vi1);
+					//Update position
+					particles.get(i).location[j] += particles.get(i).velocity[j];
 
-					System.out.println("Velocity: " + vi1);
-
-					if (vi1 > maxVelocity) {
-						vi1 = maxVelocity;
-					}
-
-					else if (vi1 < minVelocity) {
-						vi1 = minVelocity;
-					}
-
-					//update velocity
-					particles.get(i).velocity[j] = vi1;
-
-					//update position based on velocity
-					particles.get(i).location[j] = (particles.get(i).location[j] + vi1);
 				}
-
 
 				double currPositionValue = eval(function,particles.get(i));
 
 				if(currPositionValue <= particles.get(i).personalBestValue) {
 					particles.get(i).personalBestValue = currPositionValue;
 					particles.get(i).personalBestLocation = Arrays.copyOf(particles.get(i).location, functionDimensionality);
-
 					if(particles.get(i).personalBestValue <= bestV) {
 						bestV = particles.get(i).personalBestValue;
 						// System.out.println("New Best: " + bestV);
@@ -129,29 +115,21 @@ public class PSOTopologies {
 					}
 				}
 				
-				// System.out.println("Best Value: " + bestV);
-
 				for(int nh = 0; nh < particles.get(i).neighbors.length; nh++) {
 					Particle nbor = particles.get(particles.get(i).neighbors[nh]);
 					double nborValue = eval(function, nbor);
 
-					if(currPositionValue <= particles.get(i).neighborhoodBestValue) {
-						particles.get(i).neighborhoodBestLocation = Arrays.copyOf(particles.get(i).location, functionDimensionality);
-						particles.get(i).neighborhoodBestValue = currPositionValue;
-					}
-
 					if(nborValue <= particles.get(i).neighborhoodBestValue) {
 						particles.get(i).neighborhoodBestLocation = nbor.location;
 						particles.get(i).neighborhoodBestValue = nborValue;
-						//update neighborhood best here
-
-						for(int nhl = 0; nhl < particles.get(i).neighbors.length; nhl++) {
-							particles.get(particles.get(i).neighbors[nhl]).neighborhoodBestLocation = particles.get(i).location;
-							particles.get(particles.get(i).neighbors[nhl]).neighborhoodBestValue = particles.get(i).neighborhoodBestValue;
-						}
 					}
-
 				}
+
+				if(currPositionValue <= particles.get(i).neighborhoodBestValue) {
+					particles.get(i).neighborhoodBestLocation = Arrays.copyOf(particles.get(i).location, functionDimensionality);
+					particles.get(i).neighborhoodBestValue = currPositionValue;
+				}
+
 			}
 
 			iterations--;
