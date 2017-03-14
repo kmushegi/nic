@@ -44,7 +44,7 @@ def analyzeData(sd):
 						lineCount += 1
 
 						tokens = line.split(" ")
-						print(tokens[0] + " " + tokens[1])
+						#print(tokens[0] + " " + tokens[1])
 						temp_times.append(tokens[0])
 						temp_values.append(tokens[1])
 
@@ -60,4 +60,6 @@ def analyzeData(sd):
 
 	print("Least Avg. Time: \t" + files[min_time_index] + "\t with " + str(times[min_time_index]) + "s")
 	print("Best Avg. Value: \t" + files[min_value_index] + "\t with" + str(values[min_value_index]))
+
+analyzeData(statsdir)
 
