@@ -32,7 +32,7 @@ public class PSOTopologies {
 	private static int swarmSize;
 	private static int numberOfIterations = 10000;
 	private static String whichFunction;
-	private static int functionDimensionality = 2;
+	private static int functionDimensionality = 30;
 
 	//Params
 	private static double minVelocity;
@@ -96,8 +96,9 @@ public class PSOTopologies {
 							+ (generator.nextDouble() * PHI1 * pa)
 							+ (generator.nextDouble() * PHI2 * ga));
 
-					//Update velocity
-					particles.get(i).velocity[j] = CONSTRICTION_FACTOR*(particles.get(i).velocity[j] + vi1);
+					vi1 *= CONSTRICTION_FACTOR;
+					//update velocity
+					particles.get(i).velocity[j] = vi1;
 					//Update position
 					particles.get(i).location[j] += particles.get(i).velocity[j];
 
@@ -110,7 +111,7 @@ public class PSOTopologies {
 					particles.get(i).personalBestLocation = Arrays.copyOf(particles.get(i).location, functionDimensionality);
 					if(particles.get(i).personalBestValue <= bestV) {
 						bestV = particles.get(i).personalBestValue;
-						// System.out.println("New Best: " + bestV);
+						System.out.println("New Best: " + bestV);
 						bestL = Arrays.copyOf(particles.get(i).location,functionDimensionality);
 					}
 				}
