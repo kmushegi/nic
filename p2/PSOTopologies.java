@@ -42,6 +42,8 @@ public class PSOTopologies {
 	private static double minLocation;
 	private static double maxLocation;
 
+	// private static ArrayList<Double> bestValues = new ArrayList<>();
+
 	//Containers
 	private static ArrayList<Particle> particles = new ArrayList<>();
 	private static ArrayList<Integer> neighborhood;
@@ -66,7 +68,8 @@ public class PSOTopologies {
 
 	public static void main(String[] args) {
 		readParams(args);
-		// printParams();
+		printParams();
+		System.out.println();
 
 		initializeBounds(whichFunction);
 		initializeParticles();
@@ -77,16 +80,23 @@ public class PSOTopologies {
 		timeFinish = System.nanoTime();
 
 		timeElapsedSeconds = (timeFinish - timeStart) / 1000000000.0; //ns to seconds
-		// System.out.println("Time Elapsed: " + timeElapsedSeconds + " seconds");
-		// System.out.println("Best Value: " + bestGlobalValue);
-		System.out.println(timeElapsedSeconds + " " + bestGlobalValue);
-		// printDoubleArray(bestGlobalLocation);
+		System.out.println("Time Elapsed: " + timeElapsedSeconds + " seconds");
+		System.out.println("Best Value: " + bestGlobalValue);
+		System.out.println("Location: ");
+		printDoubleArray(bestGlobalLocation);
+		// System.out.print(timeElapsedSeconds + " " + bestGlobalValue + " ");
+		// printBestValues();
+		// System.out.println();
+
 	}
 
 	public static void pso(String function, String topology,
 						ArrayList<Particle> particles, int iterations) {
 
+		// bestValues.add(bestGlobalValue);
+
 		while(iterations > 0) { //for each iteration
+			iterations--;
 			for(int i = 0; i < particles.size(); i++) { //for each particle
 				for(int j = 0; j < particles.get(i).getDimension(); j++) { //for each dimension
 					double pa = particles.get(i).personalBestLocation[j] 
@@ -139,7 +149,10 @@ public class PSOTopologies {
 					particles.get(i).neighborhoodBestValue = currPositionValue;
 				}
 			}
-			iterations--;
+
+			// if (iterations % 1000 == 0) {
+			// 	bestValues.add(bestGlobalValue);
+			// }
 		}
 	}
 
@@ -397,11 +410,6 @@ public class PSOTopologies {
 			functionDimensionality = Integer.parseInt(args[4]);
 		}
 
-		if(swarmSize != 16 && swarmSize != 30 && swarmSize != 49) {
-			System.out.println(swarmSizeError);
-			printErrorAndExit();
-		}
-
 		bestGlobalLocation = new double[functionDimensionality];
 	}
 
@@ -452,6 +460,12 @@ public class PSOTopologies {
 			}
 		}
 		System.out.print("\n");
+	}
+
+	public static void printBestValues() {
+		for (int i = 0; i < bestValues.size(); i++) {
+			System.out.print(bestValues.get(i) + " ");
+		}
 	}
 
 	public static void printErrorAndExit() {
