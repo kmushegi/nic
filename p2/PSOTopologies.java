@@ -241,11 +241,12 @@ public class PSOTopologies {
 		}
 	}
 
+	//Every particle is neighbor with every other particle
 	public static void initializeGlobalTopology() {
 		int neighborhood[] = new int[swarmSize - 1];
 
-		for(int i = 0; i < swarmSize; i++) { //For each particle
-			int counter = 0;
+		for(int i = 0; i < swarmSize; i++) {
+			int counter = 0; //Tracks index of next neighbor in neighborhood
 			for(int k = 0; k < swarmSize ; k++){
 				if(i == k) { //cannot be your own neighbor
 					continue;
@@ -257,14 +258,15 @@ public class PSOTopologies {
 		}
 	}
 
+	//Every particle is neighbors with next to it in particles array
 	public static void initializeRingTopology() {
 		int neighborhood[] = new int[ringNeighborSize];
 
-		for(int i = 0; i < swarmSize; i++) { //For every particle
-			if(i == 0) {	//If first particle in array
+		for(int i = 0; i < swarmSize; i++) { 
+			if(i == 0) {//If first particle in array
 				neighborhood[0] = (swarmSize - 1);
 				neighborhood[1] = (i + 1);
-			} else if (i == (swarmSize - 1)) { //If last particle
+			} else if (i == (swarmSize - 1)) { //If last particle in array
 				neighborhood[0] = (i - 1);
 				neighborhood[1] = 0;
 			} else {
@@ -275,6 +277,7 @@ public class PSOTopologies {
 		}
 	}
 
+	//Arranged in grid, particles neighbors are above,below, and to either side
 	public static void initializeVonNeumannTopology() {
 		int neighborhood[] = new int[vnNeighborSize];
 		int gridDimension = (int) Math.ceil(Math.sqrt(swarmSize));
@@ -349,6 +352,7 @@ public class PSOTopologies {
 		}
 	}
 
+	//Every particle is assigned four random neighbors
 	public static void initializeRandomTopology() {
 		int neighborhood[] = new int[randNeighborSize];
 
