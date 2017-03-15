@@ -5,9 +5,11 @@ Ernesto Garcia
 Konstantine Mushegian
 March 14, 2017
 
+----------------------------------------
+
+Our final report is 'comparison-neighborhood-topologies.pdf'
+
 -----------------------------------------
-
-
 
 The code in this repository contains an implementation of the PSO algorithm,
 along with the implementation of 4 topologies:
