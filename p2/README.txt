@@ -62,7 +62,11 @@ and evaluation functions you can use the included Python script: auto-test.py
 
 The output will be written to the "stats" folder.
 
+First, comment out lines 71, 72, 83, 84, & 85, and comment in 87-89.
+
 To run the script type 'python auto-test.py' into the terminal
+
+Undo previous commenting after testing to return terminal output to original output.
 
 ***** DATA ANALYSIS *****
 

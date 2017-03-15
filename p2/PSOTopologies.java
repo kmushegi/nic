@@ -93,7 +93,7 @@ public class PSOTopologies {
 	public static void pso(String function, String topology,
 						ArrayList<Particle> particles, int iterations) {
 
-		// bestValues.add(bestGlobalValue);
+		bestValues.add(bestGlobalValue); //Adding current best value at 0 iterations.
 
 		while(iterations > 0) { //for each iteration
 			iterations--;
@@ -151,9 +151,9 @@ public class PSOTopologies {
 				}
 			}
 
-			// if (iterations % 1000 == 0) {
-			// 	bestValues.add(bestGlobalValue);
-			// }
+			if (iterations % 1000 == 0) { //Adding current best value at every 1000 iterations
+				bestValues.add(bestGlobalValue);
+			}
 		}
 	}
 
