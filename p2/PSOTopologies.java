@@ -42,7 +42,7 @@ public class PSOTopologies {
 	private static double minLocation;
 	private static double maxLocation;
 
-	// private static ArrayList<Double> bestValues = new ArrayList<>();
+	private static ArrayList<Double> bestValues = new ArrayList<>();
 
 	//Containers
 	private static ArrayList<Particle> particles = new ArrayList<>();
@@ -99,33 +99,34 @@ public class PSOTopologies {
 			iterations--;
 			for(int i = 0; i < particles.size(); i++) { //for each particle
 				for(int j = 0; j < particles.get(i).getDimension(); j++) { //for each dimension
-					double pa = particles.get(i).personalBestLocation[j] 
+					double pa = particles.get(i).personalBestLocation[j] //Calculate difference between current and personal best position
 								- particles.get(i).location[j];
 
-					double ga = particles.get(i).neighborhoodBestLocation[j]
+					double ga = particles.get(i).neighborhoodBestLocation[j] //Calculate difference between current and neighborhood best position
 								- particles.get(i).location[j];
 
-					double vi1 = (particles.get(i).velocity[j]
+					double vi1 = (particles.get(i).velocity[j] //Calculate new velocity using velocity update function
 							+ (generator.nextDouble() * PHI1 * pa)
 							+ (generator.nextDouble() * PHI2 * ga));
 
-					vi1 *= CONSTRICTION_FACTOR;
+					vi1 *= CONSTRICTION_FACTOR; //Constrict new velocity
 
 					//update velocity & position
-					particles.get(i).velocity[j] = vi1; 
+					particles.get(i).velocity[j] = vi1;
 					particles.get(i).location[j] += particles.get(i).velocity[j];
 
 				}
+
 				//compute how good current position is
 				double currPositionValue = eval(function,particles.get(i));
 
 				//update personal and global bests if necessary
-				if(currPositionValue <= particles.get(i).personalBestValue) {
+				if(currPositionValue <= particles.get(i).personalBestValue) {//Updating personal best
 					particles.get(i).personalBestValue = currPositionValue;
 					particles.get(i).personalBestLocation = Arrays.copyOf(
 							particles.get(i).location, functionDimensionality);
 
-					if(particles.get(i).personalBestValue <= bestGlobalValue) {
+					if(particles.get(i).personalBestValue <= bestGlobalValue) {//Updating global best
 						bestGlobalValue = particles.get(i).personalBestValue;
 						bestGlobalLocation = Arrays.copyOf(
 							particles.get(i).location,functionDimensionality);
@@ -137,13 +138,13 @@ public class PSOTopologies {
 					Particle nbor = particles.get(particles.get(i).neighbors[nh]);
 					double nborValue = eval(function, nbor);
 
-					if(nborValue <= particles.get(i).neighborhoodBestValue) {
+					if(nborValue <= particles.get(i).neighborhoodBestValue) { //Updating neighboorhood best
 						particles.get(i).neighborhoodBestLocation = nbor.location;
 						particles.get(i).neighborhoodBestValue = nborValue;
 					}
 				}
 
-				if(currPositionValue <= particles.get(i).neighborhoodBestValue) {
+				if(currPositionValue <= particles.get(i).neighborhoodBestValue) { //Setting particle's global best to self, if it is the best in its neighborhood
 					particles.get(i).neighborhoodBestLocation = Arrays.copyOf(
 						particles.get(i).location, functionDimensionality);
 					particles.get(i).neighborhoodBestValue = currPositionValue;
@@ -263,7 +264,7 @@ public class PSOTopologies {
 		int neighborhood[] = new int[ringNeighborSize];
 
 		for(int i = 0; i < swarmSize; i++) { 
-			if(i == 0) {//If first particle in array
+			if(i == 0) { //If first particle in array
 				neighborhood[0] = (swarmSize - 1);
 				neighborhood[1] = (i + 1);
 			} else if (i == (swarmSize - 1)) { //If last particle in array
@@ -280,15 +281,17 @@ public class PSOTopologies {
 	//Arranged in grid, particles neighbors are above,below, and to either side
 	public static void initializeVonNeumannTopology() {
 		int neighborhood[] = new int[vnNeighborSize];
+		//Create nxn grid. Grid size is the ceiling of the squareroot of the size of the swarm.
+		//This ensures that the square grid can fit all particles.
 		int gridDimension = (int) Math.ceil(Math.sqrt(swarmSize));
 		int[][] grid = new int[gridDimension][gridDimension];
 
-		int particleIndex = 0; //populate the grid for vn
+		int particleIndex = 0; //populate the grid for von Neumann
 		for (int i = 0; i < gridDimension; i++) {
 			for (int j = 0; j < gridDimension; j++) {
-				if (particleIndex > swarmSize - 1) {
+				if (particleIndex > swarmSize - 1) { //If we have already put all particle indicies in the grid, set entry to -1 (i.e. empty)
 					grid[i][j] = -1;
-				} else {
+				} else { //Otherwise, set to particle index
 					grid[i][j] = particleIndex;
 					particleIndex++;
 				}
@@ -299,22 +302,25 @@ public class PSOTopologies {
 		for (int i = 0; i < gridDimension; i++) {
 			for (int j = 0; j < gridDimension; j++) {
 
-				if (grid[i][j] == -1) {
+				if (grid[i][j] == -1) { //If the current entry is -1 (i.e. empty), we don't need to set its neighbors.
 					break;
 				}
 
-				//LEFT
-				colIndex = j-1;
-				while (colIndex < 0 || grid[i][colIndex] == -1) {
-					if (colIndex < 0) {
+				//Finding the particle's left neighbor
+				colIndex = j-1; //Set colIndex to particle entrie's immediate left
+				//Check if the entry to the left is a valid entry
+				while (colIndex < 0 || grid[i][colIndex] == -1) { //Continue to go to left if left entry is invalid (empty or out of bounds)
+					if (colIndex < 0) { //If left is out of bounds of grid, warp around, and set colIndex to most right column
 						colIndex = gridDimension - 1;
-					} else {
+					} else { //If left entry is -1 (i.e. empty), continue to advance left.
 						colIndex--;
 					}
 				}
-				neighborhood[0] = grid[i][colIndex];
+				neighborhood[0] = grid[i][colIndex]; //Set particle's left neighbor to valid entry.
 
-				//RIGHT
+				//All below directions follow a similar logic to the left direction.
+
+				//Finding the particle's right neighbor
 				colIndex = j+1;
 				while (colIndex > gridDimension - 1 || grid[i][colIndex] == -1) {
 					if (colIndex > gridDimension - 1) {
@@ -325,7 +331,7 @@ public class PSOTopologies {
 				}
 				neighborhood[1] = grid[i][colIndex];
 
-				//UP
+				//Finding the particle's up neighbor
 				rowIndex = i-1;
 				while (rowIndex < 0 || grid[rowIndex][j] == -1) {
 					if (rowIndex < 0) {
@@ -336,7 +342,7 @@ public class PSOTopologies {
 				}
 				neighborhood[2] = grid[rowIndex][j];
 
-				//DOWN
+				//Finding the particle's down neighbor
 				rowIndex = i+1;
 				while (rowIndex > gridDimension - 1 || grid[rowIndex][j] == -1) {
 					if (rowIndex > gridDimension - 1) {
@@ -356,10 +362,10 @@ public class PSOTopologies {
 	public static void initializeRandomTopology() {
 		int neighborhood[] = new int[randNeighborSize];
 
-		for(int i = 0; i < particles.size(); i++) {
+		for(int i = 0; i < particles.size(); i++) { //For each particles
 			for(int neighborhoodIndex = 0; neighborhoodIndex < 
-									randNeighborSize; neighborhoodIndex++) {
-				//set neighboor to random index between 0 and # of particles-1
+									randNeighborSize; neighborhoodIndex++) { //Assign new neighbors to each particle
+				//set neighboor to a random index between 0 and # of particles-1 with replacement
 				neighborhood[neighborhoodIndex] = generator.nextInt(particles.size()-1);
 			}
 			particles.get(i).setNeighborhood(neighborhood);

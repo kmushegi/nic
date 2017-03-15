@@ -43,7 +43,6 @@ def analyzeData(sd):
 				for line in f:
 					if line != "\n":
 						line = line.replace("\n","")
-						#print line
 
 						tokens = line.split(" ")
 						temp_times.append(tokens[0])
@@ -58,13 +57,9 @@ def analyzeData(sd):
 			for i in medians:
 				medianRow = i
 				medianRow = sorted(medianRow)
-				print("Median at " + str(counter) + ": " + str((medianRow[10] + medianRow[9])/2))
+				print(str((medianRow[10] + medianRow[9])/2) + " " + str(findAverage(medianRow)))
 				counter+=1
 
-			curr_avg_v = findAverage(temp_values)
-			print("Average Best Value: " + str(curr_avg_v))
-			temp_values = sorted(temp_values)
-			print("Median Best Value : " + str((temp_values[10] + temp_values[9])/2))
 			print("\n")
 
 analyzeData(statsdir)
