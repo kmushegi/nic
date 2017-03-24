@@ -13,10 +13,12 @@ import java.io.*;
 import java.util.*;
 
 class Node {
+	public int id;
 	public double x;
 	public double y;
 
-	Node(int nx, int ny) {
+	Node(int nid, int nx, int ny) {
+		this.id = nid;
 		this.x = nx;
 		this.y = ny;
 	}

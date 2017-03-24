@@ -28,7 +28,7 @@ public class ACO {
 	private static double rho;
 	private static String problemFilePath; //location of .tsp file
 
-	//ACS Parameters
+	//ACS parameters
 	private static double eps;
 	private static double tauZero; //calculated not provided
 	private static double qZero;
@@ -39,10 +39,13 @@ public class ACO {
 	 tours are not unique) 
 	*/
 
-	//EAS Parameters
+	//EAS parameters
 	private static double e;
 
-	//ACO Constants
+	//Containers
+	private static ArrayList<Node> nodes = new ArrayList<>();
+
+	//ACO constants
 	private static final String acs = "acs";
 	private static final String eas = "eas";
 	private static final String incorrectParams = "Parameters were not supplied correctly";
@@ -50,6 +53,29 @@ public class ACO {
 	public static void main(String[] args) {
 		readParams(args);
 		printParams(whichAlgorithm);
+		readProblem(problemFilePath);
+	}
+
+	public static void readProblem(String fp) {
+		try(BufferedReader br = new BufferedReader(new FileReader(fp))) {
+			String line;
+			while((line = br.readLine()) != null) {
+				String[] tokens = line.trim().split(" "); //trim ws & tokenize
+				try {
+					Integer.parseInt(tokens[0]); //make sure its a node line
+					tokens = formatNodeInput(tokens);
+
+					Node temp = new Node(Integer.parseInt(tokens[0]),
+									Integer.parseInt(tokens[1]),
+									Integer.parseInt(tokens[2]));
+					nodes.add(temp);
+				} catch (NumberFormatException e) {
+					// System.err.format("NumberFormatException %s%n",e);
+				}
+			}
+		} catch (IOException e) {
+			System.err.format("IOException %s%n",e);
+		}
 	}
 
 	public static void readParams(String[] args) {
@@ -77,6 +103,18 @@ public class ACO {
 		rho = Double.parseDouble(args[5]);
 	}
 
+	public static String[] formatNodeInput(String[] s) {
+		String t[] = new String[3];
+		int counter = 0;
+		for(int i = 0; i < s.length; i++) {
+			if(!s[i].equals("")) {
+				t[counter] = s[i];
+				counter += 1;
+			}
+		}
+		return t;
+	}
+
 	public static void printParams(int alg) {
 		System.out.println("Algorithm: " + ((alg == 1) ? acs : eas)
 			+ "\n# of Ants: " + numberofAnts
@@ -93,6 +131,13 @@ public class ACO {
 			System.out.println("E: " + e);
 		}
 		System.out.println("Problem File: " + problemFilePath);
+	}
+
+	public static void printStringArray(String[] s) {
+		for(int i = 0; i < s.length; i++) {
+			System.out.print(s[i] + " ");
+		}
+		System.out.print("\n");
 	}
 
 	public static void printErrorAndExit() {
