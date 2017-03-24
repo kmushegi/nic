@@ -26,6 +26,7 @@ public class ACO {
 	private static double alpha;
 	private static double beta;
 	private static double rho;
+	private static String problemFilePath; //location of .tsp file
 
 	//ACS Parameters
 	private static double eps;
@@ -52,7 +53,7 @@ public class ACO {
 	}
 
 	public static void readParams(String[] args) {
-		if(args.length != 8 && args.length != 7) {
+		if(args.length != 9 && args.length != 8) {
 			printErrorAndExit();
 		} 
 
@@ -60,9 +61,11 @@ public class ACO {
 			whichAlgorithm = 1;
 			eps = Double.parseDouble(args[6]);
 			qZero = Double.parseDouble(args[7]);
+			problemFilePath = args[8];
 		} else if(args[0].equals(eas)) {
 			whichAlgorithm = 0;
 			e = Double.parseDouble(args[6]);
+			problemFilePath = args[7];
 		} else {
 			printErrorAndExit();
 		}
@@ -75,7 +78,7 @@ public class ACO {
 	}
 
 	public static void printParams(int alg) {
-		System.out.print("Algorithm: " + ((alg == 1) ? acs : eas)
+		System.out.println("Algorithm: " + ((alg == 1) ? acs : eas)
 			+ "\n# of Ants: " + numberofAnts
 			+ "\n# of Iterations: " + numberofIterations
 			+ "\nAlpha: " + alpha
@@ -83,12 +86,13 @@ public class ACO {
 			+ "\nRho: " + rho);
 
 		if(alg == 1) { //print acs params
-			System.out.println("\nEpsilon: " + eps
+			System.out.println("Epsilon: " + eps
 				+ "\ntauZero: " + tauZero
 				+ "\nqZero: " + qZero);
 		} else if(alg == 0) { //print eas params
-			System.out.println("\nE: " + e);
+			System.out.println("E: " + e);
 		}
+		System.out.println("Problem File: " + problemFilePath);
 	}
 
 	public static void printErrorAndExit() {
