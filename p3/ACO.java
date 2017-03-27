@@ -54,6 +54,43 @@ public class ACO {
 		readParams(args);
 		printParams(whichAlgorithm);
 		readProblem(problemFilePath);
+
+		if(whichAlgorithm == 1) {
+			//run acs
+		} else if(whichAlgorithm == 0) {
+			// run eas
+		} else {
+			printErrorAndExit();
+		}
+	}
+
+	public static ArrayList<Node> acs(int ants, int its, double a, double b,
+									double r, double eps, double t, double q) {
+		ArrayList<Node> best = initializeRandomSolution(nodes);
+
+		//do stuff
+
+		return best;
+	}
+
+	public static ArrayList<Node> eas(int ants, int its, double a, double b,
+									double r, double e) {
+		ArrayList<Node> best = new ArrayList<>();
+
+		//do stuff
+
+		return best;
+	}
+
+	public static double euclideanDistance2D(Node n1, Node n2) {
+		return Math.sqrt(Math.pow(n1.x-n2.x,2) + Math.pow(n1.y-n2.y,2));
+	}
+
+	public static ArrayList<Node> initializeRandomSolution(ArrayList<Node> s) {
+		ArrayList<Node> randSol = s;
+		long seed = System.nanoTime();
+		Collections.shuffle(randSol, new Random(seed));
+		return randSol;
 	}
 
 	public static void readProblem(String fp) {

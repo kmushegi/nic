@@ -17,7 +17,7 @@ class Node {
 	public double x;
 	public double y;
 
-	Node(int nid, int nx, int ny) {
+	Node(int nid, double nx, double ny) {
 		this.id = nid;
 		this.x = nx;
 		this.y = ny;
