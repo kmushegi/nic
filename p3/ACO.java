@@ -75,15 +75,26 @@ public class ACO {
 
 	public static ArrayList<Node> eas(int ants, int its, double a, double b,
 									double r, double e) {
-		ArrayList<Node> best = new ArrayList<>();
+		ArrayList<Node> bestTour = new ArrayList<>();
+		int bestCost = computeCost(bestTour);
 
 		//do stuff
 
-		return best;
+		return bestTour;
 	}
 
 	public static double euclideanDistance2D(Node n1, Node n2) {
 		return Math.sqrt(Math.pow(n1.x-n2.x,2) + Math.pow(n1.y-n2.y,2));
+	}
+
+	public static int computeCost(ArrayList<Node> t) {
+		int distance = 0;
+		for(int i = 0; i < t.size(); i++) {
+			Node n1 = t.get(i);
+			Node n2 = ((i == t.size() - 1) ? t.get(0) : t.get(i+1));
+			distance += (euclideanDistance2D(n1,n2));
+		}
+		return distance;
 	}
 
 	public static ArrayList<Node> initializeRandomSolution(ArrayList<Node> s) {
