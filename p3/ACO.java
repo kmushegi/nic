@@ -29,15 +29,16 @@ public class ACO {
 	private static String problemFilePath; //location of .tsp file
 
 	private static int stopCondition;
-	private static int secondsAllowed ;
-	private static int optimalTourCost;
-	private static double errorAllowed;
 	// 0 - terminate after max iterations reached
 	// 1 - terminate if found tour that is no more than a specified percentage 
 	//	over the optimal (0.0 would mean you will not settle for anything less than the optimal)
 	// 2 - both
 	// 3 - terminate after secondsAllowed exceeds
 	// 4 - all three
+
+	private static int secondsAllowed ;
+	private static int optimalTourCost;
+	private static double errorAllowed;
 
 	//ACS parameters
 	private static double eps;
@@ -47,7 +48,7 @@ public class ACO {
 	/* τ0 = 1/(n·Lnn) (ACS) Lnn is the length of a nearest neighbor tour,
 	 a tour constructed by starting at an arbitrary city and selecting 
 	 the closest unvisited city to visit next (note that nearest neighbor 
-	 tours are not unique) 
+	 tours are not unique) TODO;
 	*/
 
 	//EAS parameters
