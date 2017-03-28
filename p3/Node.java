@@ -22,4 +22,28 @@ class Node {
 		this.x = nx;
 		this.y = ny;
 	}
+
+	int getID() {
+		return id;
+	}
+
+	double getX() {
+		return x;
+	}
+
+	double getY() {
+		return y;
+	}
+
+	void setID(int nid) {
+		this.id = nid;
+	}
+
+	void setX(int nx) {
+		this.x = nx;
+	}
+
+	void setY(int ny) {
+		this.y = ny;
+	}
 }

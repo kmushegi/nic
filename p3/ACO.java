@@ -42,6 +42,8 @@ public class ACO {
 	//EAS parameters
 	private static double e;
 
+	//*******************************************
+
 	//Containers
 	private static ArrayList<Node> nodes = new ArrayList<>();
 	private static ArrayList<Node> solutionTour;
@@ -68,6 +70,7 @@ public class ACO {
 			printErrorAndExit();
 		}
 		solutionCost = computeCost(solutionTour);
+		outputSolution(solutionTour, solutionCost);
 	}
 
 	public static ArrayList<Node> acs(int ants, int its, double a, double b,
@@ -76,6 +79,12 @@ public class ACO {
 		int bestCost = computeCost(bestTour);
 		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
 		pheromoneMatrix = initializePheromoneMatrix(nodes.size(), initialPheromone);
+
+		Boolean stopCondition = false; //this needs to be actually defined
+
+		// while(!stopCondition) {
+
+		// }
 
 		return bestTour;
 	}
@@ -178,6 +187,25 @@ public class ACO {
 			}
 		}
 		return t;
+	}
+
+	public static void outputSolution(ArrayList<Node> t, int c) {
+		printSolution(t);
+		System.out.println("Cost: " + c);
+	}
+
+	public static void printSolution(ArrayList<Node> s) {
+		int lineCounter = 0;
+		for(int i = 0; i < s.size(); i++) {
+			System.out.print(s.get(i).getID() + "\t");
+			if(lineCounter == 9) {
+				System.out.println(); //ten variables per line
+				lineCounter = 0;
+			} else {
+				lineCounter++;
+			}
+		}
+		System.out.print("\n");
 	}
 
 	public static void printParams(int alg) {
