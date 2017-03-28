@@ -28,6 +28,17 @@ public class ACO {
 	private static double rho;
 	private static String problemFilePath; //location of .tsp file
 
+	private static int secondsAllowed = 15;
+	private static int stopCondition = 2;
+	private static double optimalTourCost = 100;
+	private static double errorAllowed = 0.1;
+	// 0 - terminate after max iterations reached
+	// 1 - terminate if found tour that is no more than a specified percentage 
+	//	over the optimal (0.0 would mean you will not settle for anything less than the optimal)
+	// 2 - both
+	// 3 - terminate after secondsAllowed exceeds
+	// 4 - all three
+
 	//ACS parameters
 	private static double eps;
 	private static double tauZero; //calculated not provided
@@ -80,11 +91,12 @@ public class ACO {
 		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
 		pheromoneMatrix = initializePheromoneMatrix(nodes.size(), initialPheromone);
 
-		Boolean stopCondition = false; //this needs to be actually defined
+		int itCounter = 0;
+		long st = System.nanoTime();
 
-		// while(!stopCondition) {
+		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
 
-		// }
+		}
 
 		return bestTour;
 	}
@@ -96,6 +108,26 @@ public class ACO {
 		//do stuff
 
 		return bestTour;
+	}
+
+	public static Boolean evaluateStopCondition (int stopCondition, int currIt, 
+										long startTime, ArrayList<Node> tour) {
+
+		switch(stopCondition) {
+			case 1: 
+				return (currIt < numberofIterations);
+			case 2:	
+				return (((computeCost(tour) / optimalTourCost) - 1) < errorAllowed);
+			case 3:
+				return ((currIt < numberofIterations) 
+					&& (((computeCost(tour) / optimalTourCost) - 1) < errorAllowed));
+			case 4:
+				return ((currIt < numberofIterations) 
+					&& (((computeCost(tour) / optimalTourCost) - 1) < errorAllowed) 
+					&& ((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
+			default: printErrorAndExit();
+		}
+		return false;
 	}
 
 	public static double euclideanDistance2D(Node n1, Node n2) {
