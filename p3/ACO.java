@@ -44,6 +44,8 @@ public class ACO {
 
 	//Containers
 	private static ArrayList<Node> nodes = new ArrayList<>();
+	private static ArrayList<Node> solutionTour;
+	private static int solutionCost;
 
 	//ACO constants
 	private static final String acs = "acs";
@@ -56,27 +58,32 @@ public class ACO {
 		readProblem(problemFilePath);
 
 		if(whichAlgorithm == 1) {
-			//run acs
+			solutionTour = acs(numberofAnts, numberofIterations, alpha, beta, 
+								rho, eps, tauZero, qZero);
 		} else if(whichAlgorithm == 0) {
-			// run eas
+			solutionTour = eas(numberofAnts, numberofIterations, alpha, beta, 
+								rho, e);
 		} else {
 			printErrorAndExit();
 		}
+		solutionCost = computeCost(solutionTour);
 	}
 
 	public static ArrayList<Node> acs(int ants, int its, double a, double b,
 									double r, double eps, double t, double q) {
-		ArrayList<Node> best = initializeRandomSolution(nodes);
+		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
+		int bestCost = computeCost(bestTour);
+		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
+		System.out.println(initialPheromone + " " + nodes.size() + " " + bestCost);
 
 		//do stuff
 
-		return best;
+		return bestTour;
 	}
 
 	public static ArrayList<Node> eas(int ants, int its, double a, double b,
 									double r, double e) {
 		ArrayList<Node> bestTour = new ArrayList<>();
-		int bestCost = computeCost(bestTour);
 
 		//do stuff
 
