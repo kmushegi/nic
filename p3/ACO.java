@@ -28,10 +28,10 @@ public class ACO {
 	private static double rho;
 	private static String problemFilePath; //location of .tsp file
 
-	private static int secondsAllowed = 15;
-	private static int stopCondition = 2;
-	private static double optimalTourCost = 100;
-	private static double errorAllowed = 0.1;
+	private static int stopCondition;
+	private static int secondsAllowed ;
+	private static int optimalTourCost;
+	private static double errorAllowed;
 	// 0 - terminate after max iterations reached
 	// 1 - terminate if found tour that is no more than a specified percentage 
 	//	over the optimal (0.0 would mean you will not settle for anything less than the optimal)
@@ -61,15 +61,20 @@ public class ACO {
 	private static int solutionCost;
 	private static double[][] pheromoneMatrix;
 
+	//line below and all new's up here will be moved to the constructor of ACO class
+	private static Map<String, Integer> optTourLengths = new HashMap<String, Integer>();
+
 	//ACO constants
 	private static final String acs = "acs";
 	private static final String eas = "eas";
+	private static final String optTourLengthsFilePath = "optimalTourLengths.txt";
 	private static final String incorrectParams = "Parameters were not supplied correctly";
 
 	public static void main(String[] args) {
 		readParams(args);
 		printParams(whichAlgorithm);
 		readProblem(problemFilePath);
+		readOptTourLengths(optTourLengthsFilePath);
 
 		if(whichAlgorithm == 1) {
 			solutionTour = acs(numberofAnts, numberofIterations, alpha, beta, 
@@ -162,42 +167,68 @@ public class ACO {
 		return randSol;
 	}
 
+	public static void processProblemLine(String[] tokens) {
+		try {
+			Integer.parseInt(tokens[0]); //make sure its a node line
+			tokens = formatNodeInput(tokens);
+
+			Node temp = new Node(Integer.parseInt(tokens[0]),
+							Integer.parseInt(tokens[1]),
+							Integer.parseInt(tokens[2]));
+			nodes.add(temp);
+		} catch (NumberFormatException e) {
+			// System.err.format("NumberFormatException %s%n",e);
+		}
+	}
+
+	public static void processOptTourLine(String[] tokens) {
+		try {
+			optTourLengths.put(tokens[0],Integer.parseInt(tokens[1]));
+		} catch (NumberFormatException e) {
+			// System.err.format("NumberFormatException %s%n",e);
+		}
+	}
+
 	public static void readProblem(String fp) {
 		try(BufferedReader br = new BufferedReader(new FileReader(fp))) {
 			String line;
 			while((line = br.readLine()) != null) {
 				String[] tokens = line.trim().split(" "); //trim ws & tokenize
-				try {
-					Integer.parseInt(tokens[0]); //make sure its a node line
-					tokens = formatNodeInput(tokens);
-
-					Node temp = new Node(Integer.parseInt(tokens[0]),
-									Integer.parseInt(tokens[1]),
-									Integer.parseInt(tokens[2]));
-					nodes.add(temp);
-				} catch (NumberFormatException e) {
-					// System.err.format("NumberFormatException %s%n",e);
-				}
+				processProblemLine(tokens);
 			}
 		} catch (IOException e) {
 			System.err.format("IOException %s%n",e);
 		}
 	}
 
+	public static void readOptTourLengths(String fp) {
+		try(BufferedReader br = new BufferedReader(new FileReader(fp))) {
+			String line;
+			while((line = br.readLine()) != null) {
+				String[] tokens = line.trim().split(" "); //trim ws & tokenize
+				processOptTourLine(tokens);
+			}
+		} catch (IOException e) {
+			System.err.format("IOException %s%n",e);
+		}
+		String problemName = problemFilePath.substring(
+						problemFilePath.lastIndexOf('/') + 1,
+						problemFilePath.lastIndexOf('.'));
+		optimalTourCost = optTourLengths.get(problemName);
+	}
+
 	public static void readParams(String[] args) {
-		if(args.length != 9 && args.length != 8) {
+		if(args.length != 12 && args.length != 11) {
 			printErrorAndExit();
 		} 
 
 		if(args[0].equals(acs)) {
 			whichAlgorithm = 1;
-			eps = Double.parseDouble(args[6]);
-			qZero = Double.parseDouble(args[7]);
-			problemFilePath = args[8];
+			eps = Double.parseDouble(args[10]);
+			qZero = Double.parseDouble(args[11]);
 		} else if(args[0].equals(eas)) {
 			whichAlgorithm = 0;
-			e = Double.parseDouble(args[6]);
-			problemFilePath = args[7];
+			e = Double.parseDouble(args[10]);
 		} else {
 			printErrorAndExit();
 		}
@@ -207,6 +238,10 @@ public class ACO {
 		alpha = Double.parseDouble(args[3]);
 		beta = Double.parseDouble(args[4]);
 		rho = Double.parseDouble(args[5]);
+		problemFilePath = args[6];
+		stopCondition = Integer.parseInt(args[7]);
+		secondsAllowed = Integer.parseInt(args[8]);
+		errorAllowed = Double.parseDouble(args[9]);
 	}
 
 	public static String[] formatNodeInput(String[] s) {
