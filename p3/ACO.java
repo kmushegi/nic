@@ -46,6 +46,7 @@ public class ACO {
 	private static ArrayList<Node> nodes = new ArrayList<>();
 	private static ArrayList<Node> solutionTour;
 	private static int solutionCost;
+	private static double[][] pheromoneMatrix;
 
 	//ACO constants
 	private static final String acs = "acs";
@@ -74,9 +75,7 @@ public class ACO {
 		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
 		int bestCost = computeCost(bestTour);
 		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
-		System.out.println(initialPheromone + " " + nodes.size() + " " + bestCost);
-
-		//do stuff
+		pheromoneMatrix = initializePheromoneMatrix(nodes.size(), initialPheromone);
 
 		return bestTour;
 	}
@@ -102,6 +101,17 @@ public class ACO {
 			distance += (euclideanDistance2D(n1,n2));
 		}
 		return distance;
+	}
+
+	public static double[][] initializePheromoneMatrix(int n, double initPh) {
+		double[][] temp = new double[n][n];
+
+		for(int r = 0; r < n; r++) {
+			for(int c = 0; c < n; c++) {
+				temp[r][c] = initPh;
+			}
+		}
+		return temp;
 	}
 
 	public static ArrayList<Node> initializeRandomSolution(ArrayList<Node> s) {
