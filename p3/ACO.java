@@ -115,7 +115,7 @@ public class ACO {
 				int candidateCost;
 
 				candidateTour = constructSolutionACS(pheromoneMatrix, b, q);
-
+				candidateCost = computeCost(candidateTour);
 			}
 		}
 
@@ -124,15 +124,29 @@ public class ACO {
 
 	public static ArrayList<Node> constructSolutionACS(double[][] pm, double b, double q) {
 		ArrayList<Integer> tour =  new ArrayList<>();
-		tour.add(generator.nextInt(nodes.size() + 1));
+		int randomCity = generator.nextInt(nodes.size())+1;
+		System.out.println("Random City: " + randomCity);
+		tour.add(randomCity);
 
 		while(tour.size() != nodes.size()) {
+			if(tour.get(tour.size()-1) == 0) {
+				System.out.println("ALRT");
+				System.exit(1);
+			}
 			ArrayList<Map<String,Double>> ch = generateChoices(tour.get(tour.size()-1), tour, b, q, 1.0);
 			int nextCity = pickNextCityACS(ch);
+			if(nextCity == 0) {
+				System.out.println("ALRT3");
+				System.exit(1);
+			}
+			tour.add(nextCity);
 		}
-
-		ArrayList<Node> tmp = new ArrayList<>();
-		return tmp;
+		//convert Integer tour to Node tour.
+		ArrayList<Node> rt = new ArrayList<>();
+		for(int i = 0; i < tour.size(); i++) {
+			rt.add(getCity(tour.get(i)));
+		}
+		return rt;
 	}
 
 	public static ArrayList<Node> eas(int ants, int its, double a, double b,
@@ -172,7 +186,8 @@ public class ACO {
 				continue;
 			} else {
 				Map<String, Double> temp = new HashMap<String, Double>();
-				temp.put("city", (double)(i));
+				temp.put("city", (double)(i+1));
+				System.out.println("lc = " + lastCity + ", i = " + i);
 				temp.put("hist",Math.pow(pheromoneMatrix[lastCity][i],hist));
 				temp.put("dist",euclideanDistance2D(getCity(lastCity),getCity(i+1)));
 				temp.put("heur",Math.pow((1.0/temp.get("dist")),q));
@@ -198,6 +213,8 @@ public class ACO {
 				return nodes.get(i);
 			}
 		}
+		System.out.println("City: " + cityID + "not found. Exiting");
+		System.exit(1);
 		return null;
 	}
 
@@ -222,10 +239,20 @@ public class ACO {
 			sum += ch.get(i).get("prob");
 		}
 		if(sum == 0.0) {
-			return ch.get((generator.nextInt(nodes.size()))).get("city").intValue();
+			System.out.println("Next City 1: " + ch.get((generator.nextInt(nodes.size())+1)).get("city"));
+			return ch.get((generator.nextInt(nodes.size())+1)).get("city").intValue();
 		}
-		return 0;
-		//random.nextInt(max - min + 1) + min
+
+		double r = generator.nextDouble();
+		for(int i = 0; i < ch.size(); i++) {
+			r -= (ch.get(i).get("prob")/sum);
+			if(r <= 0.0) {
+				System.out.println("Next City 2: " + ch.get(i).get("city"));
+				return ch.get(i).get("city").intValue();
+			}
+		}
+		System.out.println("Next City 3: " + ch.get(ch.size()-1).get("city"));
+		return ch.get(ch.size()-1).get("city").intValue();
 	}
 
 	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b, double q) {
