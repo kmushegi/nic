@@ -29,6 +29,9 @@ public class ACO {
 	private static String problemFilePath; //location of .tsp file
 
 	private static int stopCondition;
+
+	//MARCUS: Stop conditions. I don't think we can do conditions 0 and x together, because then it would basically just be max iterations
+
 	// 0 - terminate after max iterations reached
 	// 1 - terminate if found tour that is no more than a specified percentage 
 	//	over the optimal (0.0 would mean you will not settle for anything less than the optimal)
@@ -111,7 +114,7 @@ public class ACO {
 				ArrayList<Node> candidateTour;
 				int candidateCost;
 
-				// candidateTour = constructSolution(pheromoneMatrix, b, q);
+				// candidateTour = constructSolutionACS(pheromoneMatrix, b, q);
 
 			}
 		}
@@ -121,14 +124,66 @@ public class ACO {
 
 	public static ArrayList<Node> eas(int ants, int its, double a, double b,
 									double r, double e) {
-		ArrayList<Node> bestTour = new ArrayList<>();
+		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
+		int bestCost = computeCost(bestTour);
+		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
+		pheromoneMatrix = initializePheromoneMatrix(nodes.size(), initialPheromone);
 
-		//do stuff
+		int itCounter = 0;
+		long st = System.nanoTime();
+
+		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
+			itCounter += 1;
+
+			for (int i = 0; i < ants; i++) {
+				ArrayList<Node> candidateTour = constructSolutionEAS(pheromoneMatrix, b, q);
+				int candidateCost = computeCost(candidateTour);
+
+				if (candidateCost < bestCost) {
+					bestTour = candidateTour;
+					bestCost = candidateCost;
+				}
+			}
+
+		}
 
 		return bestTour;
 	}
 
-	public static ArrayList<Node> constructSolution(double[][] pm, double b, double q) {
+	public static ArrayList<Node> constructSolutionACS(double[][] pm, double b, double q) {
+		ArrayList<Integer> tour =  new ArrayList<>();
+		tour.add(generator.nextInt(nodes.size() + 1));
+
+		while(tour.size() != nodes.size()) {
+
+		}
+
+		ArrayList<Node> tmp = new ArrayList<>();
+		return tmp;
+	}
+
+
+
+	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b) {
+		ArrayList<Integer> tour =  new ArrayList<>();
+		int startIndex = generator.nextInt(nodes.size() + 1)
+		tour.add(startIndex); //Initial node
+
+		while(tour.size() != nodes.size()) {
+			pickNextCityACS(tour);
+		}
+
+		tour.add(startIndex);
+
+		// ArrayList<Node> tmp = new ArrayList<>();
+		// return tmp;
+	}
+
+	public static void pickNextCityACS(ArrayList<Integer> tour) {
+		
+	}
+
+	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b, double q) {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		tour.add(generator.nextInt(nodes.size() + 1));
 
@@ -149,14 +204,13 @@ public class ACO {
 				return (currIt < numberofIterations);
 			case 1:	
 				return (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed);
+			// case 2:
+			// 	return ((currIt < numberofIterations) 
+			// 		&& (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed));
 			case 2:
-				return ((currIt < numberofIterations) 
-					&& (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed));
-			case 3:
 				return (((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
-			case 4:
-				return ((currIt < numberofIterations) 
-					&& (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed) 
+			case 3:
+				return (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed) 
 					&& ((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			default: printErrorAndExit();
 		}
