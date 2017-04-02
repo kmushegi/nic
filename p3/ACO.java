@@ -108,13 +108,13 @@ public class ACO {
 
 		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
 			itCounter += 1;
-
+			System.out.println(itCounter);
 			//store solutions here?
 			for(int i = 0; i < nodes.size(); i++) {
 				ArrayList<Node> candidateTour;
 				int candidateCost;
 
-				// candidateTour = constructSolutionACS(pheromoneMatrix, b, q);
+				candidateTour = constructSolutionACS(pheromoneMatrix, b, q);
 
 			}
 		}
@@ -127,7 +127,8 @@ public class ACO {
 		tour.add(generator.nextInt(nodes.size() + 1));
 
 		while(tour.size() != nodes.size()) {
-
+			ArrayList<Map<String,Double>> ch = generateChoices(tour.get(tour.size()-1), tour, b, q, 1.0);
+			int nextCity = pickNextCityACS(ch);
 		}
 
 		ArrayList<Node> tmp = new ArrayList<>();
@@ -137,48 +138,94 @@ public class ACO {
 	public static ArrayList<Node> eas(int ants, int its, double a, double b,
 									double r, double e) {
 		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
-		int bestCost = computeCost(bestTour);
-		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
-		pheromoneMatrix = initializePheromoneMatrix(nodes.size(), initialPheromone);
+		// int bestCost = computeCost(bestTour);
+		// double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
+		// pheromoneMatrix = initializePheromoneMatrix(nodes.size(), initialPheromone);
 
-		int itCounter = 0;
-		long st = System.nanoTime();
+		// int itCounter = 0;
+		// long st = System.nanoTime();
 
-		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
-			itCounter += 1;
+		// while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
+		// 	itCounter += 1;
 
-			for (int i = 0; i < ants; i++) {
-				ArrayList<Node> candidateTour = constructSolutionEAS(pheromoneMatrix, b, q);
-				int candidateCost = computeCost(candidateTour);
+		// 	for (int i = 0; i < ants; i++) {
+		// 		ArrayList<Node> candidateTour = constructSolutionEAS(pheromoneMatrix, b, q);
+		// 		int candidateCost = computeCost(candidateTour);
 
-				if (candidateCost < bestCost) {
-					bestTour = candidateTour;
-					bestCost = candidateCost;
-				}
-			}
+		// 		if (candidateCost < bestCost) {
+		// 			bestTour = candidateTour;
+		// 			bestCost = candidateCost;
+		// 		}
+		// 	}
 
-		}
+		// }
 
 		return bestTour;
 	}
 
+	public static ArrayList<Map<String,Double>> generateChoices(int lastCity, 
+					ArrayList<Integer> tour, double b, double q, double hist) {
+		ArrayList<Map<String, Double>> ch = new ArrayList<>();
+
+		for(int i = 0; i < nodes.size(); i++) {
+			if(searchArrayList(tour,i)) {
+				continue;
+			} else {
+				Map<String, Double> temp = new HashMap<String, Double>();
+				temp.put("city", (double)(i));
+				temp.put("hist",Math.pow(pheromoneMatrix[lastCity][i],hist));
+				temp.put("dist",euclideanDistance2D(getCity(lastCity),getCity(i+1)));
+				temp.put("heur",Math.pow((1.0/temp.get("dist")),q));
+				temp.put("prob",(temp.get("hist") * temp.get("heur")));
+				ch.add(temp);
+			}
+		}
+		return ch;
+	}
+
+	public static Boolean searchArrayList(ArrayList<Integer> t, int g) {
+		for(int i = 0; i < t.size(); i++) {
+			if(t.get(i) == g) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static Node getCity(int cityID) {
+		for(int i = 0; i < nodes.size(); i++) {
+			if(nodes.get(i).id == cityID) {
+				return nodes.get(i);
+			}
+		}
+		return null;
+	}
+
 	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b) {
 		ArrayList<Integer> tour =  new ArrayList<>();
-		int startIndex = generator.nextInt(nodes.size() + 1)
+		int startIndex = generator.nextInt(nodes.size() + 1);
 		tour.add(startIndex); //Initial node
 
 		while(tour.size() != nodes.size()) {
-			pickNextCityACS(tour);
+			// pickNextCityACS(tour);
 		}
 
 		tour.add(startIndex);
 
-		// ArrayList<Node> tmp = new ArrayList<>();
-		// return tmp;
+		ArrayList<Node> tmp = new ArrayList<>();
+		return tmp;
 	}
 
-	public static void pickNextCityACS(ArrayList<Integer> tour) {
-
+	public static int pickNextCityACS(ArrayList<Map<String,Double>> ch) {
+		double sum = 0.0;
+		for(int i = 0; i < ch.size(); i++) {
+			sum += ch.get(i).get("prob");
+		}
+		if(sum == 0.0) {
+			return ch.get((generator.nextInt(nodes.size()))).get("city").intValue();
+		}
+		return 0;
+		//random.nextInt(max - min + 1) + min
 	}
 
 	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b, double q) {
@@ -194,7 +241,7 @@ public class ACO {
 	}
 
 
-	public static Boolean evaluateStopCondition (int stopCondition, int currIt, 
+	public static Boolean evaluateStopCondition(int stopCondition, int currIt, 
 										long startTime, ArrayList<Node> tour) {
 
 		switch(stopCondition) {
@@ -208,7 +255,7 @@ public class ACO {
 			case 2:
 				return (((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			case 3:
-				return (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed) 
+				return ((((computeCost(tour) / optimalTourCost) - 1) > errorAllowed)
 					&& ((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			default: printErrorAndExit();
 		}
