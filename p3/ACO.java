@@ -122,6 +122,18 @@ public class ACO {
 		return bestTour;
 	}
 
+	public static ArrayList<Node> constructSolutionACS(double[][] pm, double b, double q) {
+		ArrayList<Integer> tour =  new ArrayList<>();
+		tour.add(generator.nextInt(nodes.size() + 1));
+
+		while(tour.size() != nodes.size()) {
+
+		}
+
+		ArrayList<Node> tmp = new ArrayList<>();
+		return tmp;
+	}
+
 	public static ArrayList<Node> eas(int ants, int its, double a, double b,
 									double r, double e) {
 		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
@@ -150,20 +162,6 @@ public class ACO {
 		return bestTour;
 	}
 
-	public static ArrayList<Node> constructSolutionACS(double[][] pm, double b, double q) {
-		ArrayList<Integer> tour =  new ArrayList<>();
-		tour.add(generator.nextInt(nodes.size() + 1));
-
-		while(tour.size() != nodes.size()) {
-
-		}
-
-		ArrayList<Node> tmp = new ArrayList<>();
-		return tmp;
-	}
-
-
-
 	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b) {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		int startIndex = generator.nextInt(nodes.size() + 1)
@@ -180,7 +178,7 @@ public class ACO {
 	}
 
 	public static void pickNextCityACS(ArrayList<Integer> tour) {
-		
+
 	}
 
 	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b, double q) {
