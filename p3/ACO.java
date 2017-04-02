@@ -71,11 +71,14 @@ public class ACO {
 	private static final String optTourLengthsFilePath = "optimalTourLengths.txt";
 	private static final String incorrectParams = "Parameters were not supplied correctly";
 
+	//Util
+	private static Random generator = new Random();
+
 	public static void main(String[] args) {
 		readParams(args);
-		printParams(whichAlgorithm);
 		readProblem(problemFilePath);
 		readOptTourLengths(optTourLengthsFilePath);
+		printParams(whichAlgorithm);
 
 		if(whichAlgorithm == 1) {
 			solutionTour = acs(numberofAnts, numberofIterations, alpha, beta, 
@@ -101,7 +104,16 @@ public class ACO {
 		long st = System.nanoTime();
 
 		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
+			itCounter += 1;
 
+			//store solutions here?
+			for(int i = 0; i < nodes.size(); i++) {
+				ArrayList<Node> candidateTour;
+				int candidateCost;
+
+				// candidateTour = constructSolution(pheromoneMatrix, b, q);
+
+			}
 		}
 
 		return bestTour;
@@ -116,25 +128,47 @@ public class ACO {
 		return bestTour;
 	}
 
+	public static ArrayList<Node> constructSolution(double[][] pm, double b, double q) {
+		ArrayList<Integer> tour =  new ArrayList<>();
+		tour.add(generator.nextInt(nodes.size() + 1));
+
+		while(tour.size() != nodes.size()) {
+
+		}
+
+		ArrayList<Node> tmp = new ArrayList<>();
+		return tmp;
+	}
+
+
 	public static Boolean evaluateStopCondition (int stopCondition, int currIt, 
 										long startTime, ArrayList<Node> tour) {
 
 		switch(stopCondition) {
-			case 1: 
+			case 0: 
 				return (currIt < numberofIterations);
-			case 2:	
-				return (((computeCost(tour) / optimalTourCost) - 1) < errorAllowed);
-			case 3:
+			case 1:	
+				return (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed);
+			case 2:
 				return ((currIt < numberofIterations) 
-					&& (((computeCost(tour) / optimalTourCost) - 1) < errorAllowed));
+					&& (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed));
+			case 3:
+				return (((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			case 4:
 				return ((currIt < numberofIterations) 
-					&& (((computeCost(tour) / optimalTourCost) - 1) < errorAllowed) 
+					&& (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed) 
 					&& ((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			default: printErrorAndExit();
 		}
 		return false;
 	}
+
+	// 0 - terminate after max iterations reached
+	// 1 - terminate if found tour that is no more than a specified percentage 
+	//	over the optimal (0.0 would mean you will not settle for anything less than the optimal)
+	// 2 - both
+	// 3 - terminate after secondsAllowed exceeds
+	// 4 - all three
 
 	public static double euclideanDistance2D(Node n1, Node n2) {
 		return Math.sqrt(Math.pow(n1.x-n2.x,2) + Math.pow(n1.y-n2.y,2));
@@ -292,6 +326,7 @@ public class ACO {
 			System.out.println("E: " + e);
 		}
 		System.out.println("Problem File: " + problemFilePath);
+		System.out.println("Optimal Tour: " + optimalTourCost);
 	}
 
 	public static void printStringArray(String[] s) {
