@@ -116,6 +116,10 @@ public class ACO {
 
 				candidateTour = constructSolutionACS(pheromoneMatrix, b, q);
 				candidateCost = computeCost(candidateTour);
+				if(candidateCost < bestCost) {
+					bestCost = candidateCost;
+					bestTour = candidateTour;
+				}
 			}
 		}
 
@@ -125,7 +129,7 @@ public class ACO {
 	public static ArrayList<Node> constructSolutionACS(double[][] pm, double b, double q) {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		int randomCity = generator.nextInt(nodes.size())+1;
-		System.out.println("Random City: " + randomCity);
+		// System.out.println("Random City: " + randomCity);
 		tour.add(randomCity);
 
 		while(tour.size() != nodes.size()) {
@@ -134,6 +138,7 @@ public class ACO {
 				System.exit(1);
 			}
 			ArrayList<Map<String,Double>> ch = generateChoices(tour.get(tour.size()-1), tour, b, q, 1.0);
+
 			int nextCity = pickNextCityACS(ch);
 			if(nextCity == 0) {
 				System.out.println("ALRT3");
@@ -187,8 +192,7 @@ public class ACO {
 			} else {
 				Map<String, Double> temp = new HashMap<String, Double>();
 				temp.put("city", (double)(i+1));
-				System.out.println("lc = " + lastCity + ", i = " + i);
-				temp.put("hist",Math.pow(pheromoneMatrix[lastCity][i],hist));
+				temp.put("hist",Math.pow(pheromoneMatrix[lastCity-1][i],hist));
 				temp.put("dist",euclideanDistance2D(getCity(lastCity),getCity(i+1)));
 				temp.put("heur",Math.pow((1.0/temp.get("dist")),q));
 				temp.put("prob",(temp.get("hist") * temp.get("heur")));
@@ -237,9 +241,12 @@ public class ACO {
 		double sum = 0.0;
 		for(int i = 0; i < ch.size(); i++) {
 			sum += ch.get(i).get("prob");
+			// System.out.println("adding: " + ch.get(i).get("prob"));
+			// System.out.println("Sum: " + sum);
 		}
+		// System.exit(1);
 		if(sum == 0.0) {
-			System.out.println("Next City 1: " + ch.get((generator.nextInt(nodes.size())+1)).get("city"));
+			// System.out.println("Next City 1: " + ch.get((generator.nextInt(nodes.size())+1)).get("city"));
 			return ch.get((generator.nextInt(nodes.size())+1)).get("city").intValue();
 		}
 
@@ -247,11 +254,11 @@ public class ACO {
 		for(int i = 0; i < ch.size(); i++) {
 			r -= (ch.get(i).get("prob")/sum);
 			if(r <= 0.0) {
-				System.out.println("Next City 2: " + ch.get(i).get("city"));
+				// System.out.println("Next City 2: " + ch.get(i).get("city"));
 				return ch.get(i).get("city").intValue();
 			}
 		}
-		System.out.println("Next City 3: " + ch.get(ch.size()-1).get("city"));
+		// System.out.println("Next City 3: " + ch.get(ch.size()-1).get("city"));
 		return ch.get(ch.size()-1).get("city").intValue();
 	}
 
