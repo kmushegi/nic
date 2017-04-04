@@ -128,34 +128,6 @@ public class ACO {
 		return bestTour;
 	}
 
-	public static void localPheromoneUpdate(ArrayList<Node> cand, double t, double initPhero) {
-		for(int x = 0; x < cand.size(); x++) {
-			int y;
-			if(x == cand.size()-1) {
-				y = 0;
-			} else {
-				y = x+1;
-			}
-			double value = ((1.0-t)*pheromoneMatrix[x][y])+(t*initPhero);
-			pheromoneMatrix[x][y] = value;
-			pheromoneMatrix[y][x] = value;
-		}
-	}
-
-	public static void globalPheromoneUpdate(ArrayList<Node> best, double a) {
-		for(int x = 0; x < best.size(); x++) {
-			int y;
-			if(x == best.size()-1) {
-				y = 0;
-			} else {
-				y = x+1;
-			}
-			double value = ((1.0-a)*pheromoneMatrix[x][y])+(a*(1.0/computeCost(best)));
-			pheromoneMatrix[x][y] = value;
-			pheromoneMatrix[y][x] = value;
-		}
-	}
-
 	public static ArrayList<Node> constructSolutionACS(double[][] pm, double b, double q) {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		int randomCity = generator.nextInt(nodes.size())+1;
@@ -183,6 +155,79 @@ public class ACO {
 			rt.add(getCity(tour.get(i)));
 		}
 		return rt;
+	}
+
+	public static ArrayList<Map<String,Double>> generateChoices(int lastCity, 
+					ArrayList<Integer> tour, double b, double q, double hist) {
+		ArrayList<Map<String, Double>> ch = new ArrayList<>();
+
+		for(int i = 0; i < nodes.size(); i++) {
+			if(searchArrayList(tour,i)) {
+				continue;
+			} else {
+				Map<String, Double> temp = new HashMap<String, Double>();
+				temp.put("city", (double)(i+1));
+				temp.put("hist",Math.pow(pheromoneMatrix[lastCity-1][i],hist));
+				temp.put("dist",euclideanDistance2D(getCity(lastCity),getCity(i+1)));
+				temp.put("heur",Math.pow((1.0/temp.get("dist")),q));
+				temp.put("prob",(temp.get("hist") * temp.get("heur")));
+				ch.add(temp);
+			}
+		}
+		return ch;
+	}
+
+	public static int pickNextCityACS(ArrayList<Map<String,Double>> ch) {
+		double sum = 0.0;
+		for(int i = 0; i < ch.size(); i++) {
+			sum += ch.get(i).get("prob");
+			// System.out.println("adding: " + ch.get(i).get("prob"));
+			// System.out.println("Sum: " + sum);
+		}
+		// System.exit(1);
+		if(sum == 0.0) {
+			// System.out.println("Next City 1: " + ch.get((generator.nextInt(nodes.size())+1)).get("city"));
+			return ch.get((generator.nextInt(nodes.size())+1)).get("city").intValue();
+		}
+
+		double r = generator.nextDouble();
+		for(int i = 0; i < ch.size(); i++) {
+			r -= (ch.get(i).get("prob")/sum);
+			if(r <= 0.0) {
+				// System.out.println("Next City 2: " + ch.get(i).get("city"));
+				return ch.get(i).get("city").intValue();
+			}
+		}
+		// System.out.println("Next City 3: " + ch.get(ch.size()-1).get("city"));
+		return ch.get(ch.size()-1).get("city").intValue();
+	}
+
+	public static void localPheromoneUpdate(ArrayList<Node> cand, double t, double initPhero) {
+		for(int x = 0; x < cand.size(); x++) {
+			int y;
+			if(x == cand.size()-1) {
+				y = 0;
+			} else {
+				y = x+1;
+			}
+			double value = ((1.0-t)*pheromoneMatrix[x][y])+(t*initPhero);
+			pheromoneMatrix[x][y] = value;
+			pheromoneMatrix[y][x] = value;
+		}
+	}
+
+	public static void globalPheromoneUpdate(ArrayList<Node> best, double a) {
+		for(int x = 0; x < best.size(); x++) {
+			int y;
+			if(x == best.size()-1) {
+				y = 0;
+			} else {
+				y = x+1;
+			}
+			double value = ((1.0-a)*pheromoneMatrix[x][y])+(a*(1.0/computeCost(best)));
+			pheromoneMatrix[x][y] = value;
+			pheromoneMatrix[y][x] = value;
+		}
 	}
 
 	public static ArrayList<Node> eas(int ants, int its, double a, double b,
@@ -213,46 +258,6 @@ public class ACO {
 		return bestTour;
 	}
 
-	public static ArrayList<Map<String,Double>> generateChoices(int lastCity, 
-					ArrayList<Integer> tour, double b, double q, double hist) {
-		ArrayList<Map<String, Double>> ch = new ArrayList<>();
-
-		for(int i = 0; i < nodes.size(); i++) {
-			if(searchArrayList(tour,i)) {
-				continue;
-			} else {
-				Map<String, Double> temp = new HashMap<String, Double>();
-				temp.put("city", (double)(i+1));
-				temp.put("hist",Math.pow(pheromoneMatrix[lastCity-1][i],hist));
-				temp.put("dist",euclideanDistance2D(getCity(lastCity),getCity(i+1)));
-				temp.put("heur",Math.pow((1.0/temp.get("dist")),q));
-				temp.put("prob",(temp.get("hist") * temp.get("heur")));
-				ch.add(temp);
-			}
-		}
-		return ch;
-	}
-
-	public static Boolean searchArrayList(ArrayList<Integer> t, int g) {
-		for(int i = 0; i < t.size(); i++) {
-			if(t.get(i) == g) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public static Node getCity(int cityID) {
-		for(int i = 0; i < nodes.size(); i++) {
-			if(nodes.get(i).id == cityID) {
-				return nodes.get(i);
-			}
-		}
-		System.out.println("City: " + cityID + "not found. Exiting");
-		System.exit(1);
-		return null;
-	}
-
 	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b) {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		int startIndex = generator.nextInt(nodes.size() + 1);
@@ -266,31 +271,6 @@ public class ACO {
 
 		ArrayList<Node> tmp = new ArrayList<>();
 		return tmp;
-	}
-
-	public static int pickNextCityACS(ArrayList<Map<String,Double>> ch) {
-		double sum = 0.0;
-		for(int i = 0; i < ch.size(); i++) {
-			sum += ch.get(i).get("prob");
-			// System.out.println("adding: " + ch.get(i).get("prob"));
-			// System.out.println("Sum: " + sum);
-		}
-		// System.exit(1);
-		if(sum == 0.0) {
-			// System.out.println("Next City 1: " + ch.get((generator.nextInt(nodes.size())+1)).get("city"));
-			return ch.get((generator.nextInt(nodes.size())+1)).get("city").intValue();
-		}
-
-		double r = generator.nextDouble();
-		for(int i = 0; i < ch.size(); i++) {
-			r -= (ch.get(i).get("prob")/sum);
-			if(r <= 0.0) {
-				// System.out.println("Next City 2: " + ch.get(i).get("city"));
-				return ch.get(i).get("city").intValue();
-			}
-		}
-		// System.out.println("Next City 3: " + ch.get(ch.size()-1).get("city"));
-		return ch.get(ch.size()-1).get("city").intValue();
 	}
 
 	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b, double q) {
@@ -364,6 +344,26 @@ public class ACO {
 		long seed = System.nanoTime();
 		Collections.shuffle(randSol, new Random(seed));
 		return randSol;
+	}
+
+	public static Boolean searchArrayList(ArrayList<Integer> t, int g) {
+		for(int i = 0; i < t.size(); i++) {
+			if(t.get(i) == g) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static Node getCity(int cityID) {
+		for(int i = 0; i < nodes.size(); i++) {
+			if(nodes.get(i).id == cityID) {
+				return nodes.get(i);
+			}
+		}
+		System.out.println("City: " + cityID + "not found. Exiting");
+		System.exit(1);
+		return null;
 	}
 
 	public static void processProblemLine(String[] tokens) {
