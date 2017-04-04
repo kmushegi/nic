@@ -120,10 +120,40 @@ public class ACO {
 					bestCost = candidateCost;
 					bestTour = candidateTour;
 				}
+				localPheromoneUpdate(candidateTour, t, initialPheromone);
 			}
+			globalPheromoneUpdate(bestTour, a);
 		}
 
 		return bestTour;
+	}
+
+	public static void localPheromoneUpdate(ArrayList<Node> cand, double t, double initPhero) {
+		for(int x = 0; x < cand.size(); x++) {
+			int y;
+			if(x == cand.size()-1) {
+				y = 0;
+			} else {
+				y = x+1;
+			}
+			double value = ((1.0-t)*pheromoneMatrix[x][y])+(t*initPhero);
+			pheromoneMatrix[x][y] = value;
+			pheromoneMatrix[y][x] = value;
+		}
+	}
+
+	public static void globalPheromoneUpdate(ArrayList<Node> best, double a) {
+		for(int x = 0; x < best.size(); x++) {
+			int y;
+			if(x == best.size()-1) {
+				y = 0;
+			} else {
+				y = x+1;
+			}
+			double value = ((1.0-a)*pheromoneMatrix[x][y])+(a*(1.0/computeCost(best)));
+			pheromoneMatrix[x][y] = value;
+			pheromoneMatrix[y][x] = value;
+		}
 	}
 
 	public static ArrayList<Node> constructSolutionACS(double[][] pm, double b, double q) {
@@ -140,6 +170,7 @@ public class ACO {
 			ArrayList<Map<String,Double>> ch = generateChoices(tour.get(tour.size()-1), tour, b, q, 1.0);
 
 			int nextCity = pickNextCityACS(ch);
+			// System.out.println(nextCity);
 			if(nextCity == 0) {
 				System.out.println("ALRT3");
 				System.exit(1);
