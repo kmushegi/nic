@@ -118,7 +118,7 @@ public class ACO {
 				candidateCost = computeCost(candidateTour);
 				if(candidateCost < bestCost) {
 					bestCost = candidateCost;
-					bestTour = candidateTour;
+					bestTour = new ArrayList<>(candidateTour);
 				}
 				localPheromoneUpdate(candidateTour, t, initialPheromone);
 			}
@@ -361,7 +361,7 @@ public class ACO {
 				return nodes.get(i);
 			}
 		}
-		System.out.println("City: " + cityID + "not found. Exiting");
+		System.out.println("City: " + cityID + " not found. Exiting");
 		System.exit(1);
 		return null;
 	}
