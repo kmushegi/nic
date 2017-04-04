@@ -108,9 +108,9 @@ public class ACO {
 
 		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
 			itCounter += 1;
-			System.out.println(itCounter);
+			System.out.println("Iteration: " + itCounter);
 			//store solutions here?
-			for(int i = 0; i < nodes.size(); i++) {
+			for(int i = 0; i < ants; i++) {
 				ArrayList<Node> candidateTour;
 				int candidateCost;
 
