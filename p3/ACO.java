@@ -139,6 +139,7 @@ public class ACO {
 			// 	System.out.println("ALRT");
 			// 	System.exit(1);
 			// }
+
 			ArrayList<Map<String,Double>> ch = generateChoices(tour.get(tour.size()-1), tour, b, q, 1.0);
 
 			System.out.println("Number of Choices: " + ch.size());
@@ -168,7 +169,9 @@ public class ACO {
 		ArrayList<Map<String, Double>> ch = new ArrayList<>();
 
 		for(int i = 0; i < nodes.size(); i++) {
-			if(!searchArrayList(tour,i)) {
+			if(tour.contains((i+1))) {
+				continue;
+			} else {
 				Map<String, Double> temp = new HashMap<String, Double>();
 				temp.put("city",(double)(i+1));
 				temp.put("hist",Math.pow(pheromoneMatrix[lastCity-1][i],hist));
@@ -206,7 +209,7 @@ public class ACO {
 				return ch.get(i).get("city").intValue();
 			}
 		}
-		// System.out.println("Next City 3: " + ch.get(ch.size()-1).get("city"));
+		// System.out.println("Next City 3: " + ch.get(ch.size()-1).get("city").intValue());
 		return ch.get(ch.size()-1).get("city").intValue();
 	}
 
@@ -367,8 +370,8 @@ public class ACO {
 			tokens = formatNodeInput(tokens);
 
 			Node temp = new Node(Integer.parseInt(tokens[0]),
-							Integer.parseInt(tokens[1]),
-							Integer.parseInt(tokens[2]));
+							Double.parseDouble(tokens[1]),
+							Double.parseDouble(tokens[2]));
 			nodes.add(temp);
 		} catch (NumberFormatException e) {
 			// System.err.format("NumberFormatException %s%n",e);
