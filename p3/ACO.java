@@ -250,7 +250,7 @@ public class ACO {
 			itCounter += 1;
 
 			for (int i = 0; i < ants; i++) {
-				ArrayList<Node> candidateTour = constructSolutionEAS(pheromoneMatrix, b);
+				ArrayList<Node> candidateTour = constructSolutionEAS(pheromoneMatrix, b , a);
 				int candidateCost = computeCost(candidateTour);
 
 				if (candidateCost < bestCost) {
@@ -270,7 +270,7 @@ public class ACO {
 
 	}
 
-	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b) {
+	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b, double a) {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		int startIndex = generator.nextInt(nodes.size() + 1);
 		int nextCity;
@@ -278,7 +278,7 @@ public class ACO {
 		tour.add(startIndex); //Initial node
 
 		while(tour.size() != nodes.size()) {
-			nextCity = pickNextCityEAS(tour);
+			nextCity = pickNextCityEAS(tour , pm , b, a);
 			tour.add(nextCity);
 		}
 
@@ -288,7 +288,32 @@ public class ACO {
 		return tmp;
 	}
 
-	public static int pickNextCityEAS(ArrayList<Integer> tour) {
+	public static int pickNextCityEAS(ArrayList<Integer> tour , double[][] pmat , double b, double a) {
+		Node lastCity = nodes.get(tour.get(tour.size() - 1));
+		ArrayList<Double> nodeProbs = new ArrayList<>();
+		double denomSum = 0.0;
+
+		//Calculate of all probs denominator and numerators of each node
+		for(int i = 0; i < nodes.size(); i++){
+			if(!tour.contains(i)){
+				double invDistance = 1/(euclideanDistance2D(lastCity , nodes.get(i)));
+				double pLevel = pmat[lastCity.getID()][i];
+				double nodeNum = (Math.pow(invDistance, b)) * (Math.pow(pLevel, a));
+				nodeProbs.add(nodeNum);
+				denomSum += nodeNum;
+			}
+		}
+
+		//Determine boundaries for each unvisited city
+		for (int k = 0; k < nodeProbs.size(); k++){
+			if(k == 0){
+				nodeProbs.set(k , (nodeProbs.get(k)/denomSum));
+			} else{
+				nodeProbs.set(k , (nodeProbs.get(k-1) + (nodeProbs.get(k)/denomSum)));
+			}
+		}
+
+
 		return 0;
 	}
 
