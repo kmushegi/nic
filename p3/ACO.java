@@ -82,6 +82,7 @@ public class ACO {
 		readProblem(problemFilePath);
 		readOptTourLengths(optTourLengthsFilePath);
 		printParams(whichAlgorithm);
+		// initializeTauZero();
 
 		if(whichAlgorithm == 1) {
 			solutionTour = acs(numberofAnts, numberofIterations, alpha, beta, 
@@ -108,7 +109,7 @@ public class ACO {
 
 		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
 			itCounter += 1;
-			// System.out.println("Iteration: " + itCounter);
+			System.out.println("Iteration: " + itCounter);
 			//store solutions here?
 			for(int i = 0; i < ants; i++) {
 				ArrayList<Node> candidateTour;
@@ -351,14 +352,39 @@ public class ACO {
 		return randSol;
 	}
 
-	// public static Boolean searchArrayList(ArrayList<Integer> t, int g) {
-	// 	for(int i = 0; i < t.size(); i++) {
-	// 		if(t.get(i) == g) {
-	// 			return true;
-	// 		}
-	// 	}
-	// 	return false;
-	// }
+	public static void initializeTauZero() {
+		ArrayList<Integer> nearestNeighborTour = new ArrayList<>();
+		int randomCity = generator.nextInt(nodes.size())+1;
+		nearestNeighborTour.add(randomCity);
+
+		while(nearestNeighborTour.size() != nodes.size()) {
+			int closestNeighbor = getClosestCityTo(nearestNeighborTour.get(
+										nearestNeighborTour.size()-1),nearestNeighborTour);
+			nearestNeighborTour.add(closestNeighbor);
+		}
+		//convert Integer tour to Node tour.
+		ArrayList<Node> rt = new ArrayList<>();
+		for(int i = 0; i < nearestNeighborTour.size(); i++) {
+			rt.add(getCity(nearestNeighborTour.get(i)));
+		}
+		tauZero = (1.0/(numberofAnts * computeCost(rt)));
+	}
+
+	public static int getClosestCityTo(int cityID, ArrayList<Integer> tour) {
+		int closestCity = -1;
+		double closestDistance = Integer.MAX_VALUE;
+		for(int i = 0; i < nodes.size(); i++) {
+			if(!tour.contains(i+1)) {
+				double tempDist = euclideanDistance2D(getCity(cityID),getCity(i+1));
+				if(tempDist < closestDistance) {
+					closestDistance = tempDist;
+					closestCity = (i+1);
+				}
+			}
+		}
+		// System.out.println("Closest City: " + closestCity);
+		return closestCity;
+	}
 
 	public static Node getCity(int cityID) {
 		for(int i = 0; i < nodes.size(); i++) {
