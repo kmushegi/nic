@@ -135,18 +135,24 @@ public class ACO {
 		tour.add(randomCity);
 
 		while(tour.size() != nodes.size()) {
-			if(tour.get(tour.size()-1) == 0) {
-				System.out.println("ALRT");
-				System.exit(1);
-			}
+			// if(tour.get(tour.size()-1) == 0) {
+			// 	System.out.println("ALRT");
+			// 	System.exit(1);
+			// }
 			ArrayList<Map<String,Double>> ch = generateChoices(tour.get(tour.size()-1), tour, b, q, 1.0);
 
+			System.out.println("Number of Choices: " + ch.size());
+
+			// for (int i = 0; i < ch.size(); i++) {
+			// 	System.out.println(ch.get(i).get("city"));
+			// }
+
 			int nextCity = pickNextCityACS(ch);
-			// System.out.println(nextCity);
-			if(nextCity == 0) {
-				System.out.println("ALRT3");
-				System.exit(1);
-			}
+			System.out.println(nextCity);
+			// if(nextCity == 0) {
+			// 	System.out.println("ALRT3");
+			// 	System.exit(1);
+			// }
 			tour.add(nextCity);
 		}
 		//convert Integer tour to Node tour.
@@ -162,16 +168,18 @@ public class ACO {
 		ArrayList<Map<String, Double>> ch = new ArrayList<>();
 
 		for(int i = 0; i < nodes.size(); i++) {
-			if(searchArrayList(tour,i)) {
-				continue;
-			} else {
+			if(!searchArrayList(tour,i)) {
 				Map<String, Double> temp = new HashMap<String, Double>();
-				temp.put("city", (double)(i+1));
+				temp.put("city",(double)(i+1));
 				temp.put("hist",Math.pow(pheromoneMatrix[lastCity-1][i],hist));
 				temp.put("dist",euclideanDistance2D(getCity(lastCity),getCity(i+1)));
 				temp.put("heur",Math.pow((1.0/temp.get("dist")),q));
 				temp.put("prob",(temp.get("hist") * temp.get("heur")));
 				ch.add(temp);
+			}
+
+			else {
+				System.out.println("City " + i + "already in tour");
 			}
 		}
 		return ch;
@@ -233,27 +241,27 @@ public class ACO {
 	public static ArrayList<Node> eas(int ants, int its, double a, double b,
 									double r, double e) {
 		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
-		// int bestCost = computeCost(bestTour);
-		// double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
-		// pheromoneMatrix = initializePheromoneMatrix(nodes.size(), initialPheromone);
+		int bestCost = computeCost(bestTour);
+		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
+		pheromoneMatrix = initializePheromoneMatrix(nodes.size(), initialPheromone);
 
-		// int itCounter = 0;
-		// long st = System.nanoTime();
+		int itCounter = 0;
+		long st = System.nanoTime();
 
-		// while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
-		// 	itCounter += 1;
+		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
+			itCounter += 1;
 
-		// 	for (int i = 0; i < ants; i++) {
-		// 		ArrayList<Node> candidateTour = constructSolutionEAS(pheromoneMatrix, b, q);
-		// 		int candidateCost = computeCost(candidateTour);
+			for (int i = 0; i < ants; i++) {
+				ArrayList<Node> candidateTour = constructSolutionEAS(pheromoneMatrix, b, q);
+				int candidateCost = computeCost(candidateTour);
 
-		// 		if (candidateCost < bestCost) {
-		// 			bestTour = candidateTour;
-		// 			bestCost = candidateCost;
-		// 		}
-		// 	}
+				if (candidateCost < bestCost) {
+					bestTour = candidateTour;
+					bestCost = candidateCost;
+				}
+			}
 
-		// }
+		}
 
 		return bestTour;
 	}
@@ -272,19 +280,6 @@ public class ACO {
 		ArrayList<Node> tmp = new ArrayList<>();
 		return tmp;
 	}
-
-	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b, double q) {
-		ArrayList<Integer> tour =  new ArrayList<>();
-		tour.add(generator.nextInt(nodes.size() + 1));
-
-		while(tour.size() != nodes.size()) {
-
-		}
-
-		ArrayList<Node> tmp = new ArrayList<>();
-		return tmp;
-	}
-
 
 	public static Boolean evaluateStopCondition(int stopCondition, int currIt, 
 										long startTime, ArrayList<Node> tour) {
@@ -346,14 +341,14 @@ public class ACO {
 		return randSol;
 	}
 
-	public static Boolean searchArrayList(ArrayList<Integer> t, int g) {
-		for(int i = 0; i < t.size(); i++) {
-			if(t.get(i) == g) {
-				return true;
-			}
-		}
-		return false;
-	}
+	// public static Boolean searchArrayList(ArrayList<Integer> t, int g) {
+	// 	for(int i = 0; i < t.size(); i++) {
+	// 		if(t.get(i) == g) {
+	// 			return true;
+	// 		}
+	// 	}
+	// 	return false;
+	// }
 
 	public static Node getCity(int cityID) {
 		for(int i = 0; i < nodes.size(); i++) {

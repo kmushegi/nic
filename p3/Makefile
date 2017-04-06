@@ -14,7 +14,7 @@ default:
 	$(JC) $(ACO) $(NODE)
 
 acs:
-	@$(JV) ACO acs 30 10 1 3 0.1 ALL_tsp/a280.tsp 0 10 0.1 0.1 0.9
+	@$(JV) ACO acs 1 10 1 3 0.1 ALL_tsp/a280.tsp 0 10 0.1 0.1 0.9
 
 eas:
 	@$(JV) ACO eas 30 1000 1 3 0.1 ALL_tsp/a280.tsp 4 15 0.1 30
