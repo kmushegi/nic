@@ -291,6 +291,7 @@ public class ACO {
 	public static int pickNextCityEAS(ArrayList<Integer> tour , double[][] pmat , double b, double a) {
 		Node lastCity = nodes.get(tour.get(tour.size() - 1));
 		ArrayList<Double> nodeProbs = new ArrayList<>();
+		ArrayList<Integer> nodeTracker = new ArrayList<>();
 		double denomSum = 0.0;
 
 		//Calculate of all probs denominator and numerators of each node
@@ -300,6 +301,7 @@ public class ACO {
 				double pLevel = pmat[lastCity.getID()][i];
 				double nodeNum = (Math.pow(invDistance, b)) * (Math.pow(pLevel, a));
 				nodeProbs.add(nodeNum);
+				nodeTracker.add(i);
 				denomSum += nodeNum;
 			}
 		}
@@ -313,6 +315,24 @@ public class ACO {
 			}
 		}
 
+		//Binary search to choose next city
+		double val = generator.nextDouble();
+		if(val <=nodeProbs.get(0)){
+			return 0;
+		} else{
+			int hi = nodeProbs.size();
+			int low = 0;
+			while(low <= hi){
+				int mid = low + (hi - low)/2;
+				if(val < nodeProbs.get(mid)){
+					hi = mid;
+				} else if(val > nodeProbs.get(mid)){
+					low = mid;
+				} else if((hi - low) == 1){
+					return nodeTracker.get(low);
+				}
+			}
+		}
 
 		return 0;
 	}
