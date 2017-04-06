@@ -7,6 +7,10 @@ def compile():
 	cmd = "javac -Werror -Xlint:all ACO.java Node.java"
 	os.system(cmd)
 
+def clear_stats_folder():
+	cmd = "cd stats && rm *.txt"
+	os.system(cmd)
+
 def run(whichAlgorithm, numAnts, numIts, alpha, beta, rho, pfp, stopCond, secAllowed, 
 			errAllowed, eps, qZero):
 	cmd = "java ACO " + whichAlgorithm + " " + str(numAnts) + " " + str(numIts) \
@@ -20,7 +24,7 @@ def run(whichAlgorithm, numAnts, numIts, alpha, beta, rho, pfp, stopCond, secAll
 	os.system(cmd)
 
 compile()
-
+clear_stats_folder()
 
 numAnts = [5,10,20,30,40,50,60,80,100]
 numIts = [100,500,1000,1500,2000,2500,3000]
