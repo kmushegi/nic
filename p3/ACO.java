@@ -259,14 +259,27 @@ public class ACO {
 				}
 			}
 
-			globalPheromoneUpdateEAS();
+			//globalPheromoneUpdateEAS(candidateTour , bestTour , pheromoneMatrix);
 
 		}
 
 		return bestTour;
 	}
 
-	public static void globalPheromoneUpdateEAS() {
+	public static void globalPheromoneUpdateEAS(ArrayList<Node> candTour , ArrayList<Node> bestTour , double[][] phMatrix) {
+		int costOne = computeCost(candTour);
+		int costTwo = computeCost(bestTour);
+
+		if(costOne == costOne){
+			for (int i = 0; i < candTour.size(); i++){
+				int k;
+				if(i ==(candTour.size() - 1)){
+					k = 0;
+				} else{
+					k = k + 1;
+				}
+			}
+		}
 
 	}
 
@@ -282,7 +295,7 @@ public class ACO {
 			tour.add(nextCity);
 		}
 
-		tour.add(startIndex);
+		//tour.add(startIndex);
 
 		ArrayList<Node> tmp = new ArrayList<>();
 		return tmp;
