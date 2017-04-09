@@ -157,6 +157,9 @@ public class ACO {
 			// }
 			tour.add(nextCity);
 		}
+
+		tour.add(randomCity);
+
 		//convert Integer tour to Node tour.
 		ArrayList<Node> rt = new ArrayList<>();
 		for(int i = 0; i < tour.size(); i++) {
@@ -236,8 +239,9 @@ public class ACO {
 		}
 	}
 
+	//WHAT IS E?
 	public static ArrayList<Node> eas(int ants, int its, double a, double b,
-									double r, double e) {
+									double rho, double e) {
 		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
 		int bestCost = computeCost(bestTour);
 		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
@@ -250,7 +254,7 @@ public class ACO {
 			itCounter += 1;
 
 			for (int i = 0; i < ants; i++) {
-				ArrayList<Node> candidateTour = constructSolutionEAS(pheromoneMatrix, b , a);
+				ArrayList<Node> candidateTour = constructSolutionEAS(pheromoneMatrix, b , a, rho);
 				int candidateCost = computeCost(candidateTour);
 
 				if (candidateCost < bestCost) {
@@ -266,24 +270,7 @@ public class ACO {
 		return bestTour;
 	}
 
-	public static void globalPheromoneUpdateEAS(ArrayList<Node> candTour , ArrayList<Node> bestTour , double[][] phMatrix) {
-		int costOne = computeCost(candTour);
-		int costTwo = computeCost(bestTour);
-
-		if(costOne == costOne){
-			for (int i = 0; i < candTour.size(); i++){
-				int k;
-				if(i ==(candTour.size() - 1)){
-					k = 0;
-				} else{
-					k = k + 1;
-				}
-			}
-		}
-
-	}
-
-	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b, double a) {
+	public static ArrayList<Node> constructSolutionEAS(double[][] pm, double b, double a, double rho) {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		int startIndex = generator.nextInt(nodes.size() + 1);
 		int nextCity;
@@ -291,17 +278,17 @@ public class ACO {
 		tour.add(startIndex); //Initial node
 
 		while(tour.size() != nodes.size()) {
-			nextCity = pickNextCityEAS(tour , pm , b, a);
+			nextCity = pickNextCityEAS(tour, pm, b, a, rho, tour.get(tour.size()-1));
 			tour.add(nextCity);
 		}
 
-		//tour.add(startIndex);
+		tour.add(startIndex);
 
 		ArrayList<Node> tmp = new ArrayList<>();
 		return tmp;
 	}
 
-	public static int pickNextCityEAS(ArrayList<Integer> tour , double[][] pmat , double b, double a) {
+	public static int pickNextCityEAS(ArrayList<Integer> tour , double[][] pmat , double b, double a, double rho, int lastCityID) {
 		Node lastCity = nodes.get(tour.get(tour.size() - 1));
 		ArrayList<Double> nodeProbs = new ArrayList<>();
 		ArrayList<Integer> nodeTracker = new ArrayList<>();
@@ -311,43 +298,82 @@ public class ACO {
 		for(int i = 0; i < nodes.size(); i++){
 			if(!tour.contains(i)){
 				double invDistance = 1/(euclideanDistance2D(lastCity , nodes.get(i)));
-				double pLevel = pmat[lastCity.getID()][i];
+				double pLevel = pmat[lastCityID][i];
 				double nodeNum = (Math.pow(invDistance, b)) * (Math.pow(pLevel, a));
+				// System.out.println("NodeNum: " + nodeNum);
 				nodeProbs.add(nodeNum);
 				nodeTracker.add(i);
 				denomSum += nodeNum;
 			}
 		}
 
-		//Determine boundaries for each unvisited city
-		for (int k = 0; k < nodeProbs.size(); k++){
-			if(k == 0){
-				nodeProbs.set(k , (nodeProbs.get(k)/denomSum));
-			} else{
-				nodeProbs.set(k , (nodeProbs.get(k-1) + (nodeProbs.get(k)/denomSum)));
+		for (int i = 0; i < nodeProbs.size(); i++){
+			// System.out.println("Final: " + (nodeProbs.get(i)/denomSum));
+			nodeProbs.set(i, (nodeProbs.get(i)/denomSum));
+		}
+
+		// System.exit(0);
+
+		double cumulativeSum = 0;
+		double random = generator.nextDouble();
+		for (int i = 0; i < nodeProbs.size(); i++) {
+			cumulativeSum += nodeProbs.get(i);
+			if (random < cumulativeSum) {
+				return nodeTracker.get(i);
 			}
 		}
 
-		//Binary search to choose next city
-		double val = generator.nextDouble();
-		if(val <=nodeProbs.get(0)){
-			return 0;
-		} else{
-			int hi = nodeProbs.size();
-			int low = 0;
-			while(low <= hi){
-				int mid = low + (hi - low)/2;
-				if(val < nodeProbs.get(mid)){
-					hi = mid;
-				} else if(val > nodeProbs.get(mid)){
-					low = mid;
-				} else if((hi - low) == 1){
-					return nodeTracker.get(low);
+		//Determine boundaries for each unvisited city
+
+		// //Binary search to choose next city
+		// double val = generator.nextDouble();
+		// if(val <=nodeProbs.get(0)){
+		// 	return 0;
+		// } else{
+		// 	int hi = nodeProbs.size();
+		// 	int low = 0;
+		// 	while(low <= hi){
+		// 		int mid = low + (hi - low)/2;
+		// 		if(val < nodeProbs.get(mid)){
+		// 			hi = mid;
+		// 		} else if(val > nodeProbs.get(mid)){
+		// 			low = mid;
+		// 		} else if((hi - low) == 1){
+		// 			return nodeTracker.get(low);
+		// 		}
+		// 	}
+		// }
+
+		// System.out.println("Size: " + nodeProbs.size());
+
+		// double sum = 0;
+		// for (int i = 0; i < nodeProbs.size(); i++) {
+		// 	sum+=nodeProbs.get(i);
+		// }
+
+		// System.out.println("Sum: " + sum);
+
+		// System.out.println("HERE");
+
+		return 0;
+
+	}
+
+	public static void globalPheromoneUpdateEAS(ArrayList<Node> candTour , ArrayList<Node> bestTour , double[][] phMatrix) {
+		int costOne = computeCost(candTour);
+		int costTwo = computeCost(bestTour);
+		int k = 0;
+
+		if(costOne == costTwo){ //MARCUS
+			for (int i = 0; i < candTour.size(); i++){
+				if(i ==(candTour.size() - 1)){
+					k = 0;
+				} else{
+					k = k + 1;
 				}
 			}
 		}
 
-		return 0;
 	}
 
 	public static Boolean evaluateStopCondition(int stopCondition, int currIt, 
