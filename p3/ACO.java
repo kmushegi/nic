@@ -333,7 +333,8 @@ public class ACO {
 			case 3:
 				return ((((computeCost(tour) / optimalTourCost) - 1) > errorAllowed)
 					&& ((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
-			default: printErrorAndExit();
+			default:
+				printErrorAndExit();
 		}
 		return false;
 	}
