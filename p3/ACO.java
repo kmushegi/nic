@@ -109,7 +109,7 @@ public class ACO {
 
 		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
 			itCounter += 1;
-			// System.out.println("Iteration: " + itCounter);
+			System.out.print("Iteration: " + itCounter + "\r");
 			//store solutions here?
 			for(int i = 0; i < ants; i++) {
 				ArrayList<Node> candidateTour;
@@ -263,7 +263,7 @@ public class ACO {
 		int candidateCost;
 
 		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
-			System.out.println("Iteration: " + itCounter);
+			System.out.print("Iteration: " + itCounter + "\r");
 			itCounter += 1;
 
 			for (int i = 0; i < ants; i++) {
@@ -611,6 +611,7 @@ public class ACO {
 	}
 
 	public static void outputSolution(ArrayList<Node> t, int c) {
+		System.out.print("\n");
 		printSolution(t);
 		System.out.println("Cost: " + c);
 	}
