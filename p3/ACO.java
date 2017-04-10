@@ -109,7 +109,7 @@ public class ACO {
 
 		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
 			itCounter += 1;
-			System.out.print("Iteration: " + itCounter + "\r");
+			
 			//store solutions here?
 			for(int i = 0; i < ants; i++) {
 				ArrayList<Node> candidateTour;
@@ -263,7 +263,6 @@ public class ACO {
 		int candidateCost;
 
 		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
-			System.out.print("Iteration: " + itCounter + "\r");
 			itCounter += 1;
 
 			for (int i = 0; i < ants; i++) {
@@ -418,15 +417,20 @@ public class ACO {
 
 		switch(stopCondition) {
 			case 0: 
+				System.out.print("Iteration: " + currIt + "\r");
 				return (currIt < numberofIterations);
 			case 1:	
+				System.out.print("Error: " + ((computeCost(tour) / optimalTourCost) - 1) + "\r");
 				return (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed);
 			// case 2:
 			// 	return ((currIt < numberofIterations) 
 			// 		&& (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed));
 			case 2:
+				System.out.print("Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
 				return (((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			case 3:
+				System.out.print("Error: " + ((computeCost(tour) / optimalTourCost) - 1) + "\t"
+					+ "Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
 				return ((((computeCost(tour) / optimalTourCost) - 1) > errorAllowed)
 					&& ((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			default:
