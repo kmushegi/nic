@@ -81,8 +81,8 @@ public class ACO {
 		readParams(args);
 		readProblem(problemFilePath);
 		readOptTourLengths(optTourLengthsFilePath);
+		initializeTauZero();
 		printParams(whichAlgorithm);
-		// initializeTauZero();
 
 		if(whichAlgorithm == 1) {
 			solutionTour = acs(numberofAnts, numberofIterations, alpha, beta, 
