@@ -212,30 +212,36 @@ public class ACO {
 	}
 
 	public static void localPheromoneUpdate(ArrayList<Node> cand, double t, double initPhero) {
-		for(int x = 0; x < cand.size(); x++) {
-			int y;
-			if(x == cand.size()-1) {
-				y = 0;
-			} else {
-				y = x+1;
-			}
-			double value = ((1.0-t)*pheromoneMatrix[x][y])+(t*initPhero);
-			pheromoneMatrix[x][y] = value;
-			pheromoneMatrix[y][x] = value;
+
+		// System.out.println("Nodes Size: " + nodes.size());
+		// System.out.println("Cands Size: " + cand.size());
+
+		// for (int i = 0; i < cand.size(); i++) {
+		// 	System.out.println(cand.get(i).getID());
+		// }
+
+		// System.exit(0);
+
+		int endID, startID;
+		for(int i = 1; i < cand.size(); i++) {
+			endID = cand.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
+			startID = cand.get(i-1).getID() - 1;
+
+			double value = ((1.0-t)*pheromoneMatrix[startID][endID])+(t*initPhero);
+			pheromoneMatrix[startID][endID] = value;
+			pheromoneMatrix[endID][startID] = value;
 		}
 	}
 
 	public static void globalPheromoneUpdate(ArrayList<Node> best, double a) {
-		for(int x = 0; x < best.size(); x++) {
-			int y;
-			if(x == best.size()-1) {
-				y = 0;
-			} else {
-				y = x+1;
-			}
-			double value = ((1.0-a)*pheromoneMatrix[x][y])+(a*(1.0/computeCost(best)));
-			pheromoneMatrix[x][y] = value;
-			pheromoneMatrix[y][x] = value;
+		int endID, startID;
+		for(int i = 1; i < best.size(); i++) {
+			endID = best.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
+			startID = best.get(i-1).getID() - 1;
+
+			double value = ((1.0-a)*pheromoneMatrix[startID][endID])+(a*(1.0/computeCost(best)));
+			pheromoneMatrix[startID][endID] = value;
+			pheromoneMatrix[endID][startID] = value;
 		}
 	}
 
