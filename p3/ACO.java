@@ -489,7 +489,8 @@ public class ACO {
 		for(int i = 0; i < nearestNeighborTour.size(); i++) {
 			rt.add(getCity(nearestNeighborTour.get(i)));
 		}
-		//TODO: add the first city as the last one for the complete tour
+		rt.add(getCity(nearestNeighborTour.get(0))); //add first city as last one to complete tour
+
 		tauZero = (1.0/(numberofAnts * computeCost(rt)));
 	}
 
