@@ -270,9 +270,13 @@ public class ACO {
 				candidateTour = constructSolutionEAS(b , a, rho);
 				candidateCost = computeCost(candidateTour);
 
+				// System.out.println("Candidate Cost: " + candidateCost);
+				// System.out.println("Best Cost: " + bestCost);
+
 				if (candidateCost < bestCost) {
 					bestTour = candidateTour;
 					bestCost = candidateCost;
+					System.out.println("New Best: " + bestCost);
 				}
 				localPheromoneUpdateEAS(candidateTour);
 			}
@@ -283,6 +287,28 @@ public class ACO {
 		}
 
 		return bestTour;
+	}
+
+	public static ArrayList<Node> constructSolutionEAS(double b, double a, double rho) {
+		ArrayList<Integer> tour =  new ArrayList<>();
+		int startIndex = generator.nextInt(nodes.size());
+		int nextCity;
+
+		tour.add(startIndex); //Initial node
+
+		while(tour.size() != nodes.size()) {
+			nextCity = pickNextCityEAS(tour, b, a, rho, tour.get(tour.size()-1)); //tour.get(tour.size()-1) = prev city INDEX
+			tour.add(nextCity);
+		}
+
+		tour.add(startIndex);
+
+		//convert Integer tour to Node tour.
+		ArrayList<Node> rt = new ArrayList<>();
+		for(int i = 0; i < tour.size(); i++) {
+			rt.add(getCity(tour.get(i)+1));
+		}
+		return rt;
 	}
 
 	public static void localPheromoneUpdateEAS(ArrayList<Node> candidateTour) {
@@ -314,24 +340,6 @@ public class ACO {
 			startID = bestTour.get(i-1).getID() - 1;
 			pheromoneMatrix[startID][endID] = pheromoneMatrix[endID][startID] += (e*updateValue);
 		}
-	}
-
-	public static ArrayList<Node> constructSolutionEAS(double b, double a, double rho) {
-		ArrayList<Integer> tour =  new ArrayList<>();
-		int startIndex = generator.nextInt(nodes.size());
-		int nextCity;
-
-		tour.add(startIndex); //Initial node
-
-		while(tour.size() != nodes.size()) {
-			nextCity = pickNextCityEAS(tour, b, a, rho, tour.get(tour.size()-1)); //tour.get(tour.size()-1) = prev city INDEX
-			tour.add(nextCity);
-		}
-
-		tour.add(startIndex);
-
-		ArrayList<Node> tmp = new ArrayList<>();
-		return tmp;
 	}
 
 	public static int pickNextCityEAS(ArrayList<Integer> tour, double b, double a, double rho, int lastCityIndex) {
