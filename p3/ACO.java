@@ -215,9 +215,9 @@ public class ACO {
 	public static void localPheromoneUpdateACS(ArrayList<Node> cand, double eps) {
 		int endIndex, startIndex;
 		for(int i = 1; i < cand.size(); i++) {
-			endIndex = cand.get(i).getIndex() - 1; //Minus 1 as matrix is zero indexed
-			startIndex = cand.get(i-1).getIndex() - 1;
-			pheromoneMatrix[startIndex][endIndex] = ((1.0-eps)*pheromoneMatrix[startID][endID])+(eps*tauZero);
+			endIndex = cand.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
+			startIndex = cand.get(i-1).getID() - 1;
+			pheromoneMatrix[startIndex][endIndex] = ((1.0-eps)*pheromoneMatrix[startIndex][endIndex])+(eps*tauZero);
 		}
 	}
 
