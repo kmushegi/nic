@@ -118,7 +118,8 @@ public class ACO {
 		tour.add(randomCity);
 
 		while(tour.size() != nodes.size()) {
-			ArrayList<Map<String,Double>> ch = generateChoices(tour.get(tour.size()-1), tour, b, q, 1.0);
+			ArrayList<Map<String,Double>> ch = generateChoices(
+									tour.get(tour.size()-1), tour, b, q, 1.0);
 			int nextCity = pickNextCityACS(ch);
 			tour.add(nextCity);
 		}
@@ -138,7 +139,9 @@ public class ACO {
 				Map<String, Double> temp = new HashMap<String, Double>();
 				temp.put("city",(double)(i+1));
 				temp.put("hist",Math.pow(pheromoneMatrix[lastCity-1][i],hist));
-				temp.put("dist",Utility.euclideanDistance2D(Utility.getCity(lastCity,nodes),Utility.getCity(i+1,nodes)));
+				temp.put("dist",Utility.euclideanDistance2D(
+												Utility.getCity(lastCity,nodes),
+												Utility.getCity(i+1,nodes)));
 				temp.put("heur",Math.pow((1.0/temp.get("dist")),q));
 				temp.put("prob",(temp.get("hist") * temp.get("heur")));
 				ch.add(temp);
@@ -172,7 +175,9 @@ public class ACO {
 		for(int i = 1; i < cand.size(); i++) {
 			endIndex = cand.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
 			startIndex = cand.get(i-1).getID() - 1;
-			pheromoneMatrix[startIndex][endIndex] = ((1.0-eps)*pheromoneMatrix[startIndex][endIndex])+(eps*tauZero);
+			pheromoneMatrix[startIndex][endIndex]
+						= ((1.0-eps) * pheromoneMatrix[startIndex][endIndex]) 
+						+ (eps * tauZero);
 		}
 	}
 
@@ -260,7 +265,9 @@ public class ACO {
 		for(int i = 0; i < nodes.size(); i++){
 			if(!tour.contains(i+1)) {
 				// System.out.println("I Val: " + i);
-				double invDistance = 1/(Utility.euclideanDistance2D(Utility.getCity(lastCityID,nodes), Utility.getCity(i+1,nodes)));
+				double invDistance = 1/(Utility.euclideanDistance2D(
+										Utility.getCity(lastCityID,nodes), 
+										Utility.getCity(i+1,nodes)));
 				// System.out.println("Dist: " + invDistance);
 				double pLevel = pheromoneMatrix[lastCityID-1][i];
 				// System.out.println("PLEVEL: " + pLevel);
@@ -294,7 +301,8 @@ public class ACO {
 		return -1;
 	}
 
-	public static void legPheromoneUpdateEAS(ArrayList<Node> candidateTour, double[][] legPheromoneUpdateMatrix) {
+	public static void legPheromoneUpdateEAS(ArrayList<Node> candidateTour, 
+										double[][] legPheromoneUpdateMatrix) {
 		int endIndex, startIndex;
 		double updateValue;
 
@@ -311,8 +319,12 @@ public class ACO {
 
 		for (int i = 0; i < matrixDimension; i++) {
 			for (int j = 0; j < matrixDimension; j++) {
-				pheromoneMatrix[i][j] = ((1-rho)*pheromoneMatrix[i][j]) + legPheromoneUpdateMatrix[i][j];
-				pheromoneMatrix[j][i] = ((1-rho)*pheromoneMatrix[j][i]) + legPheromoneUpdateMatrix[j][i];
+				pheromoneMatrix[i][j] = ((1-rho)
+										* pheromoneMatrix[i][j]) 
+										+ legPheromoneUpdateMatrix[i][j];
+				pheromoneMatrix[j][i] = ((1-rho)
+										* pheromoneMatrix[j][i]) 
+										+ legPheromoneUpdateMatrix[j][i];
 			}
 		}
 	}
