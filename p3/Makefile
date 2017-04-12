@@ -17,7 +17,7 @@ acs:
 	@$(JV) ACO acs 30 200 1 4 0.1 ALL_tsp/berlin52.tsp 0 10 0.1 0.1 0.9
 
 eas:
-	@$(JV) ACO eas 30 600 1 3 0.1 ALL_tsp/berlin52.tsp 0 15 0.1 30
+	@$(JV) ACO eas 30 300 1 3 0.1 ALL_tsp/a280.tsp 0 15 0.1 30
 
 clean:
 	rm *.class

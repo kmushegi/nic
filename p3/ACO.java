@@ -284,39 +284,45 @@ public class ACO {
 
 	public static ArrayList<Node> constructSolutionEAS(double b, double a, double rho) {
 		ArrayList<Integer> tour =  new ArrayList<>();
-		int startIndex = generator.nextInt(nodes.size());
+		int startCity = generator.nextInt(nodes.size()) + 1;
 		int nextCity;
 
-		tour.add(startIndex); //Initial node
+		tour.add(startCity); //Initial node
 
 		while(tour.size() != nodes.size()) {
-			nextCity = pickNextCityEAS(tour, b, a, tour.get(tour.size()-1)); //tour.get(tour.size()-1) = prev city INDEX
+			nextCity = pickNextCityEAS(tour, b, a, tour.get(tour.size()-1));
 			tour.add(nextCity);
 		}
 
-		tour.add(startIndex);
+		tour.add(startCity);
 
 		//convert Integer tour to Node tour.
 		ArrayList<Node> rt = new ArrayList<>();
 		for(int i = 0; i < tour.size(); i++) {
-			rt.add(getCity(tour.get(i)+1));
+			rt.add(getCity(tour.get(i)));
 		}
 		return rt;
 	}
 
-	public static int pickNextCityEAS(ArrayList<Integer> tour, double b, double a, int lastCityIndex) {
-		Node lastCity = nodes.get(lastCityIndex);
+	public static int pickNextCityEAS(ArrayList<Integer> tour, double b, double a, int lastCityID) {
 		ArrayList<Double> nodeProbs = new ArrayList<>();
 		ArrayList<Integer> nodeTracker = new ArrayList<>();
 		double denomSum = 0.0;
 
+		// System.out.println("Last City ID: " + lastCityID);
+
 		for(int i = 0; i < nodes.size(); i++){
-			if(!tour.contains(i)){
-				double invDistance = 1/(euclideanDistance2D(lastCity, nodes.get(i)));
-				double pLevel = pheromoneMatrix[lastCityIndex][i];
+			if(!tour.contains(i+1)) {
+
+				// System.out.println("I Val: " + i);
+
+				double invDistance = 1/(euclideanDistance2D(getCity(lastCityID), getCity(i+1)));
+				// System.out.println("Dist: " + invDistance);
+				double pLevel = pheromoneMatrix[lastCityID-1][i];
+				// System.out.println("PLEVEL: " + pLevel);
 				double nodeNum = (Math.pow(pLevel, a)) * (Math.pow(invDistance, b));
 				nodeProbs.add(nodeNum);
-				nodeTracker.add(i);
+				nodeTracker.add(i+1);
 				denomSum += nodeNum;
 			}
 		}
@@ -324,6 +330,13 @@ public class ACO {
 		for (int i = 0; i < nodeProbs.size(); i++){
 			nodeProbs.set(i, (nodeProbs.get(i)/denomSum));
 		}
+
+		// double sum = 0;
+		// for (int i = 0 ; i < nodeProbs.size(); i++) {
+		// 	sum += nodeProbs.get(i);
+		// }
+
+		// System.out.println("Total Prob: " + sum);
 
 		double cumulativeSum = 0;
 		double random = generator.nextDouble();
@@ -334,6 +347,7 @@ public class ACO {
 			}
 		}
 
+		printErrorAndExit();
 		return -1;
 
 	}
