@@ -250,21 +250,17 @@ public class ACO {
 		ArrayList<Integer> nodeTracker = new ArrayList<>();
 		double denomSum = 0.0;
 
-		// System.out.println("Last City ID: " + lastCityID);
-
 		for(int i = 0; i < nodes.size(); i++){
 			if(!tour.contains(i+1)) {
-				// System.out.println("Curr City I: " + (i+1));
 				double distance = Utility.euclideanDistance2D(
 										Utility.getCity(lastCityID,nodes), 
 										Utility.getCity(i+1,nodes));
 
 				if (distance == 0.0) {
-					return i+1;
+					return (i+1);
 				}
 
 				double invDistance = 1/(distance);
-				// System.out.println("Dist: " + invDistance);
 				double pLevel = pheromoneMatrix[lastCityID-1][i];
 				double nodeNum = (Math.pow(pLevel, a)) * (Math.pow(invDistance, b));
 				nodeProbs.add(nodeNum);
@@ -276,13 +272,6 @@ public class ACO {
 		for (int i = 0; i < nodeProbs.size(); i++){
 			nodeProbs.set(i, (nodeProbs.get(i)/denomSum));
 		}
-
-		// double sum = 0;
-		// for (int i = 0 ; i < nodeProbs.size(); i++) {
-		// 	sum += nodeProbs.get(i);
-		// }
-
-		// System.out.println("Total Prob: " + sum);
 
 		double cumulativeSum = 0;
 		double random = generator.nextDouble();
