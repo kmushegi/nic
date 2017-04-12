@@ -18,7 +18,6 @@ public class ACO {
 	//*******************************************
 	//*Parameters in order of acceptance from CL*
 	//*******************************************
-
 	//General parameters
 	private static int whichAlgorithm; // 1 - acs; 0 - eas
 	private static int numberofAnts;
@@ -29,16 +28,6 @@ public class ACO {
 	private static String problemFilePath; //location of .tsp file
 
 	private static int stopCondition;
-
-	//MARCUS: Stop conditions. I don't think we can do conditions 0 and x together, because then it would basically just be max iterations
-
-	// 0 - terminate after max iterations reached
-	// 1 - terminate if found tour that is no more than a specified percentage 
-	//	over the optimal (0.0 would mean you will not settle for anything less than the optimal)
-	// 2 - both
-	// 3 - terminate after secondsAllowed exceeds
-	// 4 - all three
-
 	private static int secondsAllowed ;
 	private static int optimalTourCost;
 	private static double errorAllowed;
@@ -48,42 +37,33 @@ public class ACO {
 	private static double tauZero; //calculated not provided
 	private static double qZero;
 
-	/* τ0 = 1/(n·Lnn) (ACS) Lnn is the length of a nearest neighbor tour,
-	 a tour constructed by starting at an arbitrary city and selecting 
-	 the closest unvisited city to visit next (note that nearest neighbor 
-	 tours are not unique) TODO;
-	*/
-
 	//EAS parameters
 	private static double e;
 
-	//*******************************************
-
 	//Containers
-	private static ArrayList<Node> nodes = new ArrayList<>();
+	private static ArrayList<Node> nodes;
 	private static ArrayList<Node> solutionTour;
 	private static int solutionCost;
 	private static double[][] pheromoneMatrix;
+	private static Map<String, Integer> optTourLengths;
 
-	//line below and all new's up here will be moved to the constructor of ACO class
-	private static Map<String, Integer> optTourLengths = new HashMap<String, Integer>();
-
-	//ACO constants
-	private static final String acs = "acs";
-	private static final String eas = "eas";
-	private static final String optTourLengthsFilePath = "optimalTourLengths.txt";
-	private static final String incorrectParams = "Parameters were not supplied correctly";
-
-	//Util
+	//Utility
 	private static Random generator = new Random();
 
-	public static void main(String[] args) {
+	public ACO() {
+		nodes = new ArrayList<>();
+		optTourLengths = new HashMap<String, Integer>();
+	}
+
+	public void initializeACO(String[] args) {
 		readParams(args);
 		readProblem(problemFilePath);
-		readOptTourLengths(optTourLengthsFilePath);
+		readOptTourLengths(Constants.optTourLengthsFilePath);
 		initializeTauZero();
 		printParams(whichAlgorithm);
+	}
 
+	public void runACO() {
 		if(whichAlgorithm == 1) {
 			solutionTour = acs(numberofAnts, numberofIterations, alpha, beta, 
 								rho, eps, qZero);
@@ -91,16 +71,17 @@ public class ACO {
 			solutionTour = eas(numberofAnts, numberofIterations, alpha, beta, 
 								rho, e);
 		} else {
-			printErrorAndExit(incorrectParams);
+			Logger.printErrorAndExit(Constants.incorrectParams);
 		}
-		solutionCost = computeCost(solutionTour);
+
+		solutionCost = Utility.computeCost(solutionTour);
 		outputSolution(solutionTour, solutionCost);
 	}
 
 	public static ArrayList<Node> acs(int ants, int its, double a, double b,
 									double rho, double eps, double q) {
 		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
-		int bestCost = computeCost(bestTour);
+		int bestCost = Utility.computeCost(bestTour);
 		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
 		pheromoneMatrix = initializePheromoneMatrix(nodes.size(), initialPheromone);
 
@@ -116,7 +97,7 @@ public class ACO {
 				int candidateCost;
 
 				candidateTour = constructSolutionACS(pheromoneMatrix, b, q);
-				candidateCost = computeCost(candidateTour);
+				candidateCost = Utility.computeCost(candidateTour);
 				if(candidateCost < bestCost) {
 					bestCost = candidateCost;
 					bestTour = new ArrayList<>(candidateTour);
@@ -133,39 +114,18 @@ public class ACO {
 	public static ArrayList<Node> constructSolutionACS(double[][] pm, double b, double q) {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		int randomCity = generator.nextInt(nodes.size())+1;
-		// System.out.println("Random City: " + randomCity);
 		tour.add(randomCity);
 
 		while(tour.size() != nodes.size()) {
-			// if(tour.get(tour.size()-1) == 0) {
-			// 	System.out.println("ALRT");
-			// 	System.exit(1);
-			// }
-
 			ArrayList<Map<String,Double>> ch = generateChoices(tour.get(tour.size()-1), tour, b, q, 1.0);
-
-			// System.out.println("Number of Choices: " + ch.size());
-
-			// for (int i = 0; i < ch.size(); i++) {
-			// 	System.out.println(ch.get(i).get("city"));
-			// }
-
 			int nextCity = pickNextCityACS(ch);
-			// System.out.println(nextCity);
-			// if(nextCity == 0) {
-			// 	System.out.println("ALRT3");
-			// 	System.exit(1);
-			// }
 			tour.add(nextCity);
 		}
 
 		tour.add(randomCity);
 
 		//convert Integer tour to Node tour.
-		ArrayList<Node> rt = new ArrayList<>();
-		for(int i = 0; i < tour.size(); i++) {
-			rt.add(getCity(tour.get(i)));
-		}
+		ArrayList<Node> rt = Utility.integerTourToNodeTour(tour,nodes);
 		return rt;
 	}
 
@@ -178,7 +138,7 @@ public class ACO {
 				Map<String, Double> temp = new HashMap<String, Double>();
 				temp.put("city",(double)(i+1));
 				temp.put("hist",Math.pow(pheromoneMatrix[lastCity-1][i],hist));
-				temp.put("dist",euclideanDistance2D(getCity(lastCity),getCity(i+1)));
+				temp.put("dist",Utility.euclideanDistance2D(Utility.getCity(lastCity,nodes),Utility.getCity(i+1,nodes)));
 				temp.put("heur",Math.pow((1.0/temp.get("dist")),q));
 				temp.put("prob",(temp.get("hist") * temp.get("heur")));
 				ch.add(temp);
@@ -191,12 +151,9 @@ public class ACO {
 		double sum = 0.0;
 		for(int i = 0; i < ch.size(); i++) {
 			sum += ch.get(i).get("prob");
-			// System.out.println("adding: " + ch.get(i).get("prob"));
-			// System.out.println("Sum: " + sum);
 		}
-		// System.exit(1);
+
 		if(sum == 0.0) {
-			// System.out.println("Next City 1: " + ch.get((generator.nextInt(nodes.size())+1)).get("city"));
 			return ch.get((generator.nextInt(nodes.size())+1)).get("city").intValue();
 		}
 
@@ -204,11 +161,9 @@ public class ACO {
 		for(int i = 0; i < ch.size(); i++) {
 			r -= (ch.get(i).get("prob")/sum);
 			if(r <= 0.0) {
-				// System.out.println("Next City 2: " + ch.get(i).get("city"));
 				return ch.get(i).get("city").intValue();
 			}
 		}
-		// System.out.println("Next City 3: " + ch.get(ch.size()-1).get("city").intValue());
 		return ch.get(ch.size()-1).get("city").intValue();
 	}
 
@@ -236,7 +191,7 @@ public class ACO {
 		int endIndex, startIndex;
 		double updateValue;
 		for(int i = 1; i < bestTour.size(); i++) {
-			updateValue = 1/(euclideanDistance2D(bestTour.get(i), bestTour.get(i-1)));
+			updateValue = 1/(Utility.euclideanDistance2D(bestTour.get(i), bestTour.get(i-1)));
 			endIndex = bestTour.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
 			startIndex = bestTour.get(i-1).getID() - 1;
 			pheromoneMatrix[startIndex][endIndex] += (rho*updateValue);
@@ -247,7 +202,7 @@ public class ACO {
 									double rho, double e) {
 
 		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
-		int bestCost = computeCost(bestTour);
+		int bestCost = Utility.computeCost(bestTour);
 		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
 		pheromoneMatrix = initializePheromoneMatrix(nodes.size(), initialPheromone);
 
@@ -264,7 +219,7 @@ public class ACO {
 
 			for (int i = 0; i < ants; i++) {
 				candidateTour = constructSolutionEAS(b, a, rho);
-				candidateCost = computeCost(candidateTour);
+				candidateCost = Utility.computeCost(candidateTour);
 
 				if (candidateCost < bestCost) {
 					bestTour = candidateTour;
@@ -297,10 +252,7 @@ public class ACO {
 		tour.add(startCity);
 
 		//convert Integer tour to Node tour.
-		ArrayList<Node> rt = new ArrayList<>();
-		for(int i = 0; i < tour.size(); i++) {
-			rt.add(getCity(tour.get(i)));
-		}
+		ArrayList<Node> rt = Utility.integerTourToNodeTour(tour,nodes);
 		return rt;
 	}
 
@@ -314,7 +266,7 @@ public class ACO {
 		for(int i = 0; i < nodes.size(); i++){
 			if(!tour.contains(i+1)) {
 				// System.out.println("I Val: " + i);
-				double invDistance = 1/(euclideanDistance2D(getCity(lastCityID), getCity(i+1)));
+				double invDistance = 1/(Utility.euclideanDistance2D(Utility.getCity(lastCityID,nodes), Utility.getCity(i+1,nodes)));
 				// System.out.println("Dist: " + invDistance);
 				double pLevel = pheromoneMatrix[lastCityID-1][i];
 				// System.out.println("PLEVEL: " + pLevel);
@@ -344,7 +296,7 @@ public class ACO {
 				return nodeTracker.get(i);
 			}
 		}
-		printErrorAndExit("Could not pick next city, EAS");
+		Logger.printErrorAndExit("Could not pick next city, EAS");
 		return -1;
 
 	}
@@ -353,7 +305,7 @@ public class ACO {
 		int endIndex, startIndex;
 		double updateValue;
 		for(int i = 1; i < candidateTour.size(); i++) {
-			updateValue = 1/(euclideanDistance2D(candidateTour.get(i), candidateTour.get(i-1)));
+			updateValue = 1/(Utility.euclideanDistance2D(candidateTour.get(i), candidateTour.get(i-1)));
 			endIndex = candidateTour.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
 			startIndex = candidateTour.get(i-1).getID() - 1;
 			legPheromoneUpdateMatrix[startIndex][endIndex] += updateValue;
@@ -374,7 +326,7 @@ public class ACO {
 		int endIndex, startIndex;
 		double updateValue;
 		for(int i = 1; i < bestTour.size(); i++) {
-			updateValue = 1/(euclideanDistance2D(bestTour.get(i), bestTour.get(i-1)));
+			updateValue = 1/(Utility.euclideanDistance2D(bestTour.get(i), bestTour.get(i-1)));
 			endIndex = bestTour.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
 			startIndex = bestTour.get(i-1).getID() - 1;
 			pheromoneMatrix[startIndex][endIndex] += (e*updateValue);
@@ -389,21 +341,21 @@ public class ACO {
 				System.out.print("Iteration: " + currIt + "\r");
 				return (currIt < numberofIterations);
 			case 1:	
-				System.out.print("Error: " + ((computeCost(tour) / optimalTourCost) - 1) + "\r");
-				return (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed);
+				System.out.print("Error: " + ((Utility.computeCost(tour) / optimalTourCost) - 1) + "\r");
+				return (((Utility.computeCost(tour) / optimalTourCost) - 1) > errorAllowed);
 			// case 2:
 			// 	return ((currIt < numberofIterations) 
-			// 		&& (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed));
+			// 		&& (((Utility.computeCost(tour) / optimalTourCost) - 1) > errorAllowed));
 			case 2:
 				System.out.print("Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
 				return (((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			case 3:
-				System.out.print("Error: " + ((computeCost(tour) / optimalTourCost) - 1) + "\t"
+				System.out.print("Error: " + ((Utility.computeCost(tour) / optimalTourCost) - 1) + "\t"
 					+ "Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
-				return ((((computeCost(tour) / optimalTourCost) - 1) > errorAllowed)
+				return ((((Utility.computeCost(tour) / optimalTourCost) - 1) > errorAllowed)
 					&& ((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			default:
-				printErrorAndExit("Unknown stop condition");
+				Logger.printErrorAndExit("Unknown stop condition");
 		}
 		return false;
 	}
@@ -415,19 +367,9 @@ public class ACO {
 	// 3 - terminate after secondsAllowed exceeds
 	// 4 - all three
 
-	public static double euclideanDistance2D(Node n1, Node n2) {
-		return Math.sqrt(Math.pow(n1.x-n2.x,2) + Math.pow(n1.y-n2.y,2));
-	}
 
-	public static int computeCost(ArrayList<Node> t) {
-		int distance = 0;
-		for(int i = 1; i < t.size(); i++) {
-			Node n1 = t.get(i);
-			Node n2 = t.get(i-1);
-			distance += (euclideanDistance2D(n1,n2));
-		}
-		return distance;
-	}
+
+
 
 	public static double[][] initializePheromoneMatrix(int n, double initPh) {
 		double[][] temp = new double[n][n];
@@ -464,51 +406,21 @@ public class ACO {
 		nearestNeighborTour.add(randomCity);
 
 		while(nearestNeighborTour.size() != nodes.size()) {
-			int closestNeighbor = getClosestCityTo(nearestNeighborTour.get(
-										nearestNeighborTour.size()-1),nearestNeighborTour);
+			int closestNeighbor = Utility.getClosestCityTo(nearestNeighborTour.get(
+										nearestNeighborTour.size()-1),nearestNeighborTour,nodes);
 			nearestNeighborTour.add(closestNeighbor);
 		}
 		//convert Integer tour to Node tour.
-		ArrayList<Node> rt = new ArrayList<>();
-		for(int i = 0; i < nearestNeighborTour.size(); i++) {
-			rt.add(getCity(nearestNeighborTour.get(i)));
-		}
-		rt.add(getCity(nearestNeighborTour.get(0))); //add first city as last one to complete tour
+		ArrayList<Node> rt = Utility.integerTourToNodeTour(nearestNeighborTour,nodes);
+		rt.add(Utility.getCity(nearestNeighborTour.get(0),nodes)); //add first city as last one to complete tour
 
-		tauZero = (1.0/(numberofAnts * computeCost(rt)));
-	}
-
-	public static int getClosestCityTo(int cityID, ArrayList<Integer> tour) {
-		int closestCity = -1;
-		double closestDistance = Integer.MAX_VALUE;
-		for(int i = 0; i < nodes.size(); i++) {
-			if(!tour.contains(i+1)) {
-				double tempDist = euclideanDistance2D(getCity(cityID),getCity(i+1));
-				if(tempDist < closestDistance) {
-					closestDistance = tempDist;
-					closestCity = (i+1);
-				}
-			}
-		}
-		// System.out.println("Closest City: " + closestCity);
-		return closestCity;
-	}
-
-	public static Node getCity(int cityID) {
-		for(int i = 0; i < nodes.size(); i++) {
-			if(nodes.get(i).id == cityID) {
-				return nodes.get(i);
-			}
-		}
-		System.out.println("City: " + cityID + " not found. Exiting");
-		System.exit(1);
-		return null;
+		tauZero = (1.0/(numberofAnts * Utility.computeCost(rt)));
 	}
 
 	public static void processProblemLine(String[] tokens) {
 		try {
 			Integer.parseInt(tokens[0]); //make sure its a node line
-			tokens = formatNodeInput(tokens);
+			tokens = Utility.formatNodeInput(tokens);
 
 			Node temp = new Node(Integer.parseInt(tokens[0]),
 							Double.parseDouble(tokens[1]),
@@ -557,18 +469,18 @@ public class ACO {
 
 	public static void readParams(String[] args) {
 		if(args.length != 12 && args.length != 11) {
-			printErrorAndExit(incorrectParams);
+			Logger.printErrorAndExit(Constants.incorrectParams);
 		} 
 
-		if(args[0].equals(acs)) {
+		if(args[0].equals(Constants.acs)) {
 			whichAlgorithm = 1;
 			eps = Double.parseDouble(args[10]);
 			qZero = Double.parseDouble(args[11]);
-		} else if(args[0].equals(eas)) {
+		} else if(args[0].equals(Constants.eas)) {
 			whichAlgorithm = 0;
 			e = Double.parseDouble(args[10]);
 		} else {
-			printErrorAndExit("Unknown algorithm");
+			Logger.printErrorAndExit("Unknown algorithm");
 		}
 
 		numberofAnts = Integer.parseInt(args[1]);
@@ -582,41 +494,15 @@ public class ACO {
 		errorAllowed = Double.parseDouble(args[9]);
 	}
 
-	public static String[] formatNodeInput(String[] s) {
-		String t[] = new String[3];
-		int counter = 0;
-		for(int i = 0; i < s.length; i++) {
-			if(!s[i].equals("")) {
-				t[counter] = s[i];
-				counter += 1;
-			}
-		}
-		return t;
-	}
-
 	public static void outputSolution(ArrayList<Node> t, int c) {
 		System.out.print("\n");
-		printSolution(t);
+		Logger.printNodeArrayList(t);
 		System.out.println("Cost: " + c);
 		System.out.println("Error: " + ((1.0*c)/optimalTourCost));
 	}
 
-	public static void printSolution(ArrayList<Node> s) {
-		int lineCounter = 0;
-		for(int i = 0; i < s.size(); i++) {
-			System.out.print(s.get(i).getID() + "\t");
-			if(lineCounter == 9) {
-				System.out.println(); //ten variables per line
-				lineCounter = 0;
-			} else {
-				lineCounter++;
-			}
-		}
-		System.out.print("\n");
-	}
-
 	public static void printParams(int alg) {
-		System.out.println("Algorithm: " + ((alg == 1) ? acs : eas)
+		System.out.println("Algorithm: " + ((alg == 1) ? Constants.acs : Constants.eas)
 			+ "\n# of Ants: " + numberofAnts
 			+ "\n# of Iterations: " + numberofIterations
 			+ "\n# of Cities: " + nodes.size()
@@ -633,17 +519,5 @@ public class ACO {
 		}
 		System.out.println("Problem File: " + problemFilePath);
 		System.out.println("Optimal Tour: " + optimalTourCost);
-	}
-
-	public static void printStringArray(String[] s) {
-		for(int i = 0; i < s.length; i++) {
-			System.out.print(s[i] + " ");
-		}
-		System.out.print("\n");
-	}
-
-	public static void printErrorAndExit(String msg) {
-		System.out.println("Error: " + msg);
-		System.exit(1); //exit with error
 	}
 }

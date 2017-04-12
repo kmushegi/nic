@@ -1,7 +1,10 @@
 JC = javac -Werror -Xlint:all
 JV = java
 
+ACORUNNER = ACORunner.java
 ACO = ACO.java
+UTILS = Utility.java
+LOGGER = Logger.java
 NODE = Node.java
 
 #acs: 
@@ -11,13 +14,13 @@ NODE = Node.java
 #alg ants iters alpha beta rho problemFP stopCond secsAllowed errAllowed e
 
 default: 
-	$(JC) $(ACO) $(NODE)
+	$(JC) $(ACORUNNER) $(ACO) $(UTILS) $(LOGGER) $(NODE)
 
 acs:
-	@$(JV) ACO acs 30 200 1 4 0.1 ALL_tsp/berlin52.tsp 0 10 0.1 0.1 0.9
+	@$(JV) ACORunner acs 30 200 1 4 0.1 ALL_tsp/berlin52.tsp 0 10 0.1 0.1 0.9
 
 eas:
-	@$(JV) ACO eas 30 300 1 3 0.1 ALL_tsp/berlin52.tsp 0 15 0.1 30
+	@$(JV) ACORunner eas 30 300 1 3 0.1 ALL_tsp/berlin52.tsp 0 15 0.1 30
 
 clean:
 	rm *.class
