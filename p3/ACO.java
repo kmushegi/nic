@@ -91,7 +91,7 @@ public class ACO {
 			solutionTour = eas(numberofAnts, numberofIterations, alpha, beta, 
 								rho, e);
 		} else {
-			printErrorAndExit();
+			printErrorAndExit(incorrectParams);
 		}
 		solutionCost = computeCost(solutionTour);
 		outputSolution(solutionTour, solutionCost);
@@ -346,8 +346,7 @@ public class ACO {
 				return nodeTracker.get(i);
 			}
 		}
-
-		printErrorAndExit();
+		printErrorAndExit("Could not pick next city, EAS");
 		return -1;
 
 	}
@@ -406,7 +405,7 @@ public class ACO {
 				return ((((computeCost(tour) / optimalTourCost) - 1) > errorAllowed)
 					&& ((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			default:
-				printErrorAndExit();
+				printErrorAndExit("Unknown stop condition");
 		}
 		return false;
 	}
@@ -560,7 +559,7 @@ public class ACO {
 
 	public static void readParams(String[] args) {
 		if(args.length != 12 && args.length != 11) {
-			printErrorAndExit();
+			printErrorAndExit(incorrectParams);
 		} 
 
 		if(args[0].equals(acs)) {
@@ -571,7 +570,7 @@ public class ACO {
 			whichAlgorithm = 0;
 			e = Double.parseDouble(args[10]);
 		} else {
-			printErrorAndExit();
+			printErrorAndExit("Unknown algorithm");
 		}
 
 		numberofAnts = Integer.parseInt(args[1]);
@@ -645,8 +644,8 @@ public class ACO {
 		System.out.print("\n");
 	}
 
-	public static void printErrorAndExit() {
-		System.out.println(incorrectParams);
+	public static void printErrorAndExit(String msg) {
+		System.out.println("Error: " + msg);
 		System.exit(1); //exit with error
 	}
 }
