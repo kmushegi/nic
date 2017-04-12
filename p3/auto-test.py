@@ -4,7 +4,7 @@ import sys
 problemdir = "sample-problems"
 
 def compile():
-	cmd = "javac -Werror -Xlint:all ACO.java Node.java"
+	cmd = "cd src && make"
 	os.system(cmd)
 
 def clear_stats_folder():
@@ -13,10 +13,10 @@ def clear_stats_folder():
 
 def run(whichAlgorithm, numAnts, numIts, alpha, beta, rho, pfp, stopCond, secAllowed, 
 			errAllowed, eps, qZero):
-	cmd = "java ACO " + whichAlgorithm + " " + str(numAnts) + " " + str(numIts) \
+	cmd = "cd src && java ACORunner " + whichAlgorithm + " " + str(numAnts) + " " + str(numIts) \
 			+ " " + str(alpha) + " " + str(beta) + " " + str(rho) + " " + pfp \
 			+ " " + str(stopCond) + " " + str(secAllowed) + " " +str(errAllowed) \
-			+ " " + str(eps) + " " + str(qZero) + " >> stats/acs-" \
+			+ " " + str(eps) + " " + str(qZero) + " >> ../stats/acs-" \
 			+ str(numAnts) + "-" + str(numIts) + "-" + str(alpha) + "-" + str(beta) \
 			+ "-" + str(rho) + "-" + str(eps) + "-" + str(qZero) + "-" \
 			+ str(stopCond) + "-" + str(secAllowed) + "-" + str(errAllowed) \
@@ -48,7 +48,7 @@ for f in os.listdir(problemdir):
 						for r in rhos:
 							for e in epsilons:
 								for q in qZeroes:
-									fp = problemdir + "/" + f
+									fp = "../" + problemdir + "/" + f
 									run(whichAlgorithm,n,i,a,b,r,fp,0,10,0.1,e,q)
 
 
