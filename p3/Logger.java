@@ -6,8 +6,8 @@ Stephen Majercik
 
 Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 
-The code in this file contains the implementation of Ant Colony Optimization 
-for the Traveling Salesman Problem, as part of Project 3.
+This file is part of Ant Colony Optimization for the Traveling Salesman Problem,
+Project 3. This file contains functions used for outputting various information.
 */
 
 import java.io.*;

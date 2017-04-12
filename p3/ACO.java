@@ -7,7 +7,8 @@ Stephen Majercik
 Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 
 The code in this file contains the implementation of Ant Colony Optimization 
-for the Traveling Salesman Problem, as part of Project 3.
+for the Traveling Salesman Problem, as part of Project 3. This file contains
+implementations & logic for ACS and EAS ant systems.
 */
 
 import java.io.*;
@@ -48,11 +49,12 @@ public class ACO {
 	private static Map<String, Integer> optTourLengths;
 
 	//Utility
-	private static Random generator = new Random();
+	private static Random generator;
 
 	public ACO() {
 		nodes = new ArrayList<>();
 		optTourLengths = new HashMap<String, Integer>();
+		generator = new Random();
 	}
 
 	public void initializeACO(String[] args) {
@@ -91,7 +93,6 @@ public class ACO {
 		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
 			itCounter += 1;
 			
-			//store solutions here?
 			for(int i = 0; i < ants; i++) {
 				ArrayList<Node> candidateTour;
 				int candidateCost;
@@ -124,7 +125,6 @@ public class ACO {
 
 		tour.add(randomCity);
 
-		//convert Integer tour to Node tour.
 		ArrayList<Node> rt = Utility.integerTourToNodeTour(tour,nodes);
 		return rt;
 	}
@@ -225,13 +225,10 @@ public class ACO {
 					bestTour = candidateTour;
 					bestCost = candidateCost;
 				}
-
 				legPheromoneUpdateEAS(candidateTour, legPheromoneUpdateMatrix);
 			}
-
 			pheromoneUpdateEAS(rho, legPheromoneUpdateMatrix);
 			bestTourPheromoneUpdate(bestTour, e);
-
 		}
 
 		return bestTour;
@@ -240,18 +237,15 @@ public class ACO {
 	public static ArrayList<Node> constructSolutionEAS(double b, double a, double rho) {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		int startCity = generator.nextInt(nodes.size()) + 1;
-		int nextCity;
-
 		tour.add(startCity); //Initial node
+		int nextCity;
 
 		while(tour.size() != nodes.size()) {
 			nextCity = pickNextCityEAS(tour, b, a, tour.get(tour.size()-1));
 			tour.add(nextCity);
 		}
-
 		tour.add(startCity);
 
-		//convert Integer tour to Node tour.
 		ArrayList<Node> rt = Utility.integerTourToNodeTour(tour,nodes);
 		return rt;
 	}
@@ -298,12 +292,12 @@ public class ACO {
 		}
 		Logger.printErrorAndExit("Could not pick next city, EAS");
 		return -1;
-
 	}
 
 	public static void legPheromoneUpdateEAS(ArrayList<Node> candidateTour, double[][] legPheromoneUpdateMatrix) {
 		int endIndex, startIndex;
 		double updateValue;
+
 		for(int i = 1; i < candidateTour.size(); i++) {
 			updateValue = 1/(Utility.euclideanDistance2D(candidateTour.get(i), candidateTour.get(i-1)));
 			endIndex = candidateTour.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
@@ -314,6 +308,7 @@ public class ACO {
 
 	public static void pheromoneUpdateEAS(double rho, double[][] legPheromoneUpdateMatrix) {
 		int matrixDimension = nodes.size();
+
 		for (int i = 0; i < matrixDimension; i++) {
 			for (int j = 0; j < matrixDimension; j++) {
 				pheromoneMatrix[i][j] = ((1-rho)*pheromoneMatrix[i][j]) + legPheromoneUpdateMatrix[i][j];
@@ -333,6 +328,12 @@ public class ACO {
 		}
 	}
 
+	// 0 - terminate after max iterations reached
+	// 1 - terminate if found tour that is no more than a specified percentage 
+	//	over the optimal (0.0 would mean you will not settle for anything less than the optimal)
+	// 2 - both
+	// 3 - terminate after secondsAllowed exceeds
+	// 4 - all three
 	public static Boolean evaluateStopCondition(int stopCondition, int currIt, 
 										long startTime, ArrayList<Node> tour) {
 
@@ -359,17 +360,6 @@ public class ACO {
 		}
 		return false;
 	}
-
-	// 0 - terminate after max iterations reached
-	// 1 - terminate if found tour that is no more than a specified percentage 
-	//	over the optimal (0.0 would mean you will not settle for anything less than the optimal)
-	// 2 - both
-	// 3 - terminate after secondsAllowed exceeds
-	// 4 - all three
-
-
-
-
 
 	public static double[][] initializePheromoneMatrix(int n, double initPh) {
 		double[][] temp = new double[n][n];
@@ -410,7 +400,7 @@ public class ACO {
 										nearestNeighborTour.size()-1),nearestNeighborTour,nodes);
 			nearestNeighborTour.add(closestNeighbor);
 		}
-		//convert Integer tour to Node tour.
+
 		ArrayList<Node> rt = Utility.integerTourToNodeTour(nearestNeighborTour,nodes);
 		rt.add(Utility.getCity(nearestNeighborTour.get(0),nodes)); //add first city as last one to complete tour
 
