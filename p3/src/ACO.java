@@ -118,9 +118,7 @@ public class ACO {
 		tour.add(randomCity);
 
 		while(tour.size() != nodes.size()) {
-			ArrayList<Map<String,Double>> ch = generateChoices(
-									tour.get(tour.size()-1), tour, b, q, 1.0);
-			int nextCity = pickNextCityACS(ch);
+			int nextCity = pickNextCityACS(tour,q,tour.get(tour.size()-1));
 			tour.add(nextCity);
 		}
 
@@ -130,44 +128,34 @@ public class ACO {
 		return rt;
 	}
 
-	private static ArrayList<Map<String,Double>> generateChoices(int lastCity, 
-					ArrayList<Integer> tour, double b, double q, double hist) {
-		ArrayList<Map<String, Double>> ch = new ArrayList<>();
-
-		for(int i = 0; i < nodes.size(); i++) {
-			if(!tour.contains((i+1))) {
-				Map<String, Double> temp = new HashMap<String, Double>();
-				temp.put("city",(double)(i+1));
-				temp.put("hist",Math.pow(pheromoneMatrix[lastCity-1][i],hist));
-				temp.put("dist",Utility.euclideanDistance2D(
-												Utility.getCity(lastCity,nodes),
-												Utility.getCity(i+1,nodes)));
-				temp.put("heur",Math.pow((1.0/temp.get("dist")),q));
-				temp.put("prob",(temp.get("hist") * temp.get("heur")));
-				ch.add(temp);
-			}
-		}
-		return ch;
-	}
-
-	private static int pickNextCityACS(ArrayList<Map<String,Double>> ch) {
-		double sum = 0.0;
-		for(int i = 0; i < ch.size(); i++) {
-			sum += ch.get(i).get("prob");
-		}
-
-		if(sum == 0.0) {
-			return ch.get((generator.nextInt(nodes.size())+1)).get("city").intValue();
-		}
-
+	private static int pickNextCityACS(ArrayList<Integer> tour, double q, int lastCityID) {
 		double r = generator.nextDouble();
-		for(int i = 0; i < ch.size(); i++) {
-			r -= (ch.get(i).get("prob")/sum);
-			if(r <= 0.0) {
-				return ch.get(i).get("city").intValue();
+
+		double currentMax = -Double.MAX_VALUE;
+		int nextCityID = -1;
+
+		if(r <= q) {
+			for(int i = 0; i < nodes.size(); i++) {
+				if(!tour.contains(i+1)) {
+					double invDistance = 1/(Utility.euclideanDistance2D(
+											Utility.getCity(lastCityID,nodes), 
+											Utility.getCity(i+1,nodes)));
+					double pLevel = pheromoneMatrix[lastCityID-1][i];
+
+					double temp = pLevel * (Math.pow(invDistance,beta));
+					if(temp > currentMax) {
+						currentMax = temp;
+						nextCityID = (i+1);
+					}
+				}
 			}
+		} else {
+			nextCityID = pickNextCityEAS(tour, beta, alpha, tour.get(tour.size()-1));
 		}
-		return ch.get(ch.size()-1).get("city").intValue();
+		if(nextCityID == -1) {
+			Logger.printErrorAndExit("Could not pick next city, ACS");
+		}
+		return nextCityID;
 	}
 
 	private static void localPheromoneUpdateACS(ArrayList<Node> cand, double eps) {
