@@ -313,9 +313,7 @@ public class ACO {
 
 		for(int i = 0; i < nodes.size(); i++){
 			if(!tour.contains(i+1)) {
-
 				// System.out.println("I Val: " + i);
-
 				double invDistance = 1/(euclideanDistance2D(getCity(lastCityID), getCity(i+1)));
 				// System.out.println("Dist: " + invDistance);
 				double pLevel = pheromoneMatrix[lastCityID-1][i];
