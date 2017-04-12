@@ -450,6 +450,7 @@ public class ACO {
 			}
 		} catch (IOException e) {
 			System.err.format("IOException %s%n",e);
+			Utility.printErrorAndExit("Problem File Not Found. Exiting");
 		}
 	}
 
