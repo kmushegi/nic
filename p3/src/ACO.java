@@ -215,6 +215,8 @@ public class ACO {
 				candidateCost = Utility.computeCost(candidateTour);
 
 				if (candidateCost < bestCost) {
+					System.out.println("New Best: " + candidateCost);
+
 					bestTour = candidateTour;
 					bestCost = candidateCost;
 				}
@@ -252,13 +254,18 @@ public class ACO {
 
 		for(int i = 0; i < nodes.size(); i++){
 			if(!tour.contains(i+1)) {
-				// System.out.println("I Val: " + i);
-				double invDistance = 1/(Utility.euclideanDistance2D(
+				// System.out.println("Curr City I: " + (i+1));
+				double distance = Utility.euclideanDistance2D(
 										Utility.getCity(lastCityID,nodes), 
-										Utility.getCity(i+1,nodes)));
+										Utility.getCity(i+1,nodes));
+
+				if (distance == 0.0) {
+					return i+1;
+				}
+
+				double invDistance = 1/(distance);
 				// System.out.println("Dist: " + invDistance);
 				double pLevel = pheromoneMatrix[lastCityID-1][i];
-				// System.out.println("PLEVEL: " + pLevel);
 				double nodeNum = (Math.pow(pLevel, a)) * (Math.pow(invDistance, b));
 				nodeProbs.add(nodeNum);
 				nodeTracker.add(i+1);
@@ -282,6 +289,9 @@ public class ACO {
 		for (int i = 0; i < nodeProbs.size(); i++) {
 			cumulativeSum += nodeProbs.get(i);
 			if (random < cumulativeSum) {
+				if(tour.contains(nodeTracker.get(i))) {
+					System.exit(1);
+				}
 				return nodeTracker.get(i);
 			}
 		}
