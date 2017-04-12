@@ -80,7 +80,7 @@ public class ACO {
 		outputSolution(solutionTour, solutionCost);
 	}
 
-	public static ArrayList<Node> acs(int ants, int its, double a, double b,
+	private static ArrayList<Node> acs(int ants, int its, double a, double b,
 									double rho, double eps, double q) {
 		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
 		int bestCost = Utility.computeCost(bestTour);
@@ -112,7 +112,7 @@ public class ACO {
 		return bestTour;
 	}
 
-	public static ArrayList<Node> constructSolutionACS(double[][] pm, double b, double q) {
+	private static ArrayList<Node> constructSolutionACS(double[][] pm, double b, double q) {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		int randomCity = generator.nextInt(nodes.size())+1;
 		tour.add(randomCity);
@@ -130,7 +130,7 @@ public class ACO {
 		return rt;
 	}
 
-	public static ArrayList<Map<String,Double>> generateChoices(int lastCity, 
+	private static ArrayList<Map<String,Double>> generateChoices(int lastCity, 
 					ArrayList<Integer> tour, double b, double q, double hist) {
 		ArrayList<Map<String, Double>> ch = new ArrayList<>();
 
@@ -150,7 +150,7 @@ public class ACO {
 		return ch;
 	}
 
-	public static int pickNextCityACS(ArrayList<Map<String,Double>> ch) {
+	private static int pickNextCityACS(ArrayList<Map<String,Double>> ch) {
 		double sum = 0.0;
 		for(int i = 0; i < ch.size(); i++) {
 			sum += ch.get(i).get("prob");
@@ -170,7 +170,7 @@ public class ACO {
 		return ch.get(ch.size()-1).get("city").intValue();
 	}
 
-	public static void localPheromoneUpdateACS(ArrayList<Node> cand, double eps) {
+	private static void localPheromoneUpdateACS(ArrayList<Node> cand, double eps) {
 		int endIndex, startIndex;
 		for(int i = 1; i < cand.size(); i++) {
 			endIndex = cand.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
@@ -181,7 +181,7 @@ public class ACO {
 		}
 	}
 
-	public static void globalPheromoneUpdateACS(double rho) {
+	private static void globalPheromoneUpdateACS(double rho) {
 		int matrixDimension = nodes.size();
 		for (int i = 0; i < matrixDimension; i++) {
 			for (int j = 0; j < matrixDimension; j++) {
@@ -192,7 +192,7 @@ public class ACO {
 
 	}
 
-	public static void bestTourPheromoneUpdateACS(ArrayList<Node> bestTour, double rho) {
+	private static void bestTourPheromoneUpdateACS(ArrayList<Node> bestTour, double rho) {
 		int endIndex, startIndex;
 		double updateValue;
 		for(int i = 1; i < bestTour.size(); i++) {
@@ -203,7 +203,7 @@ public class ACO {
 		}
 	}
 
-	public static ArrayList<Node> eas(int ants, int its, double a, double b,
+	private static ArrayList<Node> eas(int ants, int its, double a, double b,
 									double rho, double e) {
 
 		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
@@ -239,7 +239,7 @@ public class ACO {
 		return bestTour;
 	}
 
-	public static ArrayList<Node> constructSolutionEAS(double b, double a, double rho) {
+	private static ArrayList<Node> constructSolutionEAS(double b, double a, double rho) {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		int startCity = generator.nextInt(nodes.size()) + 1;
 		tour.add(startCity); //Initial node
@@ -255,7 +255,7 @@ public class ACO {
 		return rt;
 	}
 
-	public static int pickNextCityEAS(ArrayList<Integer> tour, double b, double a, int lastCityID) {
+	private static int pickNextCityEAS(ArrayList<Integer> tour, double b, double a, int lastCityID) {
 		ArrayList<Double> nodeProbs = new ArrayList<>();
 		ArrayList<Integer> nodeTracker = new ArrayList<>();
 		double denomSum = 0.0;
@@ -301,7 +301,7 @@ public class ACO {
 		return -1;
 	}
 
-	public static void legPheromoneUpdateEAS(ArrayList<Node> candidateTour, 
+	private static void legPheromoneUpdateEAS(ArrayList<Node> candidateTour, 
 										double[][] legPheromoneUpdateMatrix) {
 		int endIndex, startIndex;
 		double updateValue;
@@ -314,7 +314,7 @@ public class ACO {
 		}
 	}
 
-	public static void pheromoneUpdateEAS(double rho, double[][] legPheromoneUpdateMatrix) {
+	private static void pheromoneUpdateEAS(double rho, double[][] legPheromoneUpdateMatrix) {
 		int matrixDimension = nodes.size();
 
 		for (int i = 0; i < matrixDimension; i++) {
@@ -329,7 +329,7 @@ public class ACO {
 		}
 	}
 
-	public static void bestTourPheromoneUpdate(ArrayList<Node> bestTour, double e) {
+	private static void bestTourPheromoneUpdate(ArrayList<Node> bestTour, double e) {
 		int endIndex, startIndex;
 		double updateValue;
 		for(int i = 1; i < bestTour.size(); i++) {
@@ -346,7 +346,7 @@ public class ACO {
 	// 2 - both
 	// 3 - terminate after secondsAllowed exceeds
 	// 4 - all three
-	public static Boolean evaluateStopCondition(int stopCondition, int currIt, 
+	private static Boolean evaluateStopCondition(int stopCondition, int currIt, 
 										long startTime, ArrayList<Node> tour) {
 
 		switch(stopCondition) {
@@ -373,7 +373,7 @@ public class ACO {
 		return false;
 	}
 
-	public static double[][] initializePheromoneMatrix(int n, double initPh) {
+	private static double[][] initializePheromoneMatrix(int n, double initPh) {
 		double[][] temp = new double[n][n];
 
 		for(int r = 0; r < n; r++) {
@@ -384,7 +384,7 @@ public class ACO {
 		return temp;
 	}
 
-	public static double[][] initializeLegPheromoneUpdateMatrix(int n) {
+	private static double[][] initializeLegPheromoneUpdateMatrix(int n) {
 		double[][] temp = new double[n][n];
 
 		for(int r = 0; r < n; r++) {
@@ -395,14 +395,14 @@ public class ACO {
 		return temp;
 	}
 
-	public static ArrayList<Node> initializeRandomSolution(ArrayList<Node> s) {
+	private static ArrayList<Node> initializeRandomSolution(ArrayList<Node> s) {
 		ArrayList<Node> randSol = s;
 		long seed = System.nanoTime();
 		Collections.shuffle(randSol, new Random(seed));
 		return randSol;
 	}
 
-	public static void initializeTauZero() {
+	private static void initializeTauZero() {
 		ArrayList<Integer> nearestNeighborTour = new ArrayList<>();
 		int randomCity = generator.nextInt(nodes.size())+1;
 		nearestNeighborTour.add(randomCity);
@@ -419,7 +419,7 @@ public class ACO {
 		tauZero = (1.0/(numberofAnts * Utility.computeCost(rt)));
 	}
 
-	public static void processProblemLine(String[] tokens) {
+	private static void processProblemLine(String[] tokens) {
 		try {
 			Integer.parseInt(tokens[0]); //make sure its a node line
 			tokens = Utility.formatNodeInput(tokens);
@@ -433,7 +433,7 @@ public class ACO {
 		}
 	}
 
-	public static void processOptTourLine(String[] tokens) {
+	private static void processOptTourLine(String[] tokens) {
 		try {
 			optTourLengths.put(tokens[0],Integer.parseInt(tokens[1]));
 		} catch (NumberFormatException e) {
@@ -441,7 +441,7 @@ public class ACO {
 		}
 	}
 
-	public static void readProblem(String fp) {
+	private static void readProblem(String fp) {
 		try(BufferedReader br = new BufferedReader(new FileReader(fp))) {
 			String line;
 			while((line = br.readLine()) != null) {
@@ -454,7 +454,7 @@ public class ACO {
 		}
 	}
 
-	public static void readOptTourLengths(String fp) {
+	private static void readOptTourLengths(String fp) {
 		try(BufferedReader br = new BufferedReader(new FileReader(fp))) {
 			String line;
 			while((line = br.readLine()) != null) {
@@ -470,7 +470,7 @@ public class ACO {
 		optimalTourCost = optTourLengths.get(problemName);
 	}
 
-	public static void readParams(String[] args) {
+	private static void readParams(String[] args) {
 		if(args.length != 12 && args.length != 11) {
 			Logger.printErrorAndExit(Constants.incorrectParams);
 		} 
@@ -497,14 +497,14 @@ public class ACO {
 		errorAllowed = Double.parseDouble(args[9]);
 	}
 
-	public static void outputSolution(ArrayList<Node> t, int c) {
+	private static void outputSolution(ArrayList<Node> t, int c) {
 		System.out.print("\n");
 		Logger.printNodeArrayList(t);
 		System.out.println("Cost: " + c);
 		System.out.println("Error: " + ((1.0*c)/optimalTourCost));
 	}
 
-	public static void printParams(int alg) {
+	private static void printParams(int alg) {
 		System.out.println("Algorithm: " + ((alg == 1) ? Constants.acs : Constants.eas)
 			+ "\n# of Ants: " + numberofAnts
 			+ "\n# of Iterations: " + numberofIterations
