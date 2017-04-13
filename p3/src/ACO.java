@@ -51,6 +51,10 @@ public class ACO {
 	//Utility
 	private static Random generator;
 
+	//Time-keeping
+	private static long timeStart;
+	private static long timeFinish;
+
 	public ACO() {
 		nodes = new ArrayList<>();
 		optTourLengths = new HashMap<String, Integer>();
@@ -66,6 +70,8 @@ public class ACO {
 	}
 
 	public void runACO() {
+
+		timeStart = System.nanoTime();
 		if(whichAlgorithm == 1) {
 			solutionTour = acs(numberofAnts, numberofIterations, alpha, beta, 
 								rho, eps, qZero);
@@ -75,10 +81,11 @@ public class ACO {
 		} else {
 			Logger.printErrorAndExit(Constants.incorrectParams);
 		}
+		timeFinish = System.nanoTime();
 
 		solutionCost = Utility.computeCost(solutionTour);
 		// outputSolution(solutionTour, solutionCost);
-		statsOutputSolution(solutionCost);
+		statsOutputSolution(solutionCost,((timeFinish - timeStart) / 1000000000.0));
 	}
 
 	private static ArrayList<Node> acs(int ants, int its, double a, double b,
@@ -492,8 +499,8 @@ public class ACO {
 		System.out.println("Error: " + ((1.0*c)/optimalTourCost));
 	}
 
-	private static void statsOutputSolution(int c) {
-		System.out.println(optimalTourCost + " " + c + " " + ((1.0*c)/optimalTourCost));
+	private static void statsOutputSolution(int c, double secElapsed) {
+		System.out.println(optimalTourCost + " " + c + " " + ((1.0*c)/optimalTourCost) + " " + secElapsed);
 	}
 
 	private static void printParams(int alg) {
