@@ -26,13 +26,13 @@ def run(whichAlgorithm, numAnts, numIts, alpha, beta, rho, pfp, stopCond, secAll
 compile()
 clear_stats_folder()
 
-numAnts = [10,20,30,40]
+numAnts = [20,30,40]
 numIts = [100,200,300]
-alphas = [0,1,2,3,4,5]
-betas = [2,3,4,5]
-rhos = [0.1,0.2,0.3,0.4,0.5]
-epsilons = [0.1,0.2,0.3,0.4,0.5]
-qZeroes = [0.6,0.7,0.8,0.9]
+alphas = [1,2,3]
+betas = [2,3,4]
+rhos = [0.1,0.2,0.3]
+epsilons = [0.1,0.2,0.3]
+qZeroes = [0.7,0.8,0.9]
 
 whichAlgorithm = sys.argv[1]
 
