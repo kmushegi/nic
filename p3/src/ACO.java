@@ -62,7 +62,7 @@ public class ACO {
 		readProblem(problemFilePath);
 		readOptTourLengths(Constants.optTourLengthsFilePath);
 		initializeTauZero();
-		printParams(whichAlgorithm);
+		// printParams(whichAlgorithm);
 	}
 
 	public void runACO() {
@@ -77,7 +77,8 @@ public class ACO {
 		}
 
 		solutionCost = Utility.computeCost(solutionTour);
-		outputSolution(solutionTour, solutionCost);
+		// outputSolution(solutionTour, solutionCost);
+		statsOutputSolution(solutionCost);
 	}
 
 	private static ArrayList<Node> acs(int ants, int its, double a, double b,
@@ -338,7 +339,7 @@ public class ACO {
 
 		switch(stopCondition) {
 			case 0: 
-				System.out.print("Iteration: " + currIt + "\r");
+				// System.out.print("Iteration: " + currIt + "\r");
 				return (currIt < numberofIterations);
 			case 1:	
 				System.out.print("Error: " + ((Utility.computeCost(tour) / optimalTourCost) - 1) + "\r");
@@ -347,11 +348,11 @@ public class ACO {
 			// 	return ((currIt < numberofIterations) 
 			// 		&& (((Utility.computeCost(tour) / optimalTourCost) - 1) > errorAllowed));
 			case 2:
-				System.out.print("Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
+				// System.out.print("Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
 				return (((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			case 3:
-				System.out.print("Error: " + ((Utility.computeCost(tour) / optimalTourCost) - 1) + "\t"
-					+ "Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
+				// System.out.print("Error: " + ((Utility.computeCost(tour) / optimalTourCost) - 1) + "\t"
+					// + "Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
 				return ((((Utility.computeCost(tour) / optimalTourCost) - 1) > errorAllowed)
 					&& ((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			default:
@@ -489,6 +490,10 @@ public class ACO {
 		Logger.printNodeArrayList(t);
 		System.out.println("Cost: " + c);
 		System.out.println("Error: " + ((1.0*c)/optimalTourCost));
+	}
+
+	private static void statsOutputSolution(int c) {
+		System.out.println(optimalTourCost + " " + c + " " + ((1.0*c)/optimalTourCost));
 	}
 
 	private static void printParams(int alg) {
