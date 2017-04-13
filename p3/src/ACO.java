@@ -47,6 +47,7 @@ public class ACO {
 	private static int solutionCost;
 	private static double[][] pheromoneMatrix;
 	private static Map<String, Integer> optTourLengths;
+	private static String problemName;
 
 	//Utility
 	private static Random generator;
@@ -403,8 +404,10 @@ public class ACO {
 		nearestNeighborTour.add(randomCity);
 
 		while(nearestNeighborTour.size() != nodes.size()) {
-			int closestNeighbor = Utility.getClosestCityTo(nearestNeighborTour.get(
-										nearestNeighborTour.size()-1),nearestNeighborTour,nodes);
+			int closestNeighbor = Utility.getClosestCityTo(
+									nearestNeighborTour.get(
+											nearestNeighborTour.size()-1),
+									nearestNeighborTour,nodes);
 			nearestNeighborTour.add(closestNeighbor);
 		}
 
@@ -459,7 +462,7 @@ public class ACO {
 		} catch (IOException e) {
 			System.err.format("IOException %s%n",e);
 		}
-		String problemName = problemFilePath.substring(
+		problemName = problemFilePath.substring(
 						problemFilePath.lastIndexOf('/') + 1,
 						problemFilePath.lastIndexOf('.'));
 		optimalTourCost = optTourLengths.get(problemName);
@@ -500,7 +503,8 @@ public class ACO {
 	}
 
 	private static void statsOutputSolution(int c, double secElapsed) {
-		System.out.println(optimalTourCost + " " + c + " " + ((1.0*c)/optimalTourCost) + " " + secElapsed);
+		System.out.println(problemName + " " + optimalTourCost + " " + c + " " 
+								+ ((1.0*c)/optimalTourCost) + " " + secElapsed);
 	}
 
 	private static void printParams(int alg) {
