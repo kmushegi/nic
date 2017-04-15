@@ -31,10 +31,10 @@ def run(whichAlgorithm, numAnts, numIts, alpha, beta, rho, pfp, stopCond, secAll
 			+ ".txt"
 		os.system(cmd)
 
-compile()
-clear_stats_folder()
+# compile()
+# clear_stats_folder()
 
-numAnts = [10]
+numAnts = [30]
 
 whichAlgorithm = sys.argv[1]
 # parallel = int(sys.argv[2])
