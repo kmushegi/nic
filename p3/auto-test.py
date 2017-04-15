@@ -18,8 +18,6 @@ def clear_stats_folder():
 def run(whichAlgorithm, numAnts, numIts, alpha, beta, rho, pfp, stopCond, secAllowed, 
 			errAllowed, eps, qZero):
 	
-	pfp = "../" + problemdir + "/" + pfp
-	print pfp
 	if not pfp.endswith(".tsp"):
 		return
 	else:
@@ -36,7 +34,7 @@ def run(whichAlgorithm, numAnts, numIts, alpha, beta, rho, pfp, stopCond, secAll
 compile()
 clear_stats_folder()
 
-numAnts = [30]
+numAnts = [10]
 
 whichAlgorithm = sys.argv[1]
 # parallel = int(sys.argv[2])
