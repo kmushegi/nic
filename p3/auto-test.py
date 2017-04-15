@@ -24,7 +24,7 @@ def run(whichAlgorithm, numAnts, numIts, alpha, beta, rho, pfp, stopCond, secAll
 		cmd = "cd src && java ACORunner " + whichAlgorithm + " " + str(numAnts) + " " + str(numIts) \
 			+ " " + str(alpha) + " " + str(beta) + " " + str(rho) + " " + pfp \
 			+ " " + str(stopCond) + " " + str(secAllowed) + " " +str(errAllowed) \
-			+ " " + str(eps) + " " + str(qZero) + " >> ../stats/acs-" \
+			+ " " + str(eps) + " " + str(qZero) + " >> ../stats/" + whichAlgorithm + "-" \
 			+ str(numAnts) + "-" + str(numIts) + "-" + str(alpha) + "-" + str(beta) \
 			+ "-" + str(rho) + "-" + str(eps) + "-" + str(qZero) + "-" \
 			+ str(stopCond) + "-" + str(secAllowed) + "-" + str(errAllowed) \
