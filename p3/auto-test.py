@@ -1,8 +1,8 @@
 import os
 import sys
 
-from joblib import Parallel, delayed
-import multiprocessing
+# from joblib import Parallel, delayed
+# import multiprocessing
 
 problemdir = "sample-problems"
 
@@ -36,13 +36,7 @@ def run(whichAlgorithm, numAnts, numIts, alpha, beta, rho, pfp, stopCond, secAll
 compile()
 clear_stats_folder()
 
-numAnts = [20,30,40]
-numIts = [100,200,300]
-alphas = [1,2,3]
-betas = [2,3,4]
-rhos = [0.1,0.2,0.3]
-epsilons = [0.1,0.2,0.3]
-qZeroes = [0.7,0.8,0.9]
+numAnts = [30]
 
 whichAlgorithm = sys.argv[1]
 parallel = int(sys.argv[2])
@@ -56,16 +50,10 @@ if parallel:
 	print "Done"
 else:
 	for n in numAnts:
-		for i in numIts:
-			for a in alphas:
-				for b in betas:
-					for r in rhos:
-						for e in epsilons:
-							for q in qZeroes:
-								for f in os.listdir(problemdir):
-									if f.endswith(".tsp"):
-										fp = "../" + problemdir + "/" + f
-										run(whichAlgorithm,n,i,a,b,r,fp,0,10,0.1,e,q)
+		for f in os.listdir(problemdir):
+			if f.endswith(".tsp"):
+				fp = "../" + problemdir + "/" + f
+				run(whichAlgorithm,n,200,1,4,0.1,fp,0,10,0.1,0.1,0.9)
 									
 
 
