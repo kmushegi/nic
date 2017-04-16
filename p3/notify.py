@@ -17,9 +17,16 @@ while(num_files != 2187):
 	message = client.messages.create(
 			to="+12072086505",
 			from_="+12077473393",
-			body=("Currently " + str(num_files) + " files. That's " + str((float(num_files)/2187.0)) + "%"))
+			body=("Currently " + str(num_files) + " files. That's " + str((float(num_files)/2187.0)*100)[:5] + "%"))
 	print(message.sid)
 	print("Now sleeping for 15 minutes")
 	time.sleep(fifteenMinutesInSeconds)
+
+if(num_files == 2187):
+	message = client.messages.create(
+			to="+12072086505",
+			from_="+12077473393",
+			body="Testing is done!")
+	print(message.sid)
 
 		
