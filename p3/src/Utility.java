@@ -15,6 +15,9 @@ import java.util.*;
 
 public class Utility {
 
+	//some problem files contain trailing spaces; java tokenizer fails to recognize
+	//this and spits out empty strings as tokens when splitting on " ". This method
+	//detects such strings and does not include them in the output
 	public static String[] formatNodeInput(String[] s) {
 		String t[] = new String[3];
 		int counter = 0;
@@ -27,10 +30,12 @@ public class Utility {
 		return t;
 	}
 
+	//compute euclidean distance between two nodes in the x,y plane
 	public static double euclideanDistance2D(Node n1, Node n2) {
 		return Math.sqrt(Math.pow(n1.x-n2.x,2) + Math.pow(n1.y-n2.y,2));
 	}
 
+	//compute cost of the given tour by adding up the distance between successive nodes
 	public static int computeCost(ArrayList<Node> t) {
 		int distance = 0;
 		for(int i = 1; i < t.size(); i++) {
@@ -41,6 +46,7 @@ public class Utility {
 		return distance;
 	}
 
+	//given a cityID return the corresponding Node object 
 	public static Node getCity(int cityID, ArrayList<Node> nodes) {
 		for(int i = 0; i < nodes.size(); i++) {
 			if(nodes.get(i).id == cityID) {
@@ -52,6 +58,7 @@ public class Utility {
 		return null;
 	}
 
+	//given a cityID return the ID of the closest city in the environment
 	public static int getClosestCityTo(int cityID, ArrayList<Integer> tour, ArrayList<Node> nodes) {
 		int closestCity = -1;
 		double closestDistance = Integer.MAX_VALUE;
@@ -67,6 +74,7 @@ public class Utility {
 		return closestCity;
 	}
 
+	//convert a tour of cityIDs to a tour of Node objects
 	public static ArrayList<Node> integerTourToNodeTour(ArrayList<Integer> t, ArrayList<Node> nodes) {
 		ArrayList<Node> rt = new ArrayList<>();
 		for(int i = 0; i < t.size(); i++) {

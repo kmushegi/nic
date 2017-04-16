@@ -15,8 +15,8 @@ the parameters supplied on the command line.
 public class ACORunner {
 
 	public static void main(String[] args) {
-		ACO acoInstance = new ACO();
-		acoInstance.initializeACO(args);
-		acoInstance.runACO();
+		ACO acoInstance = new ACO(); //create ACO instance
+		acoInstance.initializeACO(args); //initialize the object with given args
+		acoInstance.runACO(); //run the algorithm with given args
 	}
 }
