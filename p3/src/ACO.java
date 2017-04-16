@@ -224,8 +224,6 @@ public class ACO {
 				candidateCost = Utility.computeCost(candidateTour);
 
 				if (candidateCost < bestCost) {
-					// System.out.println("New Best: " + candidateCost);
-
 					bestTour = candidateTour;
 					bestCost = candidateCost;
 				}

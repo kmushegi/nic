@@ -1,7 +1,20 @@
+"""
+ACO for TSP - Project 3
+Nature Inspired Computation
+Spring 2017
+Stephen Majercik
+
+Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
+
+This file is part of Ant Colony Optimization for the Traveling Salesman Problem,
+Project 3. This file contains the implementation of the experiment progress update
+utility, that sends a text message every 15 minutes with the number of experiments 
+finished.
+"""
+
 import os
 import sys
 import time
-
 from twilio.rest import Client
 
 accound_sid = "AC66228029c3056e9f58994d70688ce37b"
