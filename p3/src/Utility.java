@@ -35,17 +35,6 @@ public class Utility {
 		return Math.sqrt(Math.pow(n1.x-n2.x,2) + Math.pow(n1.y-n2.y,2));
 	}
 
-	//compute cost of the given tour by adding up the distance between successive nodes
-	public static int computeCost(ArrayList<Node> t) {
-		int distance = 0;
-		for(int i = 1; i < t.size(); i++) {
-			Node n1 = t.get(i);
-			Node n2 = t.get(i-1);
-			distance += (euclideanDistance2D(n1,n2));
-		}
-		return distance;
-	}
-
 	//given a cityID return the corresponding Node object 
 	public static Node getCity(int cityID, ArrayList<Node> nodes) {
 		for(int i = 0; i < nodes.size(); i++) {
