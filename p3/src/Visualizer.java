@@ -6,7 +6,8 @@ import java.io.*;
 
 public class Visualizer {
 
-	private static ArrayList<Node> nodes = new ArrayList<>();
+	private static ArrayList<Node> nodes;//= new ArrayList<>();
+	private static ArrayList<Node> tour;//= new ArrayList<>();
 	JPanel p;
 
     private static void createAndShowGUI() {
@@ -15,36 +16,35 @@ public class Visualizer {
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        // JPanel panel = new JPanel();
-        // panel.setPreferredSize(new Dimension(800,600));
-
-		// for(int i = 0; i < 5; i++) {
-		// 	NodeDisplay nt = new NodeDisplay((int)nodes.get(i).x,(int)nodes.get(i).y);
-		// 	frame.getContentPane().add(nt);
-		// }
 		initializeNodes(frame);
-		// panel.add(nt);
 
         //Display the window.
-        frame.setSize(800,600);
+        frame.setSize(1000,800);
         // frame.pack();
         frame.setVisible(true);
     }
 
     private static void initializeNodes(JFrame f) {
-			JPanel p = new JPanel() {
-				@Override
-				public void paintComponent(Graphics g) {
-					super.paintComponent(g);
-					Graphics2D g2 = (Graphics2D) g;
-					for(int i = 0; i < nodes.size(); i++) {
-							NodeDisplay ndt = new NodeDisplay(nodes.get(i).id,nodes.get(i).x,nodes.get(i).y);
-							ndt.drawEnv(g2);
-						}
+		JPanel p = new JPanel() {
+			@Override
+			public void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				Graphics2D g2 = (Graphics2D) g;
+				for(int i = 0; i < nodes.size(); i++) {
+					NodeDisplay ndt = new NodeDisplay(nodes.get(i).id,nodes.get(i).x,nodes.get(i).y);
+					ndt.drawEnv(g2);
 				}
-			};
+				for(int i = 0; i < tour.size(); i++) {
+					Node c1 = tour.get(i);
+					Node c2 = (i == tour.size()-1) ? tour.get(0) : tour.get(i+1);
 
-			f.getContentPane().add(p, BorderLayout.CENTER);
+					TourLine tlt = new TourLine(c1.x,c1.y,c2.x,c2.y);
+					tlt.drawEnv(g2);
+				}
+			}
+		};
+
+		f.getContentPane().add(p, BorderLayout.CENTER);
 	}
 
     private static void processProblemLine(String[] tokens) {
@@ -74,8 +74,14 @@ public class Visualizer {
 		}
 	}
 
-    public static void main(String[] args) {
-    	readProblem(args[0]);
+    public static void display(ArrayList<Node> n, ArrayList<Node> t) {
+    	// readProblem(args[0]);
+    	nodes = new ArrayList<>(n);
+		tour = new ArrayList<>(t);
+
+		// for(int i = 0; i < tour.size(); i++) {
+		// 	System.out.println(tour.get(i).x + " " + tour.get(i).y);
+		// }
 
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -97,13 +103,36 @@ public class Visualizer {
     	}
 
         public Dimension getPreferredSize() {
-            return new Dimension(15, 15);
+            return new Dimension(5, 5);
         }
 
         protected void drawEnv(Graphics2D g2) {
             // super.paintComponent(g2);
             g2.setColor(nodeColor);
-            g2.fill(new Ellipse2D.Double(xC/2, yC/2, 15, 15));
+            g2.setFont(new Font("TimesRoman", Font.PLAIN, 8)); 
+            g2.drawString(Integer.toString(nid),xC/2 - 5,yC/2-2); 
+            g2.fill(new Ellipse2D.Double(xC/2, yC/2, 5, 5));
+        }
+    }
+
+    static class TourLine {
+    	int x1;
+    	int y1;
+    	int x2;
+    	int y2;
+    	Color nodeColor = Color.red;
+
+    	public TourLine(double nx1, double ny1, double nx2, double ny2) {
+    		x1 = (int)nx1;
+			y1 = (int)ny1;
+			x2 = (int)nx2;
+			y2 = (int)ny2;
+    	}
+
+    	protected void drawEnv(Graphics2D g2) {
+            // super.paintComponent(g2);
+            g2.setColor(nodeColor);
+            g2.drawLine(x1/2,y1/2,x2/2,y2/2);
         }
     }
 }

@@ -6,6 +6,7 @@ ACO = ACO.java
 UTILS = Utility.java
 LOGGER = Logger.java
 NODE = Node.java
+VIZ = Visualizer.java
 
 #acs: 
 #alg ants its alpha beta rho problemFP stopCond secAllowed errAllowed eps qZero
@@ -14,7 +15,7 @@ NODE = Node.java
 #alg ants iters alpha beta rho problemFP stopCond secsAllowed errAllowed e
 
 default: 
-	$(JC) $(ACORUNNER) $(ACO) $(UTILS) $(LOGGER) $(NODE)
+	$(JC) $(ACORUNNER) $(ACO) $(UTILS) $(LOGGER) $(VIZ) $(NODE)
 
 vis:
 	$(JC) Visualizer.java
@@ -23,7 +24,7 @@ vis-run:
 	@$(JV) Visualizer ../ALL_tsp/berlin52.tsp
 
 acs:
-	@$(JV) ACORunner acs 30 200 1 4 0.1 ../ALL_tsp/pcb1173.tsp 0 10 0.1 0.1 0.9
+	@$(JV) ACORunner acs 30 200 1 4 0.1 ../ALL_tsp/att48.tsp 0 10 0.1 0.1 0.9
 
 eas:
 	@$(JV) ACORunner eas 30 200 1 4 0.1 ../ALL_tsp/pcb1173.tsp 0 15 0.1 30

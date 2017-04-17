@@ -57,10 +57,14 @@ public class ACO {
 	private static long timeStart;
 	private static long timeFinish;
 
+	//Visualizer
+	Visualizer vis;
+
 	public ACO() {
 		nodes = new ArrayList<>();
 		optTourLengths = new HashMap<String, Integer>();
 		generator = new Random();
+		vis = new Visualizer();
 	}
 
 	public void initializeACO(String[] args) {
@@ -88,6 +92,9 @@ public class ACO {
 		solutionCost = computeCost(solutionTour);
 		outputSolution(solutionTour, solutionCost);
 		statsOutputSolution(solutionCost,((timeFinish - timeStart) / 1000000000.0));
+
+		// vis.initialize(nodes, solutionTour);
+		vis.display(nodes,solutionTour);
 	}
 
 	private static ArrayList<Node> acs() {
