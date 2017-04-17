@@ -8,7 +8,12 @@ public class Visualizer {
 
 	private static ArrayList<Node> nodes;
 	private static ArrayList<Node> tour;
+	private static int[] bounds;
+	private static int scale;
 	JPanel p;
+
+	private static final int width = 1000;
+	private static final int height = 800;
 
     private static void createAndShowGUI() {
         //Create and set up the window.
@@ -19,7 +24,7 @@ public class Visualizer {
 		initializeNodes(frame);
 
         //Display the window.
-        frame.setSize(1000,800);
+        frame.setSize(width,height);
         frame.setVisible(true);
     }
 
@@ -46,37 +51,58 @@ public class Visualizer {
 		f.getContentPane().add(p, BorderLayout.CENTER);
 	}
 
-    private static void processProblemLine(String[] tokens) {
-		try {
-			Integer.parseInt(tokens[0]); //make sure its a node line
-			tokens = Utility.formatNodeInput(tokens);
+	//[minX, maxX, minY, maxY]
+	private static int[] findMinAndMaxCoordinates(ArrayList<Node> n) {
+		double minX, maxX, minY, maxY;
+		minX = minY = Double.MAX_VALUE;
+		maxX = maxY = -Double.MAX_VALUE;
 
-			Node temp = new Node(Integer.parseInt(tokens[0]),
-							Double.parseDouble(tokens[1]),
-							Double.parseDouble(tokens[2]));
-			nodes.add(temp);
-		} catch (NumberFormatException e) {
-			// System.err.format("NumberFormatException %s%n",e);
+		for(int i = 0; i < n.size(); i++) {
+			if(n.get(i).x < minX) {
+				minX = n.get(i).x;
+			}
+			if(n.get(i).x > maxX) {
+				maxX = n.get(i).x;
+			}
+			if(n.get(i).y < minY) {
+				minY = n.get(i).y;
+			}
+			if(n.get(i).y > maxY) {
+				maxY = n.get(i).y;
+			}
 		}
+		int v[] = new int[4];
+		v[0] = (int) Math.round(minX);
+		v[1] = (int) Math.round(maxX);
+		v[2] = (int) Math.round(minY);
+		v[3] = (int) Math.round(maxY);
+		return v;
 	}
 
-    private static void readProblem(String fp) {
-		try(BufferedReader br = new BufferedReader(new FileReader(fp))) {
-			String line;
-			while((line = br.readLine()) != null) {
-				String[] tokens = line.trim().split(" "); //trim ws & tokenize
-				processProblemLine(tokens);
-			}
-		} catch (IOException e) {
-			System.err.format("IOException %s%n",e);
-			Logger.printErrorAndExit("Problem File Not Found. Exiting");
+	private static int scaleCoordinate(double c, double min, double max, double size) {
+		double scaledCoordinate;
+		scaledCoordinate = (c - min) / (max - min);
+		return (int)scaledCoordinate;
+	}
+
+	private static void convertCoordinates() {
+		for(int i = 0; i < nodes.size(); i++) {
+			nodes.get(i).x = scaleCoordinate(nodes.get(i).x,bounds[1],bounds[0],width);
+			nodes.get(i).y = scaleCoordinate(nodes.get(i).y,bounds[3],bounds[2],height);
+			System.out.println(nodes.get(i).id + " " + nodes.get(i).x + " " + nodes.get(i).y);
 		}
 	}
 
     public static void display(ArrayList<Node> n, ArrayList<Node> t) {
     	nodes = new ArrayList<>(n);
 		tour = new ArrayList<>(t);
+		bounds = findMinAndMaxCoordinates(nodes);
+		// System.out.println(bounds[0] + " " + bounds[1] + " " + bounds[2] + " " + bounds[3]);
+		scale = Math.max(bounds[1]-bounds[0],bounds[3]-bounds[2]); //[minX, maxX, minY, maxY]
+		// System.out.println("Scale: " + scale);
+		convertCoordinates();
 
+		System.out.println("Calling createAndShowGUI");
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
@@ -89,6 +115,9 @@ public class Visualizer {
     	int xC;
     	int yC;
     	Color nodeColor = Color.black;
+
+    	int w;
+    	int h;
 
     	public NodeDisplay(int id, double x, double y) {
     		nid = id;
@@ -103,8 +132,8 @@ public class Visualizer {
         protected void drawEnv(Graphics2D g2) {
             g2.setColor(nodeColor);
             g2.setFont(new Font("TimesRoman", Font.PLAIN, 8)); 
-            g2.drawString(Integer.toString(nid),xC/2 - 5,yC/2-2); 
-            g2.fill(new Ellipse2D.Double(xC/2, yC/2, 5, 5));
+            g2.drawString(Integer.toString(nid),xC - 8,yC); 
+            g2.fill(new Ellipse2D.Double(500+xC, 400+yC, 5, 5));
         }
     }
 
@@ -124,7 +153,7 @@ public class Visualizer {
 
     	protected void drawEnv(Graphics2D g2) {
             g2.setColor(nodeColor);
-            g2.drawLine(x1/2,y1/2,x2/2,y2/2);
+            g2.drawLine(500+x1,400+y1,500+x2,400+y2);
         }
     }
 }
