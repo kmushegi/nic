@@ -23,10 +23,10 @@ vis-run:
 	@$(JV) Visualizer ../ALL_tsp/berlin52.tsp
 
 acs:
-	@$(JV) ACORunner acs 30 200 1 4 0.1 ../ALL_tsp/a280.tsp 0 30 0.2 0.1 0.9
+	@$(JV) ACORunner acs 30 200 1 4 0.1 ../ALL_tsp/pcb1173.tsp 0 10 0.1 0.1 0.9
 
 eas:
-	@$(JV) ACORunner eas 30 200 1 4 0.1 ../ALL_tsp/pr2392.tsp 0 15 0.1 30
+	@$(JV) ACORunner eas 30 200 1 4 0.1 ../ALL_tsp/pcb1173.tsp 0 15 0.1 30
 
 clean:
 	rm *.class
