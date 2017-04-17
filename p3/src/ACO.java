@@ -363,18 +363,18 @@ public class ACO {
 				System.out.print("Iteration: " + currIt + "\r");
 				return (currIt < numberofIterations);
 			case 1:	
-				System.out.print("Error: " + ((Utility.computeCost(tour) / optimalTourCost) - 1) + "\r");
-				return (((Utility.computeCost(tour) / optimalTourCost) - 1) > errorAllowed);
+				System.out.println("Error: " + ((Utility.computeCost(tour) / (double)(optimalTourCost))) + "\r");
+				return (((Utility.computeCost(tour) / (double)(optimalTourCost))) > (errorAllowed + 1));
 			// case 2:
 			// 	return ((currIt < numberofIterations) 
 			// 		&& (((Utility.computeCost(tour) / optimalTourCost) - 1) > errorAllowed));
 			case 2:
-				// System.out.print("Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
+				System.out.print("Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
 				return (((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			case 3:
-				// System.out.print("Error: " + ((Utility.computeCost(tour) / optimalTourCost) - 1) + "\t"
-					// + "Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
-				return ((((Utility.computeCost(tour) / optimalTourCost) - 1) > errorAllowed)
+				System.out.print("Error: " + ((Utility.computeCost(tour) / (double)(optimalTourCost))) + "\t"
+					+ "Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
+				return ((((Utility.computeCost(tour) / (double)(optimalTourCost))) > (errorAllowed + 1))
 					&& ((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
 			default:
 				Logger.printErrorAndExit("Unknown stop condition");
