@@ -83,5 +83,17 @@ public class Utility {
 		return rt;
 	}
 
+	//Initialize a size nxn matrix to a specific value
+	public static double[][] initializeMatrix(int n, double init) {
+		double[][] temp = new double[n][n];
+
+		for(int r = 0; r < n; r++) {
+			for(int c = 0; c < n; c++) {
+				temp[r][c] = init;
+			}
+		}
+		return temp;
+	}
+
 	
 }
