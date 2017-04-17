@@ -116,7 +116,9 @@ public class ACO {
 			itCounter += 1;
 			
 			for(int i = 0; i < numberofAnts; i++) {
+				// System.out.println("TOUR START");
 				candidateTour = constructSolutionACS(probabilityMatrix, acsProbabilityMatrix);
+				// System.out.println("TOUR END");
 				candidateCost = computeCost(candidateTour);
 				if(candidateCost < bestCost) {
 					System.out.println("New Best: " + candidateCost + " at iteration " + itCounter);
@@ -124,10 +126,14 @@ public class ACO {
 					bestTour = candidateTour;
 				}
 
+				// System.out.println("LOCAL START");
 				localPheromoneUpdateACS(candidateTour);
+				// System.out.println("LOCAL END");
 			}
+			// System.out.println("GLOBAL START");
 			globalPheromoneUpdateACS();
 			bestTourPheromoneUpdateACS(bestTour, bestCost);
+			// System.out.println("GLOBAL END");
 		}
 
 		return bestTour;
@@ -143,7 +149,8 @@ public class ACO {
 
 		while(tour.size() != nodes.size()) {
 			 r = generator.nextDouble();
-			 nextCity = (r <= qZero) ? pickNextCityACS(tour, tour.get(tour.size()-1), acsProbabilityMatrix) : pickNextCity(tour, tour.get(tour.size()-1), probabilityMatrix);
+			 nextCity = (r <= qZero) ? pickNextCityACS(tour, tour.get(tour.size()-1), acsProbabilityMatrix) : 
+			 pickNextCity(tour, tour.get(tour.size()-1), probabilityMatrix);
 			 tour.add(nextCity);
 		}
 
@@ -164,7 +171,8 @@ public class ACO {
 					if (distanceMatrix[lastCityID-1][i] == 0.0) {
 						return (i+1);
 					}
-					acsProbabilityMatrix[lastCityID-1][i] = pheromoneMatrix[lastCityID-1][i] * (Math.pow(1/distanceMatrix[lastCityID-1][i],beta));
+					acsProbabilityMatrix[lastCityID-1][i] = pheromoneMatrix[lastCityID-1][i] * 
+					(Math.pow(1/distanceMatrix[lastCityID-1][i],beta));
 				}
 
 				if (acsProbabilityMatrix[lastCityID-1][i] > currentMax) {
@@ -196,7 +204,6 @@ public class ACO {
 		for (int i = 0; i < matrixDimension; i++) {
 			for (int j = 0; j < matrixDimension; j++) {
 				pheromoneMatrix[i][j] = ((1.0-rho)*pheromoneMatrix[i][j]);
-				pheromoneMatrix[j][i] = ((1.0-rho)*pheromoneMatrix[j][i]);
 			}
 		}
 
@@ -285,9 +292,6 @@ public class ACO {
 				pheromoneMatrix[i][j] = ((1-rho)
 										* pheromoneMatrix[i][j]) 
 										+ legPheromoneUpdateMatrix[i][j];
-				pheromoneMatrix[j][i] = ((1-rho)
-										* pheromoneMatrix[j][i]) 
-										+ legPheromoneUpdateMatrix[j][i];
 			}
 		}
 	}
@@ -306,7 +310,6 @@ public class ACO {
 		ArrayList<Double> nodeProbs = new ArrayList<>();
 		ArrayList<Integer> nodeTracker = new ArrayList<>();
 		double denomSum = 0.0;
-		double invDistance, pLevel;
 
 		for(int i = 0; i < nodes.size(); i++){
 			if(!tour.contains(i+1)) {
@@ -314,7 +317,8 @@ public class ACO {
 					if (distanceMatrix[lastCityID-1][i] == 0.0) {
 						return (i+1);
 					}
-					probabilityMatrix[lastCityID-1][i] = (Math.pow(pheromoneMatrix[lastCityID-1][i], alpha)) * (Math.pow(1/distanceMatrix[lastCityID-1][i], beta));
+					probabilityMatrix[lastCityID-1][i] = (Math.pow(pheromoneMatrix[lastCityID-1][i], alpha)) * 
+					(Math.pow(1/distanceMatrix[lastCityID-1][i], beta));
 				}
 				nodeProbs.add(probabilityMatrix[lastCityID-1][i]);
 				nodeTracker.add(i+1);
@@ -353,9 +357,6 @@ public class ACO {
 			case 1:	
 				System.out.println("Error: " + ((computeCost(tour) / (double)(optimalTourCost))) + "\r");
 				return (((computeCost(tour) / (double)(optimalTourCost))) > (errorAllowed + 1));
-			// case 2:
-			// 	return ((currIt < numberofIterations) 
-			// 		&& (((computeCost(tour) / optimalTourCost) - 1) > errorAllowed));
 			case 2:
 				System.out.print("Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
 				return (((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
@@ -407,7 +408,7 @@ public class ACO {
 		return temp;
 	}
 
-		//compute cost of the given tour by adding up the distance between successive nodes
+	//compute cost of the given tour by adding up the distance between successive nodes
 	public static int computeCost(ArrayList<Node> t) {
 		int distance = 0;
 		for(int i = 1; i < t.size(); i++) {
