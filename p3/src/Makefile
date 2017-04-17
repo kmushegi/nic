@@ -1,4 +1,4 @@
-JC = javac -Werror -Xlint:all
+JC = javac -Werror -Xlint:-serial
 JV = java
 
 ACORUNNER = ACORunner.java
@@ -15,6 +15,12 @@ NODE = Node.java
 
 default: 
 	$(JC) $(ACORUNNER) $(ACO) $(UTILS) $(LOGGER) $(NODE)
+
+vis:
+	$(JC) Visualizer.java
+
+vis-run:
+	@$(JV) Visualizer ../ALL_tsp/berlin52.tsp
 
 acs:
 	@$(JV) ACORunner acs 30 200 1 4 0.1 ../ALL_tsp/a280.tsp 0 30 0.2 0.1 0.9
