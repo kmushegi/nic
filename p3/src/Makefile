@@ -18,7 +18,11 @@ default:
 	$(JC) $(ACORUNNER) $(ACO) $(UTILS) $(LOGGER) $(VIZ) $(NODE)
 
 acs:
+<<<<<<< Updated upstream
 	@$(JV) ACORunner acs 30 200 1 4 0.1 ../ALL_tsp/berlin52.tsp 0 10 0.1 0.1 0.9
+=======
+	@$(JV) ACORunner acs 30 200 1 4 0.1 ../ALL_tsp/pcb1173.tsp 0 10 0.1 0.1 0.9
+>>>>>>> Stashed changes
 
 eas:
 	@$(JV) ACORunner eas 30 200 1 4 0.1 ../ALL_tsp/pcb1173.tsp 0 15 0.1 30
