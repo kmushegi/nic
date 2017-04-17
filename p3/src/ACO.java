@@ -360,7 +360,7 @@ public class ACO {
 
 		switch(stopCondition) {
 			case 0: 
-				System.out.println("Iteration: " + currIt);
+				System.out.print("Iteration: " + currIt + "\r");
 				return (currIt < numberofIterations);
 			case 1:	
 				System.out.print("Error: " + ((Utility.computeCost(tour) / optimalTourCost) - 1) + "\r");
