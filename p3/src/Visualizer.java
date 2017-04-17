@@ -6,8 +6,8 @@ import java.io.*;
 
 public class Visualizer {
 
-	private static ArrayList<Node> nodes;//= new ArrayList<>();
-	private static ArrayList<Node> tour;//= new ArrayList<>();
+	private static ArrayList<Node> nodes;
+	private static ArrayList<Node> tour;
 	JPanel p;
 
     private static void createAndShowGUI() {
@@ -20,7 +20,6 @@ public class Visualizer {
 
         //Display the window.
         frame.setSize(1000,800);
-        // frame.pack();
         frame.setVisible(true);
     }
 
@@ -75,13 +74,8 @@ public class Visualizer {
 	}
 
     public static void display(ArrayList<Node> n, ArrayList<Node> t) {
-    	// readProblem(args[0]);
     	nodes = new ArrayList<>(n);
 		tour = new ArrayList<>(t);
-
-		// for(int i = 0; i < tour.size(); i++) {
-		// 	System.out.println(tour.get(i).x + " " + tour.get(i).y);
-		// }
 
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -107,7 +101,6 @@ public class Visualizer {
         }
 
         protected void drawEnv(Graphics2D g2) {
-            // super.paintComponent(g2);
             g2.setColor(nodeColor);
             g2.setFont(new Font("TimesRoman", Font.PLAIN, 8)); 
             g2.drawString(Integer.toString(nid),xC/2 - 5,yC/2-2); 
@@ -130,7 +123,6 @@ public class Visualizer {
     	}
 
     	protected void drawEnv(Graphics2D g2) {
-            // super.paintComponent(g2);
             g2.setColor(nodeColor);
             g2.drawLine(x1/2,y1/2,x2/2,y2/2);
         }

@@ -93,7 +93,6 @@ public class ACO {
 		outputSolution(solutionTour, solutionCost);
 		statsOutputSolution(solutionCost,((timeFinish - timeStart) / 1000000000.0));
 
-		// vis.initialize(nodes, solutionTour);
 		vis.display(nodes,solutionTour);
 	}
 

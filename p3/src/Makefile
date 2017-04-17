@@ -17,12 +17,6 @@ VIZ = Visualizer.java
 default: 
 	$(JC) $(ACORUNNER) $(ACO) $(UTILS) $(LOGGER) $(VIZ) $(NODE)
 
-vis:
-	$(JC) Visualizer.java
-
-vis-run:
-	@$(JV) Visualizer ../ALL_tsp/berlin52.tsp
-
 acs:
 	@$(JV) ACORunner acs 30 200 1 4 0.1 ../ALL_tsp/att48.tsp 0 10 0.1 0.1 0.9
 
