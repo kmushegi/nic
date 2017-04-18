@@ -113,43 +113,57 @@ public class ACO {
 		int itCounter = 0;
 		long st = System.nanoTime();
 
+		//While the stop condition has not been reached, continue to generate solutions
 		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
 			itCounter += 1;
 			
+			//For all antss
 			for(int i = 0; i < numberofAnts; i++) {
+				//Construct a candidate solution
 				candidateTour = constructSolutionACS();
 				candidateCost = computeCost(candidateTour);
 
+				//If the candidate's tour cost is less that the current best, it becomes the new best tour
 				if(candidateCost < bestCost) {
 					System.out.println("New Best: " + candidateCost + " at iteration " + itCounter);
 					bestCost = candidateCost;
 					bestTour = candidateTour;
 				}
 
+				//Perform the local pheromone update on the most recent tour
 				localPheromoneUpdateACS(candidateTour);
 			}
 
+			//Perform the global pheromone update on all legs between cities
 			globalPheromoneUpdateACS();
+			//Perform the pheromone addition to the best current tour
 			bestTourPheromoneUpdateACS(bestTour, bestCost);
 		}
+
 		return bestTour;
 	}
 
 	private static ArrayList<Node> constructSolutionACS() {
 		ArrayList<Integer> tour =  new ArrayList<>();
+		//Generate a random starting city ID
 		int randomCity = generator.nextInt(nodes.size())+1;
 		int nextCity;
 		double r;
 
+		//Add the random start ID to the current candidate tour
 		tour.add(randomCity);
 
+		//While not all cities have been visited, continue to populate tour with cities
 		while(tour.size() != nodes.size()) {
 			 r = generator.nextDouble();
+			 //With probability qzero, perform the greedy heuristic, otherwise, conventionally select the next city
 			 nextCity = (r <= qZero) ? pickNextCityACS(tour, tour.get(tour.size()-1)) : 
 			 pickNextCityACSConventional(tour, tour.get(tour.size()-1));
+			 //Add the new city to the tour
 			 tour.add(nextCity);
 		}
 
+		//Add the starting city to the tour again as for TSP, we need to return to the starting city
 		tour.add(randomCity);
 
 		ArrayList<Node> rt = Utility.integerTourToNodeTour(tour,nodes);
@@ -163,13 +177,17 @@ public class ACO {
 		double product;
 
 		for(int i = 0; i < nodes.size(); i++) {
+			//Pick a city that is not already in the tour
 			if(!tour.contains(i+1)) {
+				//If the distance to the city is zero, that is the same city (accounting for problems with two instances of the same city)
 				if (distanceMatrix[lastCityID-1][i] == 0.0) {
 					return (i+1);
 				}
+				//Calculate the product of pheromone levels * inverse distance^beta for the current city and new city pair
 				product = pheromoneMatrix[lastCityID-1][i] * 
 				(Math.pow(1/distanceMatrix[lastCityID-1][i],beta));
 
+				//If product is less than the current max, product becomes the new max
 				if (product > currentMax) {
 					currentMax = product;
 					nextCityID = i+1;
@@ -180,6 +198,7 @@ public class ACO {
 		if(nextCityID == -1) {
 			Logger.printErrorAndExit("Could not pick next city, ACS");
 		}
+		//Return the city that maximizes pheromone levels * inverse distance^beta
 		return nextCityID;
 	}
 
@@ -190,15 +209,19 @@ public class ACO {
 		double product;
 
 		for(int i = 0; i < nodes.size(); i++){
+			//Pick a city that hasn't been visited yet
 			if(!tour.contains(i+1)) {
 				if (distanceMatrix[lastCityID-1][i] == 0.0) {
 					return (i+1);
 				}
-
+				//Compute the product of pheromone levels^alpha * inverse distance^beta
 				product = (Math.pow(pheromoneMatrix[lastCityID-1][i], alpha)) * 
 				(Math.pow(1/distanceMatrix[lastCityID-1][i], beta));
+				//Add product to probability array
 				nodeProbs.add(product);
+				//Add city instance to city array
 				nodeTracker.add(i+1);
+				//Add product to the sum that will normalize probabilities
 				denomSum += product;
 			}
 		}
@@ -206,6 +229,7 @@ public class ACO {
 		double cumulativeSum = 0;
 		double random = generator.nextDouble();
 
+		//Probabilistically pick the next city
 		for (int i = 0; i < nodeProbs.size(); i++) {
 			cumulativeSum += (nodeProbs.get(i)/denomSum);
 			if (random < cumulativeSum) {
@@ -222,6 +246,7 @@ public class ACO {
 	private static void localPheromoneUpdateACS(ArrayList<Node> cand) {
 		int endIndex, startIndex;
 		for(int i = 1; i < cand.size(); i++) {
+			//Perform the pheromone update on all the legs of the most recent tour
 			endIndex = cand.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
 			startIndex = cand.get(i-1).getID() - 1;
 			pheromoneMatrix[startIndex][endIndex]
@@ -232,6 +257,7 @@ public class ACO {
 
 	private static void globalPheromoneUpdateACS() {
 		int matrixDimension = nodes.size();
+		//Perform the global pheromone update on all legs between all cities in the graph
 		for (int i = 0; i < matrixDimension; i++) {
 			for (int j = 0; j < matrixDimension; j++) {
 				pheromoneMatrix[i][j] = ((1.0-rho)*pheromoneMatrix[i][j]);
@@ -242,6 +268,7 @@ public class ACO {
 	private static void bestTourPheromoneUpdateACS(ArrayList<Node> bestTour, int bestCost) {
 		int endIndex, startIndex;
 		double updateValue = 1/bestCost;
+		//Add additional pheromone on the legs of the current best tour so as to favor the current best tour
 		for(int i = 1; i < bestTour.size(); i++) {
 			endIndex = bestTour.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
 			startIndex = bestTour.get(i-1).getID() - 1;
@@ -249,13 +276,16 @@ public class ACO {
 		}
 	}
 
+	//EAS function
 	private static ArrayList<Node> eas() {
 		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
 		int bestCost = computeCost(bestTour);
 		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
 		pheromoneMatrix = Utility.initializeMatrix(nodes.size(), initialPheromone);
 
+		//Initialize matrix to store the pheromone deposited on each leg by the total number of ants traversing that leg
 		double[][] legPheromoneUpdateMatrix;
+		//Initialize the matricies used to store already calculated probability values used when picking the next city
 		double[][] probabilityMatrix;
 		 
 		int itCounter = 0;
@@ -266,8 +296,11 @@ public class ACO {
 
 		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
 			itCounter += 1;
-			probabilityMatrix = Utility.initializeMatrix(nodes.size(),-1);
+			//Reset matrix as the ants that traverse each leg change from iteration to iteration
 			legPheromoneUpdateMatrix = Utility.initializeMatrix(nodes.size(),0);
+			//Reset probability matrix, as the pheromones on which probabilities are based change from iteration to iteration
+			//after the pheromone updates
+			probabilityMatrix = Utility.initializeMatrix(nodes.size(),-1);
 
 			for (int i = 0; i < numberofAnts; i++) {
 				candidateTour = constructSolutionEAS(probabilityMatrix);
@@ -278,9 +311,12 @@ public class ACO {
 					bestTour = candidateTour;
 					bestCost = candidateCost;
 				}
+				//Add pheromone to the matrix storing the pheromone deposited on each leg by the total number of ants traversing that leg
 				legPheromoneUpdateEAS(candidateTour, candidateCost, legPheromoneUpdateMatrix);
 			}
+			//Update the pheromone on each leg of the graph
 			pheromoneUpdateEAS(legPheromoneUpdateMatrix);
+			//Add additional pheromone on the best so far tour
 			bestTourPheromoneUpdate(bestTour, bestCost, e);
 		}
 
@@ -290,7 +326,7 @@ public class ACO {
 	private static ArrayList<Node> constructSolutionEAS(double[][] probabilityMatrix) {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		int startCity = generator.nextInt(nodes.size()) + 1;
-		tour.add(startCity); //Initial node
+		tour.add(startCity);
 		int nextCity;
 
 		while(tour.size() != nodes.size()) {
@@ -307,6 +343,7 @@ public class ACO {
 										double[][] legPheromoneUpdateMatrix) {
 		int endIndex, startIndex;
 		double updateValue = 1/candidateCost;
+		//Add pheromone to the matrix storing the pheromone deposited by all ants traversing specific leg
 		for(int i = 1; i < candidateTour.size(); i++) {
 			endIndex = candidateTour.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
 			startIndex = candidateTour.get(i-1).getID() - 1;
@@ -317,6 +354,7 @@ public class ACO {
 	private static void pheromoneUpdateEAS(double[][] legPheromoneUpdateMatrix) {
 		int matrixDimension = nodes.size();
 
+		//Perform pheromone evaporation, and add the pheromone deposited by all ants traversing specific leg
 		for (int i = 0; i < matrixDimension; i++) {
 			for (int j = 0; j < matrixDimension; j++) {
 				pheromoneMatrix[i][j] = ((1-rho)
@@ -329,6 +367,7 @@ public class ACO {
 	private static void bestTourPheromoneUpdate(ArrayList<Node> bestTour, int bestCost, double e) {
 		int endIndex, startIndex;
 		double updateValue = 1/bestCost;
+		//Add additional pheromone on the legs of the current best tour so as to favor the current best tour
 		for(int i = 1; i < bestTour.size(); i++) {
 			endIndex = bestTour.get(i).getID() - 1; //Minus 1 as matrix is zero indexed
 			startIndex = bestTour.get(i-1).getID() - 1;
@@ -402,6 +441,7 @@ public class ACO {
 		return false;
 	}
 
+	//Randomly shuffle cities to intialize a random solution
 	private static ArrayList<Node> initializeRandomSolution(ArrayList<Node> s) {
 		ArrayList<Node> randSol = s;
 		long seed = System.nanoTime();
@@ -409,6 +449,7 @@ public class ACO {
 		return randSol;
 	}
 
+	//Calulate nearest nieghbor for current problem
 	private static void initializeTauZero() {
 		ArrayList<Integer> nearestNeighborTour = new ArrayList<>();
 		int randomCity = generator.nextInt(nodes.size())+1;
@@ -428,6 +469,7 @@ public class ACO {
 		tauZero = (1.0/(numberofAnts * computeCost(rt)));
 	}
 
+	//Pre-calculate the distances between cities in the current problem
 	private static double[][] initializeDistanceMatrix(ArrayList<Node> nodes) {
 		double[][] temp = new double[nodes.size()][nodes.size()];
 
