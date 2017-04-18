@@ -64,7 +64,6 @@ public class ACO {
 		nodes = new ArrayList<>();
 		optTourLengths = new HashMap<String, Integer>();
 		generator = new Random();
-		vis = new Visualizer();
 	}
 
 	public void initializeACO(String[] args) {
@@ -76,7 +75,7 @@ public class ACO {
 		printParams(whichAlgorithm);
 	}
 
-	public void runACO() {
+	public ArrayList<ArrayList<Node>> runACO() {
 
 		timeStart = System.nanoTime();
 		if(whichAlgorithm == 1) {
@@ -92,7 +91,11 @@ public class ACO {
 		solutionCost = computeCost(solutionTour);
 		outputSolution(solutionTour, solutionCost);
 		// statsOutputSolution(solutionCost,((timeFinish - timeStart) / 1000000000.0));
-		vis.display(nodes,solutionTour);
+
+		ArrayList<ArrayList<Node>> sol = new ArrayList<>();
+		sol.add(nodes);
+		sol.add(solutionTour);
+		return sol;
 	}
 
 	private static ArrayList<Node> acs() {
@@ -469,7 +472,7 @@ public class ACO {
 	}
 
 	private static void readParams(String[] args) {
-		if(args.length != 12 && args.length != 11) {
+		if(args.length != 13 && args.length != 12) {
 			Logger.printErrorAndExit(Constants.incorrectParams);
 		} 
 

@@ -12,11 +12,18 @@ responsible for creating an instance of an ACO system and running it using
 the parameters supplied on the command line.
 */
 
+import java.util.*;
+
 public class ACORunner {
 
 	public static void main(String[] args) {
 		ACO acoInstance = new ACO(); //create ACO instance
 		acoInstance.initializeACO(args); //initialize the object with given args
-		acoInstance.runACO(); //run the algorithm with given args
+		ArrayList<ArrayList<Node>> s = acoInstance.runACO(); //run the algorithm with given args
+
+		if(Integer.parseInt(args[args.length - 1]) == 1) {
+			Visualizer vis = new Visualizer();
+			vis.display(s.get(0),s.get(1));
+		}
 	}
 }

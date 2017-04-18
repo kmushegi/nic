@@ -10,10 +10,10 @@ public class Visualizer {
 	private static ArrayList<Node> tour;
 	private static int[] bounds;
 	private static int scale;
-	JPanel p;
+	private static JPanel p;
 
-	private static final int width = 1000;
-	private static final int height = 800;
+	private static final int width = 800;
+	private static final int height = 600;
 
     private static void createAndShowGUI() {
         //Create and set up the window.
@@ -25,11 +25,12 @@ public class Visualizer {
 
         //Display the window.
         frame.setSize(width,height);
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
     private static void initializeNodes(JFrame f) {
-		JPanel p = new JPanel() {
+		p = new JPanel() {
 			@Override
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);
@@ -81,28 +82,29 @@ public class Visualizer {
 
 	private static int scaleCoordinate(double c, double min, double max, double size) {
 		double scaledCoordinate;
-		scaledCoordinate = (c - min) / (max - min);
+		scaledCoordinate = c/(max-min) * size;
 		return (int)scaledCoordinate;
 	}
 
 	private static void convertCoordinates() {
 		for(int i = 0; i < nodes.size(); i++) {
-			nodes.get(i).x = scaleCoordinate(nodes.get(i).x,bounds[1],bounds[0],width);
-			nodes.get(i).y = scaleCoordinate(nodes.get(i).y,bounds[3],bounds[2],height);
-			System.out.println(nodes.get(i).id + " " + nodes.get(i).x + " " + nodes.get(i).y);
+			nodes.get(i).x = scaleCoordinate(nodes.get(i).x,bounds[0],bounds[1],width);
+			nodes.get(i).y = scaleCoordinate(nodes.get(i).y,bounds[2],bounds[3],height);
+
+			tour.get(i).x = scaleCoordinate(tour.get(i).x,bounds[0],bounds[1],width);
+			tour.get(i).y = scaleCoordinate(tour.get(i).y,bounds[2],bounds[3],height);
 		}
+		tour.get(tour.size()-1).x = scaleCoordinate(tour.get(tour.size()-1).x,bounds[0],bounds[1],width);
+		tour.get(tour.size()-1).y = scaleCoordinate(tour.get(tour.size()-1).y,bounds[2],bounds[3],height);
 	}
 
     public static void display(ArrayList<Node> n, ArrayList<Node> t) {
     	nodes = new ArrayList<>(n);
 		tour = new ArrayList<>(t);
 		bounds = findMinAndMaxCoordinates(nodes);
-		// System.out.println(bounds[0] + " " + bounds[1] + " " + bounds[2] + " " + bounds[3]);
-		scale = Math.max(bounds[1]-bounds[0],bounds[3]-bounds[2]); //[minX, maxX, minY, maxY]
-		// System.out.println("Scale: " + scale);
+		scale = Math.max((bounds[1]-bounds[0]),(bounds[3]-bounds[2])); //[minX, maxX, minY, maxY]
 		convertCoordinates();
 
-		System.out.println("Calling createAndShowGUI");
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
@@ -132,8 +134,8 @@ public class Visualizer {
         protected void drawEnv(Graphics2D g2) {
             g2.setColor(nodeColor);
             g2.setFont(new Font("TimesRoman", Font.PLAIN, 8)); 
-            g2.drawString(Integer.toString(nid),xC - 8,yC); 
-            g2.fill(new Ellipse2D.Double(500+xC, 400+yC, 5, 5));
+            g2.drawString(Integer.toString(nid),width/2+xC - 8,height/2+yC); 
+            g2.fill(new Ellipse2D.Double(width/2+xC, height/2+yC, 5, 5));
         }
     }
 
@@ -153,7 +155,7 @@ public class Visualizer {
 
     	protected void drawEnv(Graphics2D g2) {
             g2.setColor(nodeColor);
-            g2.drawLine(500+x1,400+y1,500+x2,400+y2);
+            g2.drawLine(width/2+x1,height/2+y1,width/2+x2,height/2+y2);
         }
     }
 }
