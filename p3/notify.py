@@ -30,8 +30,8 @@ fifteenMinutesInSeconds = 15*60
 while(num_files != 2187):
 	num_files = len(os.listdir("stats"))
 	message = client.messages.create(
-			to="+12072086505",
-			from_="+12077473393",
+			to="+1(XXX)XXX-XXXX",
+			from_="+1(TWI)LIO-NUMB",
 			body=("Currently " + str(num_files) + " files. That's " + str((float(num_files)/2187.0)*100)[:5] + "%"))
 	print(message.sid)
 	print("Now sleeping for 15 minutes")
