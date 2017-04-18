@@ -407,7 +407,7 @@ public class ACO {
 				System.out.print("Error: " + ((computeCost(tour) / (double)(optimalTourCost))) + "\t"
 					+ "Seconds Passed: " + ((System.nanoTime() - startTime) / 1000000000.0) + "\r");
 				return ((((computeCost(tour) / (double)(optimalTourCost))) > (errorAllowed + 1))
-					&& ((System.nanoTime() - startTime) / 1000000000.0) < secondsAllowed);
+					|| (currIt < numberofIterations));
 			default:
 				Logger.printErrorAndExit("Unknown stop condition");
 		}

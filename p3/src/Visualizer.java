@@ -1,8 +1,23 @@
+/*
+ACO for TSP - Project 3
+Nature Inspired Computation
+Spring 2017
+Stephen Majercik
+
+Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
+
+This file is part of Ant Colony Optimization for the Traveling Salesman Problem,
+Project 3. This file is responsible for visualizing the nodes and the tour constructed
+by our ACO implementation using the Java Swing framework.
+
+Visualizer currently only works with positive coordinates (+,+)
+*/
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.*;
-import java.io.*;
 
 public class Visualizer {
 
@@ -21,7 +36,7 @@ public class Visualizer {
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-		initializeNodes(frame);
+		initializeNodesAndTour(frame);
 
         //Display the window.
         frame.setSize(width,height);
@@ -29,7 +44,7 @@ public class Visualizer {
         frame.setVisible(true);
     }
 
-    private static void initializeNodes(JFrame f) {
+    private static void initializeNodesAndTour(JFrame f) {
 		p = new JPanel() {
 			@Override
 			public void paintComponent(Graphics g) {
@@ -52,7 +67,7 @@ public class Visualizer {
 		f.getContentPane().add(p, BorderLayout.CENTER);
 	}
 
-	//[minX, maxX, minY, maxY]
+	//function return format: [minX, maxX, minY, maxY]
 	private static int[] findMinAndMaxCoordinates(ArrayList<Node> n) {
 		double minX, maxX, minY, maxY;
 		minX = minY = Double.MAX_VALUE;
@@ -80,6 +95,7 @@ public class Visualizer {
 		return v;
 	}
 
+	//re-scale coordinate to fit on canvas.
 	private static int scaleCoordinate(double c, double min, double max, double size) {
 		double scaledCoordinate;
 		scaledCoordinate = c/(max-min) * size;
@@ -134,8 +150,8 @@ public class Visualizer {
         protected void drawEnv(Graphics2D g2) {
             g2.setColor(nodeColor);
             g2.setFont(new Font("TimesRoman", Font.PLAIN, 8)); 
-            g2.drawString(Integer.toString(nid),width/2+xC - 8,height/2+yC); 
-            g2.fill(new Ellipse2D.Double(width/2+xC, height/2+yC, 5, 5));
+            g2.drawString(Integer.toString(nid),xC - 8,yC); 
+            g2.fill(new Ellipse2D.Double(xC, yC, 5, 5));
         }
     }
 
@@ -155,7 +171,7 @@ public class Visualizer {
 
     	protected void drawEnv(Graphics2D g2) {
             g2.setColor(nodeColor);
-            g2.drawLine(width/2+x1,height/2+y1,width/2+x2,height/2+y2);
+            g2.drawLine(x1,y1,x2,y2);
         }
     }
 }

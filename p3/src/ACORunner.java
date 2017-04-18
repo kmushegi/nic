@@ -21,7 +21,7 @@ public class ACORunner {
 		acoInstance.initializeACO(args); //initialize the object with given args
 		ArrayList<ArrayList<Node>> s = acoInstance.runACO(); //run the algorithm with given args
 
-		if(Integer.parseInt(args[args.length - 1]) == 1) {
+		if(Integer.parseInt(args[args.length - 1]) == 1) { //if visualization on, visualize
 			Visualizer vis = new Visualizer();
 			vis.display(s.get(0),s.get(1));
 		}
