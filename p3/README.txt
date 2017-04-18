@@ -60,6 +60,8 @@ p3
 The software allows and requires certain parameters for correct execution; the
 format and ordering of parameters is specified below
 
+*** All code needs to be executed from inside the 'src' directory. ***
+
 **** Compile ****
 $ javac -Werror -Xlint:-serial *.java
 
@@ -111,7 +113,11 @@ cores seemed optimal in terms of keeping the machine usable for other purposes.
 
 To run the script, type
 
-$ python auto-test.py acs/eas parallelize(1/0)
+$ python auto-test.py acs parallelize(1/0)
+
+The script is configured to run the ACS algorithm, since it was not used to run EAS
+and we did not implement the EAS functionality due to a large number of
+parameters
 
 -----------------------------------------
 

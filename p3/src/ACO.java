@@ -107,13 +107,6 @@ public class ACO {
 		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
 		pheromoneMatrix = Utility.initializeMatrix(nodes.size(), initialPheromone);
 
-		// //Initialize probability matrix used for storing already computed probabilities when determining the next city using
-		// //the conventional city selection approach
-		// double[][] probabilityMatrix;
-		// //Initialize probability matrix used for storing already computed probabilities when determing the next city using
-		// //the greedy heuristic approach 
-		// double[][] acsProbabilityMatrix;
-
 		ArrayList<Node> candidateTour;
 		int candidateCost;
 
@@ -124,10 +117,9 @@ public class ACO {
 			itCounter += 1;
 			
 			for(int i = 0; i < numberofAnts; i++) {
-				// System.out.println("TOUR START");
 				candidateTour = constructSolutionACS();
-				// System.out.println("TOUR END");
 				candidateCost = computeCost(candidateTour);
+
 				if(candidateCost < bestCost) {
 					System.out.println("New Best: " + candidateCost + " at iteration " + itCounter);
 					bestCost = candidateCost;
@@ -136,12 +128,10 @@ public class ACO {
 
 				localPheromoneUpdateACS(candidateTour);
 			}
-			// System.out.println("GLOBAL START");
+
 			globalPheromoneUpdateACS();
 			bestTourPheromoneUpdateACS(bestTour, bestCost);
-			// System.out.println("GLOBAL END");
 		}
-
 		return bestTour;
 	}
 
@@ -174,13 +164,11 @@ public class ACO {
 
 		for(int i = 0; i < nodes.size(); i++) {
 			if(!tour.contains(i+1)) {
-				// if (acsProbabilityMatrix[lastCityID-1][i] == -1) {
-					if (distanceMatrix[lastCityID-1][i] == 0.0) {
-						return (i+1);
-					}
-					product = pheromoneMatrix[lastCityID-1][i] * 
-					(Math.pow(1/distanceMatrix[lastCityID-1][i],beta));
-				// }
+				if (distanceMatrix[lastCityID-1][i] == 0.0) {
+					return (i+1);
+				}
+				product = pheromoneMatrix[lastCityID-1][i] * 
+				(Math.pow(1/distanceMatrix[lastCityID-1][i],beta));
 
 				if (product > currentMax) {
 					currentMax = product;
@@ -203,13 +191,12 @@ public class ACO {
 
 		for(int i = 0; i < nodes.size(); i++){
 			if(!tour.contains(i+1)) {
-				// if (probabilityMatrix[lastCityID-1][i] == -1) {
-					if (distanceMatrix[lastCityID-1][i] == 0.0) {
-						return (i+1);
-					}
-					product = (Math.pow(pheromoneMatrix[lastCityID-1][i], alpha)) * 
-					(Math.pow(1/distanceMatrix[lastCityID-1][i], beta));
-				// }
+				if (distanceMatrix[lastCityID-1][i] == 0.0) {
+					return (i+1);
+				}
+
+				product = (Math.pow(pheromoneMatrix[lastCityID-1][i], alpha)) * 
+				(Math.pow(1/distanceMatrix[lastCityID-1][i], beta));
 				nodeProbs.add(product);
 				nodeTracker.add(i+1);
 				denomSum += product;
@@ -218,6 +205,7 @@ public class ACO {
 
 		double cumulativeSum = 0;
 		double random = generator.nextDouble();
+
 		for (int i = 0; i < nodeProbs.size(); i++) {
 			cumulativeSum += (nodeProbs.get(i)/denomSum);
 			if (random < cumulativeSum) {
@@ -249,7 +237,6 @@ public class ACO {
 				pheromoneMatrix[i][j] = ((1.0-rho)*pheromoneMatrix[i][j]);
 			}
 		}
-
 	}
 
 	private static void bestTourPheromoneUpdateACS(ArrayList<Node> bestTour, int bestCost) {
@@ -363,6 +350,7 @@ public class ACO {
 					probabilityMatrix[lastCityID-1][i] = (Math.pow(pheromoneMatrix[lastCityID-1][i], alpha)) * 
 					(Math.pow(1/distanceMatrix[lastCityID-1][i], beta));
 				}
+
 				nodeProbs.add(probabilityMatrix[lastCityID-1][i]);
 				nodeTracker.add(i+1);
 				denomSum += probabilityMatrix[lastCityID-1][i];
@@ -371,6 +359,7 @@ public class ACO {
 
 		double cumulativeSum = 0;
 		double random = generator.nextDouble();
+
 		for (int i = 0; i < nodeProbs.size(); i++) {
 			cumulativeSum += (nodeProbs.get(i)/denomSum);
 			if (random < cumulativeSum) {
@@ -387,9 +376,8 @@ public class ACO {
 	// 0 - terminate after max iterations reached
 	// 1 - terminate if found tour that is no more than a specified percentage 
 	//	over the optimal (0.0 would mean you will not settle for anything less than the optimal)
-	// 2 - both
-	// 3 - terminate after secondsAllowed exceeds
-	// 4 - all three
+	// 2 - terminate after secondsAllowed exceeds
+	// 3 - terminate after 1 or 0 is satisfied
 	private static Boolean evaluateStopCondition(int stopCondition, int currIt, 
 										long startTime, ArrayList<Node> tour) {
 
@@ -429,7 +417,7 @@ public class ACO {
 		while(nearestNeighborTour.size() != nodes.size()) {
 			int closestNeighbor = Utility.getClosestCityTo(
 									nearestNeighborTour.get(
-											nearestNeighborTour.size()-1),
+									nearestNeighborTour.size()-1),
 									nearestNeighborTour,nodes);
 			nearestNeighborTour.add(closestNeighbor);
 		}
@@ -445,7 +433,9 @@ public class ACO {
 
 		for(int r = 0; r < nodes.size(); r++) {
 			for(int c = 0; c < nodes.size(); c++) {
-				temp[r][c] = temp[c][r] = Utility.euclideanDistance2D(Utility.getCity(r+1,nodes), Utility.getCity(c+1,nodes));
+				temp[r][c] = temp[c][r] = Utility.euclideanDistance2D(
+											Utility.getCity(r+1,nodes), 
+											Utility.getCity(c+1,nodes));
 			}
 		}
 		return temp;

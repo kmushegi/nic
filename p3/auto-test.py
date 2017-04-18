@@ -7,7 +7,8 @@ Stephen Majercik
 Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 
 This file is part of Ant Colony Optimization for the Traveling Salesman Problem,
-Project 3. This file contains the implementation of our automated testing framework.
+Project 3. This file contains the implementation of our automated testing framework,
+and is configured to run the ACS ant system.
 """
 
 import os
@@ -26,7 +27,7 @@ def clear_stats_folder():
 	cmd = "cd stats && rm *.txt"
 	os.system(cmd)
 
-def run(whichAlgorithm, numAnts, numIts, alpha, beta, rho, pfp, stopCond, secAllowed, 
+def runACS(whichAlgorithm, numAnts, numIts, alpha, beta, rho, pfp, stopCond, secAllowed, 
 			errAllowed, eps, qZero):
 	
 	pfp = "../" + problemdir + "/" + pfp
@@ -76,7 +77,7 @@ else:
 								for f in os.listdir(problemdir):
 									if f.endswith(".tsp"):
 										fp = "../" + problemdir + "/" + f
-										run(whichAlgorithm,n,i,a,b,r,fp,0,10,0.1,e,q)
+										runACS(whichAlgorithm,n,i,a,b,r,fp,0,10,0.1,e,q)
 									
 
 
