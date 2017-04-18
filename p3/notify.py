@@ -40,7 +40,7 @@ while(num_files != 2187):
 if(num_files == 2187):
 	message = client.messages.create(
 			to="+1(XXX)XXX-XXXX",
-			from_="+1(TWI)LIO-NUMB3",
+			from_="+1(TWI)LIO-NUMB",
 			body="Testing is done!")
 	print(message.sid)
 
