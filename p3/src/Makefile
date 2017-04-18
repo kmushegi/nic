@@ -21,7 +21,7 @@ acs:
 	@$(JV) ACORunner acs 30 200 1 4 0.1 ../ALL_tsp/ch150.tsp 0 10 0.1 0.1 0.9 1
 
 eas:
-	@$(JV) ACORunner eas 30 200 1 4 0.1 ../ALL_tsp/pcb1173.tsp 0 15 0.1 30 1
+	@$(JV) ACORunner eas 30 200 1 4 0.1 ../ALL_tsp/ch150.tsp 0 15 0.1 30 1
 
 clean:
 	rm *.class
