@@ -98,14 +98,21 @@ public class ACO {
 		return sol;
 	}
 
+	//ACS function
 	private static ArrayList<Node> acs() {
+		//Create initial random solution
 		ArrayList<Node> bestTour = initializeRandomSolution(nodes);
 		int bestCost = computeCost(bestTour);
+		//Initialize initial pheromone levels
 		double initialPheromone = 1.0 / ((double)nodes.size() * bestCost);
 		pheromoneMatrix = Utility.initializeMatrix(nodes.size(), initialPheromone);
 
-		double[][] probabilityMatrix;
-		double[][] acsProbabilityMatrix;
+		// //Initialize probability matrix used for storing already computed probabilities when determining the next city using
+		// //the conventional city selection approach
+		// double[][] probabilityMatrix;
+		// //Initialize probability matrix used for storing already computed probabilities when determing the next city using
+		// //the greedy heuristic approach 
+		// double[][] acsProbabilityMatrix;
 
 		ArrayList<Node> candidateTour;
 		int candidateCost;
@@ -114,13 +121,11 @@ public class ACO {
 		long st = System.nanoTime();
 
 		while(evaluateStopCondition(stopCondition,itCounter, st, bestTour)) {
-			probabilityMatrix = Utility.initializeMatrix(nodes.size(),-1);
-			acsProbabilityMatrix = Utility.initializeMatrix(nodes.size(),-1);
 			itCounter += 1;
 			
 			for(int i = 0; i < numberofAnts; i++) {
 				// System.out.println("TOUR START");
-				candidateTour = constructSolutionACS(probabilityMatrix, acsProbabilityMatrix);
+				candidateTour = constructSolutionACS();
 				// System.out.println("TOUR END");
 				candidateCost = computeCost(candidateTour);
 				if(candidateCost < bestCost) {
@@ -129,9 +134,7 @@ public class ACO {
 					bestTour = candidateTour;
 				}
 
-				// System.out.println("LOCAL START");
 				localPheromoneUpdateACS(candidateTour);
-				// System.out.println("LOCAL END");
 			}
 			// System.out.println("GLOBAL START");
 			globalPheromoneUpdateACS();
@@ -142,7 +145,7 @@ public class ACO {
 		return bestTour;
 	}
 
-	private static ArrayList<Node> constructSolutionACS(double[][] probabilityMatrix, double[][] acsProbabilityMatrix) {
+	private static ArrayList<Node> constructSolutionACS() {
 		ArrayList<Integer> tour =  new ArrayList<>();
 		int randomCity = generator.nextInt(nodes.size())+1;
 		int nextCity;
@@ -152,8 +155,8 @@ public class ACO {
 
 		while(tour.size() != nodes.size()) {
 			 r = generator.nextDouble();
-			 nextCity = (r <= qZero) ? pickNextCityACS(tour, tour.get(tour.size()-1), acsProbabilityMatrix) : 
-			 pickNextCity(tour, tour.get(tour.size()-1), probabilityMatrix);
+			 nextCity = (r <= qZero) ? pickNextCityACS(tour, tour.get(tour.size()-1)) : 
+			 pickNextCityACSConventional(tour, tour.get(tour.size()-1));
 			 tour.add(nextCity);
 		}
 
@@ -163,23 +166,24 @@ public class ACO {
 		return rt;
 	}
 
-	private static int pickNextCityACS(ArrayList<Integer> tour, int lastCityID, double[][] acsProbabilityMatrix) {
+	private static int pickNextCityACS(ArrayList<Integer> tour, int lastCityID) {
 
 		double currentMax = -Double.MAX_VALUE;
 		int nextCityID = -1;
+		double product;
 
 		for(int i = 0; i < nodes.size(); i++) {
 			if(!tour.contains(i+1)) {
-				if (acsProbabilityMatrix[lastCityID-1][i] == -1) {
+				// if (acsProbabilityMatrix[lastCityID-1][i] == -1) {
 					if (distanceMatrix[lastCityID-1][i] == 0.0) {
 						return (i+1);
 					}
-					acsProbabilityMatrix[lastCityID-1][i] = pheromoneMatrix[lastCityID-1][i] * 
+					product = pheromoneMatrix[lastCityID-1][i] * 
 					(Math.pow(1/distanceMatrix[lastCityID-1][i],beta));
-				}
+				// }
 
-				if (acsProbabilityMatrix[lastCityID-1][i] > currentMax) {
-					currentMax = acsProbabilityMatrix[lastCityID-1][i];
+				if (product > currentMax) {
+					currentMax = product;
 					nextCityID = i+1;
 				}
 			}
@@ -189,6 +193,42 @@ public class ACO {
 			Logger.printErrorAndExit("Could not pick next city, ACS");
 		}
 		return nextCityID;
+	}
+
+	private static int pickNextCityACSConventional(ArrayList<Integer> tour, int lastCityID) {
+		ArrayList<Double> nodeProbs = new ArrayList<>();
+		ArrayList<Integer> nodeTracker = new ArrayList<>();
+		double denomSum = 0.0;
+		double product;
+
+		for(int i = 0; i < nodes.size(); i++){
+			if(!tour.contains(i+1)) {
+				// if (probabilityMatrix[lastCityID-1][i] == -1) {
+					if (distanceMatrix[lastCityID-1][i] == 0.0) {
+						return (i+1);
+					}
+					product = (Math.pow(pheromoneMatrix[lastCityID-1][i], alpha)) * 
+					(Math.pow(1/distanceMatrix[lastCityID-1][i], beta));
+				// }
+				nodeProbs.add(product);
+				nodeTracker.add(i+1);
+				denomSum += product;
+			}
+		}
+
+		double cumulativeSum = 0;
+		double random = generator.nextDouble();
+		for (int i = 0; i < nodeProbs.size(); i++) {
+			cumulativeSum += (nodeProbs.get(i)/denomSum);
+			if (random < cumulativeSum) {
+				if(tour.contains(nodeTracker.get(i))) {
+					System.exit(1);
+				}
+				return nodeTracker.get(i);
+			}
+		}
+		Logger.printErrorAndExit("Could not pick next city");
+		return -1;
 	}
 
 	private static void localPheromoneUpdateACS(ArrayList<Node> cand) {
