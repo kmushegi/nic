@@ -9,6 +9,8 @@ Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 This file is part of Ant Colony Optimization for the Traveling Salesman Problem,
 Project 3. This file contains the implementation of our automated testing framework,
 and is configured to run the ACS ant system.
+
+Requires: joblib for parallelized execution.
 """
 
 import os
