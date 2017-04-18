@@ -9,10 +9,10 @@ NODE = Node.java
 VIZ = Visualizer.java
 
 #acs: 
-#alg ants its alpha beta rho problemFP stopCond secAllowed errAllowed eps qZero
+#alg ants its alpha beta rho problemFP stopCond secAllowed errAllowed eps qZero vis(1/0)
 
 #eas:
-#alg ants iters alpha beta rho problemFP stopCond secsAllowed errAllowed e
+#alg ants iters alpha beta rho problemFP stopCond secsAllowed errAllowed e vis(1/0)
 
 default: 
 	$(JC) $(ACORUNNER) $(ACO) $(UTILS) $(LOGGER) $(VIZ) $(NODE)
