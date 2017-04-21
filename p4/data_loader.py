@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 
-training_data_file = "digit-recognition-examples/32x32-bitmaps/optdigits-32x32.tra"
+training_data_file = "digit-recognition-data/32x32-bitmaps/optdigits-32x32.tra"
 
 def read_data():
 	f = open(training_data_file)
