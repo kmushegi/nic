@@ -4,6 +4,8 @@ import sys
 training_data_file = "digit-recognition-data/32x32-bitmaps/optdigits-32x32.tra"
 testing_data_file = "digit-recognition-data/32x32-bitmaps/optdigits-32x32.tes"
 
+NUM_TRAINING_IMAGES = 3823
+
 def read_data(data_file):
 	f = open(data_file)
 
@@ -59,6 +61,6 @@ information about the "desired" output formatted in a 10 output neuron way.
 [0,0,0,0,0,0,0,0,0,1] ==> 9 and etc.
 '''
 
-assert(len(tr_data) == 3823)
+assert(len(tr_data) == NUM_TRAINING_IMAGES)
 
 #print(np.array_str(tr_data[2][1]))
