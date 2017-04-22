@@ -28,7 +28,7 @@ def read_data(data_file):
 
 	return (inputs, desired_outputs)
 
-def format_data_10_output_nodes():
+def format_data_10_output_neurons():
 
 	(tr_i, tr_o) = read_data(training_data_file)
 	training_inputs = [np.reshape(list(x), (1024, 1)) for x in tr_i]
@@ -37,6 +37,7 @@ def format_data_10_output_nodes():
 
 	(te_i,te_o) = read_data(testing_data_file)
 	testing_inputs = [np.reshape(list(x),(1024,1)) for x in te_i]
+	#print(te_o[0])
 	testing_outputs = [vectorize_output(x) for x in te_o]
 	testing_data = zip(testing_inputs,testing_outputs)
 
@@ -47,5 +48,17 @@ def vectorize_output(j):
 	e[j] = 1.0
 	return e
 
-(tr_data, te_data) = format_data_10_output_nodes()
-print(len(tr_data))
+(tr_data, te_data) = format_data_10_output_neurons()
+
+'''
+tr_data is a tuple. First element is array of arrays of size 1024 containing
+the binary image; the second element is the array of arrays containing the
+information about the "desired" output formatted in a 10 output neuron way.
+[1,0,0,0,0,0,0,0,0,0] ==> 0
+[0,0,1,0,0,0,0,0,0,0] ==> 2
+[0,0,0,0,0,0,0,0,0,1] ==> 9 and etc.
+'''
+
+assert(len(tr_data) == 3823)
+
+#print(np.array_str(tr_data[2][1]))
