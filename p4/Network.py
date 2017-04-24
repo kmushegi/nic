@@ -32,10 +32,18 @@ class Network(object):
 		#sums = self.biases
 		#sums += (sample * self.weights)
 
-def sigmoid(z):
-	return 1.0/(1.0+np.exp(-z))
+	def train():
+		for _ in range(numIterations):
 
-def sigmoidDerivative(z):
-	return sigmoid(z)*(1-sigmoid(z))
+	def sigmoid(x):
+		return 1.0/(1.0+np.exp(-x))
+
+	def sigmoidDerivative(x):
+		return sigmoid(x)*(1-sigmoid(x))
+
+	def weightUpdate(learningRate, activationLevel, error, inputSum):
+		return learningRate * activationLevel * error * sigmoidDerivative(inputSum)
+
+
 
 
