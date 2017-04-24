@@ -1,6 +1,8 @@
 import numpy as np
 import sys
 
+#np.set_printoptions(threshold=np.nan)
+
 class Network(object):
 
 	#sizes = array with number of neurons in each level: input / hidden / output
@@ -8,17 +10,17 @@ class Network(object):
 	def __init__(self, sizes):
 		self.num_layers = len(sizes)
 		self.sizes = sizes
-		self.biases = [np.random.randn(y,1) for y in sizes[1:]]
-		print("Biases size: " + str(len(self.biases)))
-		self.weights = [np.random.randn(y,x) for x, y in zip(sizes[:-1],sizes[1:])]
-		print("Weights size: " + str(len(self.weights)))
+		self.activations = [np.random.rand(y,1) for y in sizes[1:]]
+		#print("Biases size: " + str(len(self.biases)))
+		self.weights = [np.random.rand(y,x) for x, y in zip(sizes[:-1],sizes[1:])]
+		#print("Weight: " + str(self.weights[0][2]))
 
 	def feedForward(self, i):
-		for b, w in zip(self.biases, self.weights):
-			a = sigmoid(np.dot(w, a) + b)
-		return a
+		#for b, w in zip(self.biases, self.weights):
+		#	a = sigmoid(np.dot(w, a) + b)
+		return 1
 
-	def squaredGradientDescent(self, training_data, epochs, sample_size, learningRate):
+	def train(self, training_data, epochs, sample_size, learningRate):
 		n = len(training_data)
 
 		for e in xrange(epochs):
@@ -26,7 +28,8 @@ class Network(object):
 				self.process_sample(sample, learningRate)
 
 	def process_sample(self, sample, learningRate):
-		sums = self.biases
+		return -1
+		#sums = self.biases
 		#sums += (sample * self.weights)
 
 def sigmoid(z):
