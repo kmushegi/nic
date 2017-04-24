@@ -8,7 +8,10 @@ NUM_TRAINING_IMAGES = 3823
 
 #np.set_printoptions(threshold=np.nan)
 
-def read_data(data_file):
+def read_data_down_sampled(data_file):
+	return "yo"
+
+def read_data_bit_map(data_file):
 	f = open(data_file)
 
 	for i in xrange(3): #skip first 3 lines
