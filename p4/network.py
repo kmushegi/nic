@@ -49,8 +49,8 @@ class Network(object):
 		return 1.0/(1.0+np.exp(-x))
 
 	def updateWeights(self, expectedOutput):
-		for i in range(len(self.numInputNodes)):
-			for j in range(len(self.numOutputNodes)):
+		for i in range(self.numInputNodes):
+			for j in range(self.numOutputNodes):
 				self.weights[i][j] += self.weightUpdate(self.inputNodes[i], self.calculateError(expectedOutput, self.outputNodes), self.sumInputs(j))
 
 	def weightUpdate(self, activationLevel, error, inputSum):
