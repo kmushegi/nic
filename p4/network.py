@@ -4,7 +4,6 @@ import sys
 #np.set_printoptions(threshold=np.nan)
 
 class Network(object):
-
 	#sizes = array with number of neurons in each level: input / hidden / output
 	#[32,15,10] -> 32 input, 15 hidden and 10 output neurons
 	def __init__(self, numInputNodes, numOutputNodes, numEpochs, learningRate):
@@ -15,7 +14,7 @@ class Network(object):
 		self.learningRate = learningRate
 		self.inputNodes = [1.0] * numInputNodes
 		self.outputNodes = [1.0] * numOutputNodes
-		self.weights = 0.01 * np.random.rand(self.numInputNodes, self.numOutputNodes)
+		self.weights = 0.15 * np.random.rand(self.numInputNodes, self.numOutputNodes)
 
 	def train(self, training_data):
 		for _ in range(self.numEpochs):
@@ -53,8 +52,8 @@ class Network(object):
 		return 1.0/(1.0+np.exp(-x))
 
 	def updateWeights(self, expectedOutput):
-		for i in range(self.numInputNodes):
-			for j in range(self.numOutputNodes):
+		for i in range(len(self.numInputNodes)):
+			for j in range(len(self.numOutputNodes)):
 				self.weights[i][j] += self.weightUpdate(self.inputNodes[i], self.calculateError(expectedOutput, self.outputNodes), self.sumInputs(j))
 
 	def weightUpdate(self, activationLevel, error, inputSum):
