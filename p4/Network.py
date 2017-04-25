@@ -17,13 +17,14 @@ class Network(object):
 		self.weights = 0.01 * np.random.rand(self.numInputNodes, self.numOutputNodes)
 
 	def train(self, training_data):
-		for _ in range(self.numEpochs):
+		for _ in xrange(self.numEpochs):
 			for trainingSet in training_data:
 				self.initializeInputNodes(trainingSet[0])
 				self.calculateOutputNodeValues()
 				self.updateWeights(trainingSet[1])
 
 	def initializeInputNodes(self, trainingInput):
+		print trainingInput.size
 		for i in range(trainingInput.size):
 			self.inputNodes[i] = 1.0 * int(trainingInput.item(i))
 		self.inputNodes[-1] = 1.0 #Bias node

@@ -48,13 +48,13 @@ def read_data_bit_map(data_file):
 	return (inputs, desired_outputs)
 
 def format_data_10_output_neurons():
-	(tr_i, tr_o) = read_data_bit_map(training_data_file)
+	(tr_i, tr_o) = read_data_bit_map(bitmap_training_data_file)
 	training_inputs = [np.reshape(list(x), (1024, 1)) for x in tr_i]
 	training_outputs = [digit_to_vector_representation(x) for x in tr_o]
 	#training_outputs = [int(x) for x in tr_o]
 	training_data = zip(training_inputs,training_outputs)
 
-	(te_i,te_o) = read_data_bit_map(testing_data_file)
+	(te_i,te_o) = read_data_bit_map(bitmap_testing_data_file)
 	testing_inputs = [np.reshape(list(x),(1024,1)) for x in te_i]
 	testing_outputs = [digit_to_vector_representation(x) for x in te_o]
 	#testing_outputs = [int(x) for x in te_o]
@@ -69,7 +69,7 @@ def digit_to_vector_representation(j):
 
 #(tr_data, te_data) = format_data_10_output_neurons()
 
-read_data_down_sampled(downsampled_training_data_file)
+#read_data_down_sampled(downsampled_training_data_file)
 
 '''
 tr_data is a tuple. First element is array of arrays of size 1024 containing
