@@ -13,7 +13,7 @@ class Network(object):
 		self.learningRate = learningRate
 		self.inputNodes = [1.0] * self.numInputNodes
 		self.outputNodes = [1.0] * self.numOutputNodes
-		self.weights = 0.15 * np.random.rand(self.numInputNodes, self.numOutputNodes)
+		self.weights = np.random.rand(self.numInputNodes, self.numOutputNodes) * 0.15
 
 	def train(self, training_data):
 		for _ in range(self.numEpochs):
@@ -29,8 +29,8 @@ class Network(object):
 
 	def calculateOutputNodeValues(self):
 		for i in range(len(self.outputNodes)):
-			print(self.sigmoid(self.sumInputs(i)))
-			self.outputNodes[i] = self.sigmoid(self.sumInputs(i))
+			self.outputNodes[i] = self.sigmoidMod(self.sumInputs(i))
+			print(self.outputNodes[i])
 
 	def sumInputs(self, index):
 		inputSum = 0.0
@@ -43,7 +43,7 @@ class Network(object):
 		return 1.0/(1.0+np.exp(-x+0.5))
 
 	def sigmoidDerivativeMod(self, x):
-		return sigmoidMod(x)*(1-sigmoidMod(x))
+		return self.sigmoidMod(x)*(1-self.sigmoidMod(x))
 
 	def sigmoid(self, x):
 		return 1.0/(1.0+np.exp(-x))
@@ -54,16 +54,12 @@ class Network(object):
 				self.weights[i][j] += self.weightUpdate(self.inputNodes[i], self.calculateError(expectedOutput, self.outputNodes), self.sumInputs(j))
 
 	def weightUpdate(self, activationLevel, error, inputSum):
-		return self.learningRate * activationLevel * error * self.sigmoidDerivative(inputSum)
+		return self.learningRate * activationLevel * error * self.sigmoidDerivativeMod(inputSum)
 
 	def sigmoidDerivative(self, x):
 		return self.sigmoid(x)*(1-self.sigmoid(x))
 
 	def calculateError(self, expectedResult, outputResult):
-
-			# print(expectedResult)
-			# sys.exit(1)
-
 			difference = [x1 - x2 for (x1, x2) in zip(expectedResult, outputResult)]
 			return np.linalg.norm(difference)
 
