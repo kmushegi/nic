@@ -7,7 +7,6 @@ class Network(object):
 	#sizes = array with number of neurons in each level: input / hidden / output
 	#[32,15,10] -> 32 input, 15 hidden and 10 output neurons
 	def __init__(self, numInputNodes, numOutputNodes, numEpochs, learningRate):
-		print("HERE")
 		self.numInputNodes = numInputNodes + 1 #Add 1 for bias node
 		self.numOutputNodes = numOutputNodes
 		self.numEpochs = numEpochs
@@ -19,13 +18,11 @@ class Network(object):
 	def train(self, training_data):
 		for _ in range(self.numEpochs):
 			for trainingSet in training_data:
-				print("HERE")
 				self.initializeInputNodes(trainingSet[0])
 				self.calculateOutputNodeValues()
 				self.updateWeights(trainingSet[1])
 
 	def initializeInputNodes(self, trainingInput):
-		print ("Training input size: " + str(trainingInput.size))
 		for i in range(trainingInput.size):
 			self.inputNodes[i] = 1.0 * int(trainingInput.item(i))
 		self.inputNodes[-1] = 1.0 #Bias node
