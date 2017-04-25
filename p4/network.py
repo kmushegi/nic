@@ -11,8 +11,8 @@ class Network(object):
 		self.numOutputNodes = numOutputNodes
 		self.numEpochs = numEpochs
 		self.learningRate = learningRate
-		self.inputNodes = [1.0] * numInputNodes
-		self.outputNodes = [1.0] * numOutputNodes
+		self.inputNodes = [1.0] * self.numInputNodes
+		self.outputNodes = [1.0] * self.numOutputNodes
 		self.weights = 0.15 * np.random.rand(self.numInputNodes, self.numOutputNodes)
 
 	def train(self, training_data):
