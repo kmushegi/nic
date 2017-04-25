@@ -1,15 +1,27 @@
 import numpy as np
 import sys
 
-training_data_file = "digit-recognition-data/32x32-bitmaps/optdigits-32x32.tra"
-testing_data_file = "digit-recognition-data/32x32-bitmaps/optdigits-32x32.tes"
+bitmap_training_data_file = "digit-recognition-data/32x32-bitmaps/optdigits-32x32.tra"
+bitmap_testing_data_file = "digit-recognition-data/32x32-bitmaps/optdigits-32x32.tes"
+
+downsampled_training_data_file = "digit-recognition-data/8x8-integer-inputs/optdigits-8x8-int.tra"
+downsampled_testing_data_file = "digit-recognition-data/8x8-integer-inputs/optdigits-8x8-int.tes"
 
 NUM_TRAINING_IMAGES = 3823
 
 #np.set_printoptions(threshold=np.nan)
 
 def read_data_down_sampled(data_file):
-	return "yo"
+	f = open(data_file)
+
+	inputs = []
+	desired_outputs = []
+
+	for line in f:
+		tokens = line.split(',')
+
+		inputs.append(" ".join(tokens[:-1]))
+		desired_outputs.append(int(tokens[-1]))
 
 def read_data_bit_map(data_file):
 	f = open(data_file)
@@ -56,6 +68,8 @@ def digit_to_vector_representation(j):
 	return e
 
 #(tr_data, te_data) = format_data_10_output_neurons()
+
+read_data_down_sampled(downsampled_training_data_file)
 
 '''
 tr_data is a tuple. First element is array of arrays of size 1024 containing
