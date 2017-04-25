@@ -17,18 +17,16 @@ class Network(object):
 		self.weights = 0.15 * np.random.rand(self.numInputNodes, self.numOutputNodes)
 
 	def train(self, training_data):
-
-		# sys.exit(1)
-
 		for _ in range(self.numEpochs):
 			for trainingSet in training_data:
 				self.initializeInputNodes(trainingSet[0])
 				self.calculateOutputNodeValues()
-				self.updateWeights()
-				sys.exit(1)
+				self.updateWeights(trainingSet[1])
 
-	def updateWeights(self):
-		return 1
+	def updateWeights(self, trainingOutput):
+		for i in range(self.numInputNodes):
+			for j in range(self.numOutputNodes):
+				self.weights[i][j] += self.weightUpdate(self.inputNodes[i], self.calculateError(trainingOutput, self.outputNodes), self.sumInputs(j))
 
 	def calculateOutputNodeValues(self):
 		for i in range(len(self.outputNodes)):
@@ -37,7 +35,6 @@ class Network(object):
 	def sumInputs(self, index):
 		inputSum = 0.0
 		for i in range(len(self.inputNodes)):
-			print(self.inputNodes[i] * self.weights[i][index])
 			inputSum += self.inputNodes[i] * self.weights[i][index]
 
 		return inputSum
@@ -45,25 +42,30 @@ class Network(object):
 	def initializeInputNodes(self, trainingInput):
 		for i in range(trainingInput.size):
 			self.inputNodes[i] = 1.0 * int(trainingInput.item(i))
+		self.inputNodes[-1] = 1.0 #Bias node
 
 	def sigmoidMod(self, x):
 		return 1.0/(1.0+np.exp(-x+0.5))
 
-	def sigmoidDerivativeMod(x):
+	def sigmoidDerivativeMod(self, x):
 		return sigmoidMod(x)*(1-sigmoidMod(x))
 
 	def sigmoid(self, x):
 		return 1.0/(1.0+np.exp(-x))
 
-	def sigmoidDerivative(x):
-		return sigmoid(x)*(1-sigmoid(x))
+	def sigmoidDerivative(self, x):
+		return self.sigmoid(x)*(1-self.sigmoid(x))
 
-	def calculateError(expectedResult, outputResult):
+	def calculateError(self, expectedResult, outputResult):
+
+			print(expectedResult)
+			sys.exit(1)
+
 			difference = [x1 - x2 for (x1, x2) in zip(expectedResult, outputResult)]
-			return np.sqrt(difference.dot(difference))
+			return np.linalg.norm(difference)
 
-	def weightUpdate(learningRate, activationLevel, error, inputSum):
-		return learningRate * activationLevel * error * sigmoidDerivative(inputSum)
+	def weightUpdate(self, activationLevel, error, inputSum):
+		return self.learningRate * activationLevel * error * self.sigmoidDerivative(inputSum)
 
 
 
