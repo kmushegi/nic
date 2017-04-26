@@ -47,6 +47,7 @@ def runACS(whichAlgorithm, numAnts, numIts, alpha, beta, rho, pfp, stopCond, sec
 			+ ".txt"
 		os.system(cmd)
 
+
 compile()
 clear_stats_folder()
 
@@ -57,6 +58,8 @@ betas = [2,3,4]
 rhos = [0.1,0.2,0.3]
 epsilons = [0.1,0.2,0.3]
 qZeroes = [0.7,0.8,0.9]
+
+
 
 whichAlgorithm = sys.argv[1]
 parallel = int(sys.argv[2])
