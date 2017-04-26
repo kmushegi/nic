@@ -2,8 +2,8 @@ import data_loader as dl
 import network
 import sys
 
-bit_map = 1 #1 - bitmap, 0 - downsampled
-num_output_neurons = 10 # or 1
+bit_map = 1 # = sys.argv[1] #1 - bitmap, 0 - downsampled
+num_output_neurons = 10 # = sys.argv[2] # or 1
 
 assert(num_output_neurons == 10 or num_output_neurons == 1)
 
