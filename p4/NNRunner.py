@@ -7,7 +7,7 @@ num_output_neurons = 10 # = sys.argv[2] # or 1
 
 assert(num_output_neurons == 10 or num_output_neurons == 1)
 
-(training_data, test_data) = dl.format_data(0,10)
+(training_data, test_data) = dl.format_data(1,10)
 
 net = network.Network(1024,10,1,0.01)
 net.train(training_data)
