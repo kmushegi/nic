@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import math
 
 #np.set_printoptions(threshold=np.nan)
 
@@ -36,11 +37,10 @@ class Network(object):
 		inputSum = 0.0
 		for i in range(len(self.inputNodes)):
 			inputSum += self.inputNodes[i] * self.weights[i][index]
-
 		return inputSum
 
 	def sigmoidMod(self, x):
-		return 1.0/(1.0+np.exp(-x+0.5))
+		return 1.0/(1.0+math.exp(-x+0.5))
 
 	def sigmoidDerivativeMod(self, x):
 		return self.sigmoidMod(x)*(1-self.sigmoidMod(x))
