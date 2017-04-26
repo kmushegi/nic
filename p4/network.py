@@ -51,10 +51,10 @@ class Network(object):
 		return inputSum
 
 	def sigmoid(self, x):
-		return 1.0/(1.0 + np.exp(-x + 0.5))
+		return 1.0 / (1.0 + np.exp(-x + 0.5))
 
 	def sigmoidPrime(self, x):
-		return self.sigmoid(x) * (1 - self.sigmoid(x))
+		return self.sigmoid(x) * (1.0 - self.sigmoid(x))
 
 	def updateWeights(self, expectedOutput):
 		for i in range(self.numInputNodes):
