@@ -14,7 +14,7 @@ class Network(object):
 		self.learningRate = learningRate
 		self.inputNodes = [1.0] * self.numInputNodes
 		self.outputNodes = [1.0] * self.numOutputNodes
-		self.weights = np.random.rand(self.numInputNodes, self.numOutputNodes) * 0.15
+		self.weights = np.random.rand(self.numInputNodes, self.numOutputNodes) * 0.01
 
 	def train(self, training_data):
 		for _ in range(self.numEpochs):
@@ -40,7 +40,7 @@ class Network(object):
 		return inputSum
 
 	def sigmoidMod(self, x):
-		return 1.0/(1.0+math.exp(-x+0.5))
+		return 1.0/(1.0+math.exp(-x))
 
 	def sigmoidDerivativeMod(self, x):
 		return self.sigmoidMod(x)*(1-self.sigmoidMod(x))
