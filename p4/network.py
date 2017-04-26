@@ -16,12 +16,23 @@ class Network(object):
 		self.outputNodes = [1.0] * self.numOutputNodes
 		self.weights = np.random.rand(self.numInputNodes, self.numOutputNodes) * 0.15
 
-	def train(self, training_data):
-		for _ in range(self.numEpochs):
+	def train(self, training_data, test_data=None):
+		for i in xrange(self.numEpochs):
 			for trainingSet in training_data:
 				self.initializeInputNodes(trainingSet[0])
 				self.calculateOutputNodeValues()
 				self.updateWeights(trainingSet[1])
+			print "Epoch: {0} done.".format(i)
+		if test_data:
+			self.evaluate(test_data)
+
+	def evaluate(self, test_data):
+		results = [(np.argmax(self.feedForward(x)), y) for x,y in test_data]
+		#print(results)
+
+	def feedForward(self, i):
+		output = self.sigmoidMod(self.sumInputs(i))
+		return output
 
 	def initializeInputNodes(self, trainingInput):
 		for i in range(trainingInput.size):
