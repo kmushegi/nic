@@ -15,11 +15,11 @@ Requires: numpy for fast linear algebra operations & data formatting.
 
 import numpy as np
 
-bitmap_training_data_file = "data/bitmaps/optdigits-32x32.tra"
-bitmap_testing_data_file = "data/bitmaps/optdigits-32x32.tes"
+bitmap_training_data_file = "../data/bitmaps/optdigits-32x32.tra"
+bitmap_testing_data_file = "../data/bitmaps/optdigits-32x32.tes"
 
-downsampled_training_data_file = "data/downsampled/optdigits-8x8-int.tra"
-downsampled_testing_data_file = "data/downsampled/optdigits-8x8-int.tes"
+downsampled_training_data_file = "../data/downsampled/optdigits-8x8-int.tra"
+downsampled_testing_data_file = "../data/downsampled/optdigits-8x8-int.tes"
 
 NUM_TRAINING_IMAGES = 3823
 
