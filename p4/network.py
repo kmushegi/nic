@@ -14,8 +14,7 @@ class Network(object):
 		self.num_outputs = num_outputs
 		self.num_epochs = num_epochs
 		self.learning_rate = learning_rate
-		self.in_activations = np.ones(self.num_inputs)
-		self.in_activations = np.reshape(self.in_activations,(self.num_inputs,1))
+		self.in_activations = np.reshape(np.ones(self.num_inputs),(self.num_inputs,1))
 		self.out_activations = [1.0] * self.num_outputs
 		#Negative weights between -0.15 and 0.15
 		self.weights = 0.3 * np.random.rand(self.num_inputs, self.num_outputs) - 0.15
