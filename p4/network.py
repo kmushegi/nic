@@ -5,11 +5,10 @@ import math
 import random
 import time
 
-np.set_printoptions(threshold=10)
+np.set_printoptions(threshold=np.nan)
 
 class Network(object):
-	#sizes = array with number of neurons in each level: input / hidden / output
-	#[32,15,10] -> 32 input, 15 hidden and 10 output neurons
+
 	def __init__(self, num_inputs, num_outputs, num_epochs, learning_rate):
 		self.num_inputs = num_inputs + 1 #Add 1 for bias node
 		self.num_outputs = num_outputs
