@@ -1,5 +1,4 @@
 import numpy as np
-import sys
 
 bitmap_training_data_file = "data/bitmaps/optdigits-32x32.tra"
 bitmap_testing_data_file = "data/bitmaps/optdigits-32x32.tes"
