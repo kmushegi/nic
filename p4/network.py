@@ -3,6 +3,7 @@ import numpy as np
 import sys
 import math
 import random
+import time
 
 np.set_printoptions(threshold=np.nan)
 
@@ -28,8 +29,17 @@ class Network(object):
 			for index, sample in enumerate(training_data):
 				print("Sample: " + str(index), end='\r')
 				sys.stdout.flush()
+				stf = time.time()
+
 				self.feedForward(sample[0])
-				self.updateWeights(sample[1])
+
+				ef = time.time()
+
+				self.update(sample[1])
+
+				ew = time.time()
+
+				print("Update Weights: " + str(ew-ef) + "\t FF: " + str(ef-stf))
 			# print "Epoch: {0} done.".format(i)
 		if test_data:
 			self.evaluate(test_data)
@@ -49,7 +59,20 @@ class Network(object):
 	def sigmoidPrime(self, x):
 		return self.sigmoid(x) * (1.0 - self.sigmoid(x))
 
-	def updateWeights(self, expectedOutput):
+	def update(self, desired_output):
+		error = (desired_output - self.out_activations)
+		out_deltas = self.sigmoidPrime(self.out_activations) * error
+
+		#update weights from input to output layer
+		for i in xrange(self.num_inputs):
+			for o in xrange(self.num_outputs):
+				delta = out_deltas[o] * self.in_activations[i]
+				self.weights[i][o] -= 
+
+
+
+
+
 		for i in xrange(self.num_inputs):
 			for j in xrange(self.num_outputs):
 				self.weights[i][j] += self.learning_rate * self.in_activations[i] * (expectedOutput[j] - self.out_activations[j]) * self.sigmoidPrime(self.inputSums[j])
