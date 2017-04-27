@@ -5,7 +5,7 @@ import math
 import random
 import time
 
-np.set_printoptions(threshold=np.nan)
+np.set_printoptions(threshold=10)
 
 class Network(object):
 	#sizes = array with number of neurons in each level: input / hidden / output
@@ -17,11 +17,13 @@ class Network(object):
 		self.learning_rate = learning_rate
 
 		self.in_activations = np.reshape(np.ones(self.num_inputs),(self.num_inputs,1))
-		self.out_activations = [1.0] * self.num_outputs
+		self.out_activations = np.ones(self.num_outputs) #[1.0] * self.num_outputs
 
 		#Negative weights between -0.15 and 0.15
 		self.weights = 0.3 * np.random.rand(self.num_inputs, self.num_outputs) - 0.15
-		self.inputSums = [1.0] * self.num_outputs
+		self.inputSums = np.ones(self.num_outputs) #[1.0] * self.num_outputs #REVIEW
+
+		self.delta_io = np.zeros((self.num_inputs, self.num_outputs))
 
 	def sigmoid(self, x):
 		return 1.0 / (1.0 + np.exp(-x))
@@ -30,24 +32,28 @@ class Network(object):
 		return self.sigmoid(x) * (1.0 - self.sigmoid(x))
 
 	def train(self, training_data, test_data=None):
+
+		if test_data: n_test_samples = len(test_data)
+
 		for i in xrange(self.num_epochs):
 			random.shuffle(training_data)
 			for index, sample in enumerate(training_data):
-				# print("Sample: " + str(index), end='\r')
-				# sys.stdout.flush()
-
+				print("Sample: ",index,end='\r')
+				sys.stdout.flush()
 				self.feedForward(sample[0])
 				error = self.update(sample[1])
-			print("Epoch: " + i + " finished," end='\r')
-			sys.stdout.flush()
-			print("")	
-		if test_data:
-			print("testing data was supplied")
+			print("")
+			if test_data:
+				print("Epoch {0}: {1} / {2} = {3}%".format(
+					i, self.test(test_data),n_test_samples))
+			else:
+				print("Epoch {0}".format(i))
 
 	def feedForward(self, inputs):
 		self.in_activations[0:self.num_inputs-1] = inputs
 		self.inputSums = np.dot(self.weights.T, self.in_activations)
 		self.out_activations = self.sigmoid(self.inputSums)
+		return self.out_activations
 
 	def update(self, desired_output):
 		error = -(desired_output - self.out_activations)
@@ -57,8 +63,8 @@ class Network(object):
 		for i in xrange(self.num_inputs):
 			for o in xrange(self.num_outputs):
 				delta = out_deltas[o] * self.in_activations[i]
-				self.weights[i][o] -= self.learning_rate * delta #+ delta_io[i][o]
-				#delta_io[i][o] = delta
+				self.weights[i][o] -= self.learning_rate * delta + self.delta_io[i][o]
+				self.delta_io[i][o] = delta
 
 		error = 0.0
 		for do in xrange(len(desired_output)):
@@ -69,5 +75,11 @@ class Network(object):
 			for j in xrange(self.num_outputs):
 				self.weights[i][j] += self.learning_rate * self.in_activations[i] * (expectedOutput[j] - self.out_activations[j]) * self.sigmoidPrime(self.inputSums[j])
 		'''
+
+	def test(self, test_data):
+
+		test_results = [(np.argmax(self.feedForward(x)), np.argmax(y))
+						for (x,y) in test_data]
+		return sum((x == y) for (x,y) in test_results)
 
 
