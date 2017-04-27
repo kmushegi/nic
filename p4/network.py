@@ -67,16 +67,17 @@ class Network(object):
 		for i in xrange(self.num_inputs):
 			for o in xrange(self.num_outputs):
 				delta = out_deltas[o] * self.in_activations[i]
-				self.weights[i][o] -= 
+				self.weights[i][o] -= learning_rate * delta #+ delta_io[i][o]
+				#delta_io[i][o] = delta
 
-
-
-
-
+		error = 0.0
+		for do in xrange(len(desired_output)):
+			error += 0.5 * (desired_output[do] - self.out_activations[do]) ** 2
+		return error
+		'''
 		for i in xrange(self.num_inputs):
 			for j in xrange(self.num_outputs):
 				self.weights[i][j] += self.learning_rate * self.in_activations[i] * (expectedOutput[j] - self.out_activations[j]) * self.sigmoidPrime(self.inputSums[j])
-
-
+		'''
 
 
