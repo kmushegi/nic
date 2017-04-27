@@ -1,3 +1,18 @@
+"""
+Neural Networks for Digit Recognition - Project 4
+Nature Inspired Computation
+Spring 2017
+Stephen Majercik
+
+Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
+
+This file is part of Neural Networks for Digit Recognition, Project 4. This file 
+contains the implementation of the Perceptron model of artificial neural networks,
+with two layers: input & output.
+
+Requires: numpy for fast linear algebra operations
+"""
+
 from __future__ import print_function
 import numpy as np
 import sys
