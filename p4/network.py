@@ -44,10 +44,12 @@ class Network(object):
 				error = self.update(sample[1])
 			print("")
 			if test_data:
-				print("Epoch {0}: {1} / {2} = {3}%".format(
+				print("Epoch {0}: {1} / {2}".format(
 					i, self.test(test_data),n_test_samples))
 			else:
 				print("Epoch {0}".format(i))
+
+		return self.weights
 
 	def feedForward(self, inputs):
 		self.in_activations[0:self.num_inputs-1] = inputs
