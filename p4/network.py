@@ -60,7 +60,7 @@ class Network(object):
 		return self.sigmoid(x) * (1.0 - self.sigmoid(x))
 
 	def update(self, desired_output):
-		error = (desired_output - self.out_activations)
+		error = -(desired_output - self.out_activations)
 		out_deltas = self.sigmoidPrime(self.out_activations) * error
 
 		#update weights from input to output layer
