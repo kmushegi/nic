@@ -16,7 +16,8 @@ class Network(object):
 		self.learning_rate = learning_rate
 		self.in_activations = np.ones(self.num_inputs)
 		self.in_activations = np.reshape(self.in_activations,(self.num_inputs,1))
-		self.out_activations = [1.0] * self.num_outputs
+		self.out_activations = np.ones(self.num_outputs)
+
 		#Negative weights between -0.15 and 0.15
 		self.weights = 0.3 * np.random.rand(self.num_inputs, self.num_outputs) - 0.15
 		self.inputSums = [1.0] * self.num_outputs
@@ -24,11 +25,11 @@ class Network(object):
 	def train(self, training_data, test_data=None):
 		for i in xrange(self.num_epochs):
 			random.shuffle(training_data)
-			for index, trainingSet in enumerate(training_data):
+			for index, sample in enumerate(training_data):
 				print("Sample: " + str(index), end='\r')
 				sys.stdout.flush()
-				self.feedForward(trainingSet[0])
-				self.updateWeights(trainingSet[1])
+				self.feedForward(sample[0])
+				self.updateWeights(sample[1])
 			# print "Epoch: {0} done.".format(i)
 		if test_data:
 			self.evaluate(test_data)
