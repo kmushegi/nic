@@ -55,11 +55,11 @@ class Network(object):
 
 			#For every pair of data and desired output
 			for index, sample in enumerate(training_data):
-				print("Sample: ",index,end='\r')
-				sys.stdout.flush()
+				#print("Sample: ",index,end='\r')
+				#sys.stdout.flush()
 				self.feedForward(sample[0])
 				error = self.update(sample[1])
-			print("")
+			#print("")
 			if test_data:
 				print("Epoch {0}: {1} / {2}".format(
 					i, self.test(test_data),n_test_samples))
@@ -73,10 +73,12 @@ class Network(object):
 
 		#Dot list of weights on each edge from input nodes and values
 		self.inputSums = np.dot(self.weights.T, self.in_activations)
-
+		print(self.inputSums)
 		#Plug the sum into the activtion function
+		print(self.sigmoid(self.inputSums))
 		self.out_activations = self.sigmoid(self.inputSums)
-		#print(self.out_activations)
+		print(self.out_activations)
+		sys.exit(1)
 		return self.out_activations
 
 	#Update weights
