@@ -16,18 +16,17 @@ import data_loader as dl
 import network
 import sys
 
-CL_PARAMS = False
+N_EPOCHS = 50
 
-if CL_PARAMS:
+#if # of CL parameters is correct take them, else go to default
+if len(sys.argv) == 4:
 	bit_map = int(sys.argv[1]) #1 - bitmap, 0 - downsampled
 	n_out_neurons = int(sys.argv[2]) # 10 or 1
-	n_epochs = int(sys.argv[3])
-	l_rate = float(sys.argv[4])
+	l_rate = float(sys.argv[3])
 else:
 	bit_map = 1 # 1 - bitmap, 0 - downsampled
 	n_out_neurons = 1 # 10 or 1
-	n_epochs = 10
-	l_rate = 0.01
+	l_rate = 0.5
 
 assert(n_out_neurons == 10 or n_out_neurons == 1)
 
@@ -36,11 +35,13 @@ if bit_map:
 else:
 	n_in_neurons = 64
 
-
+#obtain data using data_loader.py
 (training_data, test_data) = dl.format_data(bit_map,n_out_neurons)
 
+#create an instance of the neural network with specified parameters
 net = network.Network(num_inputs=n_in_neurons, num_outputs=n_out_neurons, 
-						num_epochs=n_epochs, learning_rate=l_rate)
+						num_epochs=N_EPOCHS, learning_rate=l_rate)
 
+#start the training process
 net.train(training_data, test_data)
 
