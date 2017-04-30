@@ -74,9 +74,9 @@ class Network(object):
 
 		#dot weights with the input
 		self.inputSums = np.dot(self.weights.T, self.in_activations)
-
-		#plug the sum into the activation function
+		#Plug the sum into the activtion function
 		self.out_activations = self.sigmoid(self.inputSums)
+		
 		return self.out_activations
 
 	#update weights in the direction of the gradient descent
@@ -84,15 +84,18 @@ class Network(object):
 
 		if (self.num_outputs == 1): #'normalize' desired output to be in [0,1]
 			desired_output /= 10.0
+			# self.out_activations *= 10.0
 
-		error = -(desired_output - self.out_activations)
+		# error = -(desired_output - self.out_activations)
+		error = desired_output - self.out_activations
+
 		out_deltas = self.sigmoidPrime(self.out_activations) * error
 
 		#update weights from input to output layer
 		for i in xrange(self.num_inputs):
 			for o in xrange(self.num_outputs): #Update weight rule from slides
 				delta = out_deltas[o] * self.in_activations[i]
-				self.weights[i][o] -= self.learning_rate * delta + self.delta_io[i][o]
+				self.weights[i][o] += self.learning_rate * delta + self.delta_io[i][o]
 				self.delta_io[i][o] = delta
 		'''
 		error = 0.0
