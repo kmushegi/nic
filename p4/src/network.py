@@ -48,13 +48,13 @@ class Network(object):
 		if test_data: n_test_samples = len(test_data)
 
 		for i in xrange(self.num_epochs):
-			random.shuffle(training_data)
+			#random.shuffle(training_data)
 			for index, sample in enumerate(training_data):
-				print("Sample: ",index,end='\r')
+				#print("Sample: ",index,end='\r')
 				sys.stdout.flush()
 				self.feedForward(sample[0])
 				error = self.update(sample[1])
-			print("")
+			#print("")
 			if test_data:
 				print("Epoch {0}: {1} / {2}".format(
 					i, self.test(test_data),n_test_samples))
@@ -67,6 +67,7 @@ class Network(object):
 		self.in_activations[0:self.num_inputs-1] = inputs
 		self.inputSums = np.dot(self.weights.T, self.in_activations)
 		self.out_activations = self.sigmoid(self.inputSums)
+		print(self.out_activations)
 		return self.out_activations
 
 	def update(self, desired_output):
@@ -79,11 +80,12 @@ class Network(object):
 				delta = out_deltas[o] * self.in_activations[i]
 				self.weights[i][o] -= self.learning_rate * delta + self.delta_io[i][o]
 				self.delta_io[i][o] = delta
-
+		'''
 		error = 0.0
 		for do in xrange(len(desired_output)):
 			error += 0.5 * (desired_output[do] - self.out_activations[do]) ** 2
 		return error
+		'''
 		'''
 		for i in xrange(self.num_inputs):
 			for j in xrange(self.num_outputs):
@@ -91,9 +93,10 @@ class Network(object):
 		'''
 
 	def test(self, test_data):
-
-		test_results = [(np.argmax(self.feedForward(x)), np.argmax(y))
-						for (x,y) in test_data]
+		if self.num_outputs == 10:
+			test_results = [(np.argmax(self.feedForward(x)), np.argmax(y)) for (x,y) in test_data]
+		else if self.num_outputs == 1:
+			test_results = [(np.argmax(self.feedForward(x)), y) for (x,y) in test_data]
 		return sum((x == y) for (x,y) in test_results)
 
 

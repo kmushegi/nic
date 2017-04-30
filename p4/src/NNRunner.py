@@ -25,7 +25,7 @@ if CL_PARAMS:
 	l_rate = float(sys.argv[4])
 else:
 	bit_map = 1 # 1 - bitmap, 0 - downsampled
-	n_out_neurons = 10 # 10 or 1
+	n_out_neurons = 1 # 10 or 1
 	n_epochs = 10
 	l_rate = 0.01
 
