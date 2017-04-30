@@ -51,15 +51,15 @@ class Network(object):
 
 		#For every epoch
 		for i in xrange(self.num_epochs):
-			#random.shuffle(training_data) #Shuffle input data and desired  outputs pairs
+			random.shuffle(training_data) #Shuffle input data and desired  outputs pairs
 
 			#For every pair of data and desired output
 			for index, sample in enumerate(training_data):
-				#print("Sample: ",index,end='\r')
+				print("Sample: ",index,end='\r')
 				sys.stdout.flush()
 				self.feedForward(sample[0])
 				error = self.update(sample[1])
-			#print("")
+			print("")
 			if test_data:
 				print("Epoch {0}: {1} / {2}".format(
 					i, self.test(test_data),n_test_samples))
@@ -76,7 +76,7 @@ class Network(object):
 
 		#Plug the sum into the activtion function
 		self.out_activations = self.sigmoid(self.inputSums)
-		print(self.out_activations)
+		#print(self.out_activations)
 		return self.out_activations
 
 	#Update weights
@@ -105,7 +105,7 @@ class Network(object):
 	def test(self, test_data):
 		if self.num_outputs == 10:
 			test_results = [(np.argmax(self.feedForward(x)), np.argmax(y)) for (x,y) in test_data]
-		else if self.num_outputs == 1:
+		elif self.num_outputs == 1:
 			test_results = [(np.argmax(self.feedForward(x)), y) for (x,y) in test_data]
 		return sum((x == y) for (x,y) in test_results)
 
