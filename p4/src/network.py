@@ -17,6 +17,7 @@ from __future__ import print_function
 import numpy as np
 import sys
 import random
+import math
 
 np.set_printoptions(threshold=np.nan)
 
@@ -55,11 +56,11 @@ class Network(object):
 
 			#For every pair of data and desired output
 			for index, sample in enumerate(training_data):
-				#print("Sample: ",index,end='\r')
-				#sys.stdout.flush()
+				print("Sample: ",index,end='\r')
+				sys.stdout.flush()
 				self.feedForward(sample[0])
 				error = self.update(sample[1])
-			#print("")
+			print("")
 			if test_data:
 				print("Epoch {0}: {1} / {2}".format(
 					i, self.test(test_data),n_test_samples))
@@ -85,7 +86,7 @@ class Network(object):
 	def update(self, desired_output):
 
 		if (self.num_outputs == 1):
-			desired_output/=10
+			desired_output /= 10.0
 
 		error = -(desired_output - self.out_activations)
 		out_deltas = self.sigmoidPrime(self.out_activations) * error
@@ -112,7 +113,7 @@ class Network(object):
 		if self.num_outputs == 10:
 			test_results = [(np.argmax(self.feedForward(x)), np.argmax(y)) for (x,y) in test_data]
 		elif self.num_outputs == 1:
-			test_results = [(np.argmax(self.feedForward(x)), y) for (x,y) in test_data]
+			test_results = [(math.floor(self.feedForward(x) * 10), y) for (x,y) in test_data]
 		return sum((x == y) for (x,y) in test_results)
 
 
