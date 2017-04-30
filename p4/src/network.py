@@ -37,9 +37,11 @@ class Network(object):
 
 		self.delta_io = np.zeros((self.num_inputs, self.num_outputs))
 
+	#Activation function
 	def sigmoid(self, x):
 		return 1.0 / (1.0 + np.exp(-x))
 
+	#Derivative of activation function
 	def sigmoidPrime(self, x):
 		return self.sigmoid(x) * (1.0 - self.sigmoid(x))
 
@@ -47,8 +49,11 @@ class Network(object):
 
 		if test_data: n_test_samples = len(test_data)
 
+		#For every epoch
 		for i in xrange(self.num_epochs):
-			#random.shuffle(training_data)
+			#random.shuffle(training_data) #Shuffle input data and desired  outputs pairs
+
+			#For every pair of data and desired output
 			for index, sample in enumerate(training_data):
 				#print("Sample: ",index,end='\r')
 				sys.stdout.flush()
@@ -65,18 +70,23 @@ class Network(object):
 
 	def feedForward(self, inputs):
 		self.in_activations[0:self.num_inputs-1] = inputs
+
+		#Dot list of weights on each edge from input nodes and values
 		self.inputSums = np.dot(self.weights.T, self.in_activations)
+
+		#Plug the sum into the activtion function
 		self.out_activations = self.sigmoid(self.inputSums)
 		print(self.out_activations)
 		return self.out_activations
 
+	#Update weights
 	def update(self, desired_output):
 		error = -(desired_output - self.out_activations)
 		out_deltas = self.sigmoidPrime(self.out_activations) * error
 
 		#update weights from input to output layer
 		for i in xrange(self.num_inputs):
-			for o in xrange(self.num_outputs):
+			for o in xrange(self.num_outputs): #Update weight rule from slides
 				delta = out_deltas[o] * self.in_activations[i]
 				self.weights[i][o] -= self.learning_rate * delta + self.delta_io[i][o]
 				self.delta_io[i][o] = delta
