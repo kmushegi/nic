@@ -26,12 +26,7 @@ if len(sys.argv) == 4:
 else:
 	bit_map = 1 # 1 - bitmap, 0 - downsampled
 	n_out_neurons = 1 # 10 or 1
-<<<<<<< Updated upstream
 	l_rate = 0.5
-=======
-	n_epochs = 10
-	l_rate = 1
->>>>>>> Stashed changes
 
 assert(n_out_neurons == 10 or n_out_neurons == 1)
 
