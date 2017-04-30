@@ -73,16 +73,20 @@ class Network(object):
 
 		#Dot list of weights on each edge from input nodes and values
 		self.inputSums = np.dot(self.weights.T, self.in_activations)
-		print(self.inputSums)
+		# print(self.inputSums)
 		#Plug the sum into the activtion function
-		print(self.sigmoid(self.inputSums))
+		# print(self.sigmoid(self.inputSums))
 		self.out_activations = self.sigmoid(self.inputSums)
-		print(self.out_activations)
-		sys.exit(1)
+		# print(self.out_activations)
+		# sys.exit(1)
 		return self.out_activations
 
 	#Update weights
 	def update(self, desired_output):
+
+		if (self.num_outputs == 1):
+			desired_output/=10
+
 		error = -(desired_output - self.out_activations)
 		out_deltas = self.sigmoidPrime(self.out_activations) * error
 
