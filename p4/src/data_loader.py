@@ -9,8 +9,6 @@ Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 This file is part of Neural Networks for Digit Recognition, Project 4. This file 
 contains the implementation of data loading routine used to read the training and
 testing data from .tes and .tra files provided by Professor Majercik.
-
-Requires: numpy for fast linear algebra operations & data formatting.
 """
 
 import numpy as np

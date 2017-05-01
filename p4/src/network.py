@@ -6,11 +6,9 @@ Stephen Majercik
 
 Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 
-This file is part of Neural Networks for Digit Recognition, Project 4. This file 
-contains the implementation of the Perceptron model of artificial neural networks,
-with two layers: input & output.
-
-Requires: numpy for fast linear algebra operations
+This file is part of Neural Networks for Digit Recognition, Project 4. This file
+contains the implementation of the Perceptron model of artificial neural 
+networks, with two layers: input & output.
 """
 
 from __future__ import print_function
@@ -20,27 +18,27 @@ import random
 import math
 
 np.set_printoptions(threshold=np.nan)
+np.seterr(all='ignore')
 
 class Network(object):
 
 	def __init__(self, num_inputs, num_outputs, num_epochs, learning_rate):
-		self.num_inputs = num_inputs + 1 #Add 1 for bias node
+		self.num_inputs = num_inputs + 1 #add 1 for bias node
 		self.num_outputs = num_outputs
 		self.num_epochs = num_epochs
 		self.learning_rate = learning_rate
 
 		self.in_activations = np.reshape(np.ones(self.num_inputs),(self.num_inputs,1))
-		self.out_activations = np.ones(self.num_outputs) #[1.0] * self.num_outputs
+		self.out_activations = np.ones(self.num_outputs)
+		self.delta_io = np.zeros((self.num_inputs, self.num_outputs))
 
 		#negative weights between -0.15 and 0.15
 		self.weights = 0.3 * np.random.rand(self.num_inputs, self.num_outputs) - 0.15
-		self.inputSums = np.ones(self.num_outputs) #[1.0] * self.num_outputs #REVIEW
-
-		self.delta_io = np.zeros((self.num_inputs, self.num_outputs))
+		self.inputSums = np.ones(self.num_outputs)
 
 	#activation function
 	def sigmoid(self, x):
-		return 1.0 / (1.0 + np.exp(-x))
+		return 1.0 / (1.0 + np.exp(np.longfloat(-x)))
 
 	#derivative of activation function
 	def sigmoidPrime(self, x):
@@ -52,18 +50,18 @@ class Network(object):
 
 		#for every epoch
 		for i in xrange(self.num_epochs):
-			random.shuffle(training_data) #Shuffle input data and desired  outputs pairs
-			#for every input/output pair
-			for index, sample in enumerate(training_data):
-				print("Sample: ",index,end='\r')
-				sys.stdout.flush()
+			random.shuffle(training_data) #shuffle input data and desired  outputs pairs
+			
+			for index, sample in enumerate(training_data): #for every input/output pair
+				#print("Sample: ",index,end='\r')
+				#sys.stdout.flush()
 				self.feedForward(sample[0])
 				self.update(sample[1])
-			print("")
+			#print("")
 			if test_data:
-				print("Epoch {0}: {1} / {2}".format(i, self.test(test_data),n_test_samples))
+				print("Epoch {0}:\t {1} \t {2}".format(i+1, self.test(test_data),n_test_samples))
 			else:
-				print("Epoch {0}".format(i))
+				print("Epoch {0}".format(i+1))
 
 		return self.weights
 
@@ -74,9 +72,9 @@ class Network(object):
 
 		#dot weights with the input
 		self.inputSums = np.dot(self.weights.T, self.in_activations)
+
 		#Plug the sum into the activtion function
 		self.out_activations = self.sigmoid(self.inputSums)
-		
 		return self.out_activations
 
 	#update weights in the direction of the gradient descent
@@ -84,31 +82,13 @@ class Network(object):
 
 		if (self.num_outputs == 1): #'normalize' desired output to be in [0,1]
 			desired_output /= 10.0
-			# self.out_activations *= 10.0
 
-		# error = -(desired_output - self.out_activations)
-		error = desired_output - self.out_activations
-
+		error = -(desired_output - self.out_activations)
 		out_deltas = self.sigmoidPrime(self.out_activations) * error
 
 		delta = out_deltas.T * self.in_activations
 		self.weights -= (self.learning_rate * delta + self.delta_io)
 		self.delta_io = delta
-
-		#update weights from input to output layer
-		'''
-		for i in xrange(self.num_inputs):
-			for o in xrange(self.num_outputs): #Update weight rule from slides
-				delta = out_deltas[o] * self.in_activations[i]
-				self.weights[i][o] += self.learning_rate * delta + self.delta_io[i][o]
-				self.delta_io[i][o] = delta
-		'''
-		'''
-		error = 0.0
-		for do in xrange(len(desired_output)):
-			error += 0.5 * (desired_output[do] - self.out_activations[do]) ** 2
-		return error
-		'''
 
 	#feed test_data through the neural net and return the number of correct predictions
 	def test(self, test_data):
@@ -117,5 +97,10 @@ class Network(object):
 		elif self.num_outputs == 1:
 			test_results = [(math.floor(self.feedForward(x) * 10.0), y) for (x,y) in test_data]
 		return sum((x == y) for (x,y) in test_results)
+
+
+
+
+
 
 
