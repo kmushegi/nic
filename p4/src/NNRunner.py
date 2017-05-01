@@ -25,7 +25,7 @@ if len(sys.argv) == 4:
 	l_rate = float(sys.argv[3])
 else:
 	bit_map = 1 # 1 - bitmap, 0 - downsampled
-	n_out_neurons = 1 # 10 or 1
+	n_out_neurons = 10 # 10 or 1
 	l_rate = 0.5
 
 assert(n_out_neurons == 10 or n_out_neurons == 1)
