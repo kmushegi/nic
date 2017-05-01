@@ -88,12 +88,18 @@ class Network(object):
 		error = -(desired_output - self.out_activations)
 		out_deltas = self.sigmoidPrime(self.out_activations) * error
 
+		delta = out_deltas.T * self.in_activations
+		self.weights -= (self.learning_rate * delta + self.delta_io)
+		self.delta_io = delta
+
 		#update weights from input to output layer
+		'''
 		for i in xrange(self.num_inputs):
 			for o in xrange(self.num_outputs): #Update weight rule from slides
 				delta = out_deltas[o] * self.in_activations[i]
 				self.weights[i][o] -= self.learning_rate * delta + self.delta_io[i][o]
 				self.delta_io[i][o] = delta
+		'''
 		'''
 		error = 0.0
 		for do in xrange(len(desired_output)):
