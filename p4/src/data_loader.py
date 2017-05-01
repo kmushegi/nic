@@ -101,7 +101,7 @@ def format_data(bit_map, num_output_neurons):
 		testing_data = zip(testing_inputs,testing_outputs)
 
 		return (training_data, testing_data)
-	else:#down-sampled
+	else: #down-sampled
 		#(inputs , desired_outputs) for training and testing data
 		(tr_i, tr_o) = read_data_down_sampled(downsampled_training_data_file)
 		(te_i, te_o) = read_data_down_sampled(downsampled_testing_data_file)
@@ -116,7 +116,7 @@ def format_data(bit_map, num_output_neurons):
 			testing_outputs = [digit_to_vector_representation(x) for x in te_o]
 		else:#Only 1 output node
 			training_outputs = [int(x) for x in tr_o]
-			training_outputs = [int(x) for x in te_o]
+			testing_outputs = [int(x) for x in te_o]
 
 		#Creates a list where each element is the 64-bit list paired with corr. desired output
 		training_data = zip(training_inputs, training_outputs)
