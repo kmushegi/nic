@@ -20,6 +20,11 @@ import math
 np.set_printoptions(threshold=np.nan)
 np.seterr(all='ignore')
 
+
+#momentum term - magic number selected by trial and error, let's us go further
+#towards gradient descent, but not too far to miss the minimum point
+M = 0.5
+
 class Network(object):
 
 	def __init__(self, num_inputs, num_outputs, num_epochs, learning_rate):
@@ -30,6 +35,8 @@ class Network(object):
 
 		self.in_activations = np.reshape(np.ones(self.num_inputs),(self.num_inputs,1))
 		self.out_activations = np.ones(self.num_outputs)
+
+		#keep track of how much weights need to change at next iteration
 		self.delta_io = np.zeros((self.num_inputs, self.num_outputs))
 
 		#negative weights between -0.15 and 0.15
@@ -87,7 +94,7 @@ class Network(object):
 		out_deltas = self.sigmoidPrime(self.out_activations) * error
 
 		delta = out_deltas.T * self.in_activations
-		self.weights -= (self.learning_rate * delta + self.delta_io)
+		self.weights -= (self.learning_rate * delta + M * self.delta_io)
 		self.delta_io = delta
 
 	#feed test_data through the neural net and return the number of correct predictions
