@@ -39,7 +39,7 @@ class Network(object):
 		#keep track of how much weights need to change at next iteration
 		self.delta_io = np.zeros((self.num_inputs, self.num_outputs))
 
-		#negative weights between -0.15 and 0.15
+		#Initialize weights randomly between -0.15 and 0.15
 		self.weights = 0.3 * np.random.rand(self.num_inputs, self.num_outputs) - 0.15
 		self.inputSums = np.ones(self.num_outputs)
 
@@ -57,14 +57,11 @@ class Network(object):
 
 		#for every epoch
 		for i in xrange(self.num_epochs):
-			random.shuffle(training_data) #shuffle input data and desired  outputs pairs
+			random.shuffle(training_data) #shuffle input data and desired outputs pairs
 			
 			for index, sample in enumerate(training_data): #for every input/output pair
-				#print("Sample: ",index,end='\r')
-				#sys.stdout.flush()
 				self.feedForward(sample[0])
 				self.update(sample[1])
-			#print("")
 			if test_data:
 				print("Epoch {0}:\t {1} \t {2}".format(i+1, self.test(test_data),n_test_samples))
 			else:
@@ -90,6 +87,7 @@ class Network(object):
 		if (self.num_outputs == 1): #'normalize' desired output to be in [0,1]
 			desired_output /= 10.0
 
+		#Calculate error between perceptron output and expected output
 		error = -(desired_output - self.out_activations)
 		out_deltas = self.sigmoidPrime(self.out_activations) * error
 
@@ -100,9 +98,12 @@ class Network(object):
 	#feed test_data through the neural net and return the number of correct predictions
 	def test(self, test_data):
 		if self.num_outputs == 10:
+			#'Zip' together the results from our perceptron and the expected test output to form a tuple
 			test_results = [(np.argmax(self.feedForward(x)), np.argmax(y)) for (x,y) in test_data]
 		elif self.num_outputs == 1:
+			#Here, the output of our perceptron is multiplied by 10, as our expected test output is a number [0,9]
 			test_results = [(math.floor(self.feedForward(x) * 10.0), y) for (x,y) in test_data]
+		#Return the total number of test cases that were correctly classified
 		return sum((x == y) for (x,y) in test_results)
 
 
