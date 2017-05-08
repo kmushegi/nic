@@ -11,13 +11,14 @@ from keras import backend as K
 from keras.callbacks import History
 from keras.regularizers import l2
 from keras.datasets import cifar10
+from keras.optimizers import Optimizer
 
 import numpy as np
 from matplotlib import pyplot
 from scipy.misc import toimage
 
 n_classes = 10
-n_epochs = 200
+n_epochs = 20
 steps_per_epoch = 32
 batch_size = 32
 data_augmentation = False
@@ -74,4 +75,13 @@ hist = model.fit(x_train,y_train,
 	epochs=n_epochs,
 	validation_data=(x_test,y_test),
 	shuffle=True)
+'''
+class genetic_optimizer(Optimizer):
 
+	def __init__(self, **kwargs):
+		super(genetic_optimizer,self).__init__(**kwargs)
+
+	def get_updates(self, params, loss):
+
+	def get_config(self):
+'''
