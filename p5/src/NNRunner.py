@@ -26,7 +26,7 @@ if len(sys.argv) == 4:
 	l_rate = float(sys.argv[4])
 else:
 	dataset = "cifar10" #bitmap,downsampled, cifar10
-	n_hid_neurons = 30
+	n_hid_neurons = 100
 	n_out_neurons = 10 # 10 or 1
 	l_rate = 0.5
 

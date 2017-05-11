@@ -171,12 +171,14 @@ def load_data():
 
 	training_inputs = normalize(training_inputs)
 	training_inputs = training_inputs.reshape(-1,3072,1)
+	training_outputs = [digit_to_vector_representation(y) for y in training_outputs]
 
 	batch_path = cifar_dir + "test_batch"
 	testing_inputs, testing_outputs = load_data_batch(batch_path)
 
 	testing_inputs = normalize(testing_inputs)
 	testing_inputs = testing_inputs.reshape(-1,3072,1)
+	testing_outputs = [digit_to_vector_representation(y) for y in testing_outputs]
 
 	training_data = zip(training_inputs, training_outputs)
 	testing_data = zip(testing_inputs, testing_outputs)

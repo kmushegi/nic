@@ -29,7 +29,7 @@ class Network(object):
 
 	def __init__(self, num_inputs, num_hidden, num_outputs, num_epochs, learning_rate):
 		self.num_inputs = num_inputs + 1 #add 1 for bias node
-		self.num_hidden = num_hidden
+		self.num_hidden = num_hidden 
 		self.num_outputs = num_outputs
 		self.num_epochs = num_epochs
 		self.learning_rate = learning_rate
@@ -120,7 +120,7 @@ class Network(object):
 	def test(self, test_data):
 		if self.num_outputs == 10:
 			#'zip' together perceptron results and the expected test output to form a tuple
-			test_results = [(np.argmax(self.feedForward(x)), y) for (x,y) in test_data]
+			test_results = [(np.argmax(self.feedForward(x)), np.argmax(y)) for (x,y) in test_data]
 		elif self.num_outputs == 1:
 			#perceptron output is multiplied by 10, as our expected test output is a number [0,9]
 			test_results = [(math.floor(self.feedForward(x) * 10.0), y) for (x,y) in test_data]
