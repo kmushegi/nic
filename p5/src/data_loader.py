@@ -149,14 +149,17 @@ def load_data_batch(fp):
 	data = data_batch['data']
 	labels = data_batch['labels']
 
-	data = data.reshape(data.shape[0],3,32,32)
+	#print(data.shape[1])
+	data = data.reshape(data.shape[0],3072,1)
+	#print(data.shape[1])
+	#sys.exit(1)
 
 	return data,labels
 
 def load_data():
 	N_TRAINING_DATA = 50000
 
-	training_inputs = np.zeros((N_TRAINING_DATA,3,32,32),dtype='uint8')
+	training_inputs = np.zeros((N_TRAINING_DATA,3072,1),dtype='uint8')
 	training_outputs = np.zeros((N_TRAINING_DATA),dtype='uint8')
 
 	for b in xrange(1,6):
@@ -164,7 +167,7 @@ def load_data():
 		print batch_path
 		data, labels = load_data_batch(batch_path)
 
-		training_inputs[(b-1) * 10000 : b * 10000, :, :, :] = data
+		training_inputs[(b-1) * 10000 : b * 10000, :,:] = data
 		training_outputs[(b-1) * 10000 : b * 10000] = labels
 
 	batch_path = cifar_dir + "test_batch"
