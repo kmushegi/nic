@@ -89,9 +89,7 @@ class Network(object):
 		#dot weights(hidden->output) with the hidden layer
 		sum = np.dot(self.weights_ho.T,self.hid_activations)
 		self.out_activations = self.sigmoid(sum)
-
-		#Plug the sum into the activtion function
-		self.out_activations = self.sigmoid(sum)
+		#print(self.out_activations)
 		return self.out_activations
 
 	#update weights in the direction of the gradient descent
@@ -122,7 +120,7 @@ class Network(object):
 	def test(self, test_data):
 		if self.num_outputs == 10:
 			#'zip' together perceptron results and the expected test output to form a tuple
-			test_results = [(np.argmax(self.feedForward(x)), np.argmax(y)) for (x,y) in test_data]
+			test_results = [(np.argmax(self.feedForward(x)), y) for (x,y) in test_data]
 		elif self.num_outputs == 1:
 			#perceptron output is multiplied by 10, as our expected test output is a number [0,9]
 			test_results = [(math.floor(self.feedForward(x) * 10.0), y) for (x,y) in test_data]

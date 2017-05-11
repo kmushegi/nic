@@ -6,9 +6,9 @@ Stephen Majercik
 
 Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 
-This file is part of Neural Networks for Digit Recognition, Project 4. This file 
+This file is part of Project 5. This file 
 contains the implementation of data loading routine used to read the training and
-testing data from .tes and .tra files provided by Professor Majercik.
+testing data on the cifar10 dataset.
 """
 
 from __future__ import absolute_import
@@ -135,6 +135,9 @@ def digit_to_vector_representation(j):
 	e[j] = 1.0
 	return e
 
+def normalize(data):
+	return data / 255.0
+
 def load_data_batch(fp):
 	f = open(fp,'rb')
 	data_batch = cPickle.load(f)
@@ -147,34 +150,33 @@ def load_data_batch(fp):
 	f.close()
 
 	data = data_batch['data']
-	labels = data_batch['labels']
-
-	#print(data.shape[1])
-	data = data.reshape(data.shape[0],3072,1)
-	#print(data.shape[1])
-	#sys.exit(1)
+	labels = np.array(data_batch['labels'])
 
 	return data,labels
 
 def load_data():
 	N_TRAINING_DATA = 50000
 
-	training_inputs = np.zeros((N_TRAINING_DATA,3072,1),dtype='uint8')
-	training_outputs = np.zeros((N_TRAINING_DATA),dtype='uint8')
-
 	for b in xrange(1,6):
 		batch_path = cifar_dir + "data_batch_" + str(b)
 		print batch_path
 		data, labels = load_data_batch(batch_path)
 
-		training_inputs[(b-1) * 10000 : b * 10000, :,:] = data
-		training_outputs[(b-1) * 10000 : b * 10000] = labels
+		if b == 1:
+			training_inputs = data
+			training_outputs = labels
+		else:
+			training_inputs = np.append(training_inputs,data,axis=0)
+			training_outputs = np.append(training_outputs,labels,axis=0)
+
+	training_inputs = normalize(training_inputs)
+	training_inputs = training_inputs.reshape(-1,3072,1)
 
 	batch_path = cifar_dir + "test_batch"
 	testing_inputs, testing_outputs = load_data_batch(batch_path)
 
-	training_outputs = np.reshape(training_outputs,(len(training_outputs),1))
-	testing_outputs = np.reshape(testing_outputs,(len(testing_outputs),1))
+	testing_inputs = normalize(testing_inputs)
+	testing_inputs = testing_inputs.reshape(-1,3072,1)
 
 	training_data = zip(training_inputs, training_outputs)
 	testing_data = zip(testing_inputs, testing_outputs)
