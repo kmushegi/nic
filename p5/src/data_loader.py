@@ -156,22 +156,42 @@ def load_data_batch(fp):
 def load_data():
 	N_TRAINING_DATA = 50000
 
-	train_inputs = np.zeros((N_TRAINING_DATA,3,32,32),dtype='uint8')
-	train_outputs = np.zeros((N_TRAINING_DATA),dtype='uint8')
+	training_inputs = np.zeros((N_TRAINING_DATA,3,32,32),dtype='uint8')
+	training_outputs = np.zeros((N_TRAINING_DATA),dtype='uint8')
 
 	for b in xrange(1,6):
 		batch_path = cifar_dir + "data_batch_" + str(b)
 		print batch_path
 		data, labels = load_data_batch(batch_path)
 
+		training_inputs[(b-1) * 10000 : b * 10000, :, :, :] = data
+		training_outputs[(b-1) * 10000 : b * 10000] = labels
+
 	batch_path = cifar_dir + "test_batch"
+	testing_inputs, testing_outputs = load_data_batch(batch_path)
 
-	test_inputs, test_outputs = load_data_batch(batch_path)
+	training_outputs = np.reshape(training_outputs,(len(training_outputs),1))
+	testing_outputs = np.reshape(testing_outputs,(len(testing_outputs),1))
 
-	train_outputs = np.reshape(train_outputs,(len(train_outputs),1))
-	test_outputs = np.reshape(test_outputs,(len(test_outputs),1))
+	training_data = zip(training_inputs, training_outputs)
+	testing_data = zip(testing_inputs, testing_outputs)
 
-	return (train_inputs,train_outputs),(test_inputs,test_outputs)
+	return (training_data, testing_data)
+
+def get_data(dataset, num_output_neurons):
+	if(dataset == "bitmap"):
+		return format_data(1,num_output_neurons)
+	elif(dataset == "downsampled"):
+		return format_data(0,num_output_neurons)
+	elif(dataset == "cifar10"):
+		return load_data()
 
 
-load_data()
+
+
+
+
+
+
+
+

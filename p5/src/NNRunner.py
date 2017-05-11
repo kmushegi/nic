@@ -28,7 +28,7 @@ else:
 	bit_map = 1 # 1 - bitmap, 0 - downsampled
 	n_hid_neurons = 30
 	n_out_neurons = 10 # 10 or 1
-	l_rate = 1.0
+	l_rate = 0.5
 
 assert(n_out_neurons == 10 or n_out_neurons == 1)
 
@@ -38,7 +38,7 @@ else:
 	n_in_neurons = 64
 
 #obtain data using data_loader.py
-(training_data, test_data) = dl.format_data(bit_map,n_out_neurons)
+(training_data, test_data) = dl.get_data("bitmap",n_out_neurons)
 
 #create an instance of the neural network with specified parameters
 net = network.Network(num_inputs=n_in_neurons, num_hidden=n_hid_neurons, num_outputs=n_out_neurons, 
