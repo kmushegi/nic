@@ -25,7 +25,7 @@ if len(sys.argv) == 4:
 	n_out_neurons = int(sys.argv[3]) # 10 or 1
 	l_rate = float(sys.argv[4])
 else:
-	dataset = "cifar10" #bitmap,downsampled, cifar10
+	dataset = "bitmap" #bitmap,downsampled, cifar10
 	n_hid_neurons = 100
 	n_out_neurons = 10 # 10 or 1
 	l_rate = 0.5
@@ -43,8 +43,7 @@ elif(dataset == "cifar10"):
 (training_data, test_data) = dl.get_data(dataset,n_out_neurons)
 
 #create an instance of the neural network with specified parameters
-net = network.Network(num_inputs=n_in_neurons, num_hidden=n_hid_neurons, num_outputs=n_out_neurons, 
-						num_epochs=N_EPOCHS, learning_rate=l_rate)
+net = network.Network([n_in_neurons,100,50,n_out_neurons],n_epochs=N_EPOCHS, lr=l_rate)
 
 #start the training process
 net.train(training_data, test_data)
