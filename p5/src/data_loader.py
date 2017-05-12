@@ -9,24 +9,28 @@ Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 This file is part of Project 5. This file 
 contains the implementation of data loading routine used to read the training and
 testing data on the cifar10 dataset.
+
+*_data is a tuple. First element is array of arrays of size 1024 containing
+the binary image; the second element is the array of arrays containing the
+information about the "desired" output formatted in a 10 output neuron way.
+[1,0,0,0,0,0,0,0,0,0] ==> 0
+[0,0,1,0,0,0,0,0,0,0] ==> 2
+[0,0,0,0,0,0,0,0,0,1] ==> 9 and etc.
 """
 
 from __future__ import absolute_import
-import cPickle
 import sys
 import numpy as np
 
+np.set_printoptions(threshold=np.nan)
+
 bitmap_training_data_file = "../data/bitmaps/optdigits-32x32.tra"
 bitmap_testing_data_file = "../data/bitmaps/optdigits-32x32.tes"
-
 downsampled_training_data_file = "../data/downsampled/optdigits-8x8-int.tra"
 downsampled_testing_data_file = "../data/downsampled/optdigits-8x8-int.tes"
-
 cifar_dir = "../data/cifar-10-batches-py/"
 
 NUM_TRAINING_IMAGES = 3823
-
-np.set_printoptions(threshold=np.nan)
 
 def read_data_down_sampled(data_file):
 	f = open(data_file)
@@ -74,16 +78,7 @@ def read_data_bit_map(data_file):
 
 	return (inputs, desired_outputs)
 
-'''
-*_data is a tuple. First element is array of arrays of size 1024 containing
-the binary image; the second element is the array of arrays containing the
-information about the "desired" output formatted in a 10 output neuron way.
-[1,0,0,0,0,0,0,0,0,0] ==> 0
-[0,0,1,0,0,0,0,0,0,0] ==> 2
-[0,0,0,0,0,0,0,0,0,1] ==> 9 and etc.
-'''
-
-def format_data(bit_map, num_output_neurons):
+def load_majercik_data(bit_map, num_output_neurons):
 	if bit_map:
 		#(inputs , desired_outputs) for training and testing data
 		(tr_i, tr_o) = read_data_bit_map(bitmap_training_data_file)
@@ -129,15 +124,6 @@ def format_data(bit_map, num_output_neurons):
 
 		return (training_data, testing_data)
 
-#Creares 10 element list of 0.0's except with 1.0 at jth index
-def digit_to_vector_representation(j):
-	e = np.zeros((10,1))
-	e[j] = 1.0
-	return e
-
-def normalize(data):
-	return data / 255.0
-
 def load_data_batch(fp):
 	f = open(fp,'rb')
 	data_batch = cPickle.load(f)
@@ -154,10 +140,10 @@ def load_data_batch(fp):
 
 	return data,labels
 
-def load_data():
+def load_cifar_data(n_batches):
 	N_TRAINING_DATA = 50000
 
-	for b in xrange(1,6):
+	for b in xrange(1,n_batches):
 		batch_path = cifar_dir + "data_batch_" + str(b)
 		print batch_path
 		data, labels = load_data_batch(batch_path)
@@ -187,11 +173,20 @@ def load_data():
 
 def get_data(dataset, num_output_neurons):
 	if(dataset == "bitmap"):
-		return format_data(1,num_output_neurons)
+		return load_majercik_data(bitmap=1,num_output_neurons=num_output_neurons)
 	elif(dataset == "downsampled"):
-		return format_data(0,num_output_neurons)
+		return load_majercik_data(bitmap=0,num_output_neurons=num_output_neurons)
 	elif(dataset == "cifar10"):
-		return load_data()
+		return load_cifar_data(n_batches=6)
+
+#Creates 10 element list of 0.0's except with 1.0 at jth index
+def digit_to_vector_representation(j):
+	e = np.zeros((10,1))
+	e[j] = 1.0
+	return e
+
+def normalize(data):
+	return data / 255.0
 
 
 
