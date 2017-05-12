@@ -21,7 +21,6 @@ N_EPOCHS = 50
 #if # of CL parameters is correct take them, else go to default
 if len(sys.argv) == 4:
 	dataset = sys.argv[1] #bitmap, downsampled, cifar10
-	n_hid_neurons = int(sys.argv[2]) #hidden layer nodes
 	n_out_neurons = int(sys.argv[3]) # 10 or 1
 	l_rate = float(sys.argv[4])
 else:
@@ -38,6 +37,9 @@ elif(dataset == "downsampled"):
 	n_in_neurons = 64
 elif(dataset == "cifar10"):
 	n_in_neurons = 3072
+else:
+	print("Choose dataset [bitmap, downsampled, cifar10]")
+	sys.exit(1)
 
 #obtain data using data_loader.py
 (training_data, test_data) = dl.get_data(dataset,n_out_neurons)
