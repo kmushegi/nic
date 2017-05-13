@@ -6,9 +6,8 @@ Stephen Majercik
 
 Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 
-This file is part of Neural Networks for Digit Recognition, Project 4. This file
-is an entry point into the program. It is able to take parameters for NN parameters
-from the command line if CL_PARAMS is set to True. This file also reads the 
+This file is part Project 4. This file is an entry point into the Perceptron program. 
+It is able to take parameters for the NN if correct # of them is specified. This file also reads the 
 training and testing data and spawns the neural network training process.
 """
 

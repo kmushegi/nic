@@ -1,5 +1,5 @@
 """
-Neural Networks for Digit Recognition - Project 4
+Neural Networks for Digit Recognition - Project 5
 Nature Inspired Computation
 Spring 2017
 Stephen Majercik

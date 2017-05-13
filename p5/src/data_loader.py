@@ -19,8 +19,10 @@ information about the "desired" output formatted in a 10 output neuron way.
 """
 
 from __future__ import absolute_import
-import sys
+import keras
+from keras.datasets import cifar10
 import numpy as np
+import sys
 
 np.set_printoptions(threshold=np.nan)
 
@@ -140,7 +142,7 @@ def load_data_batch(fp):
 
 	return data,labels
 
-def load_cifar_data(n_batches):
+def load_cifar_data_nn(n_batches):
 	N_TRAINING_DATA = 50000
 
 	for b in xrange(1,n_batches):
@@ -171,13 +173,28 @@ def load_cifar_data(n_batches):
 
 	return (training_data, testing_data)
 
-def get_data(dataset, num_output_neurons):
+def load_cifar_data_cnn():
+	(x_train,y_train),(x_test,y_test) = cifar10.load_data()
+	n_classes = 10
+	y_train = keras.utils.to_categorical(y_train, n_classes)
+	y_test = keras.utils.to_categorical(y_test, n_classes)
+	x_train = x_train.astype('float32')
+	x_test = x_test.astype('float32')
+	x_train /= 255.0
+	x_test /= 255.0
+
+	return (x_train,y_train),(x_test,y_test)
+
+def get_data(which_network,dataset='bitmap', num_output_neurons=10):
 	if(dataset == "bitmap"):
 		return load_majercik_data(bitmap=1,num_output_neurons=num_output_neurons)
 	elif(dataset == "downsampled"):
 		return load_majercik_data(bitmap=0,num_output_neurons=num_output_neurons)
 	elif(dataset == "cifar10"):
-		return load_cifar_data(n_batches=6)
+		if(which_network == 'nn'):
+			return load_cifar_data_nn(n_batches=6)
+		elif(which_network == 'cnn'):
+			return load_cifar_data_cnn()
 
 #Creates 10 element list of 0.0's except with 1.0 at jth index
 def digit_to_vector_representation(j):
