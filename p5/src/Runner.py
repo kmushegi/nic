@@ -12,7 +12,7 @@ import network as nn
 import cnetwork as cnn
 import sys
 
-which_network = 'cnn' #of 'cnn'
+which_network = 'cnn' #or 'nn'
 nn_dataset = "cifar10" #bitmap,downsampled, cifar10
 N_EPOCHS = 50
 
