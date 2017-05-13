@@ -12,7 +12,7 @@ import network as nn
 import cnetwork as cnn
 import sys
 
-which_network = 'nn' #of 'cnn'
+which_network = 'cnn' #of 'cnn'
 nn_dataset = "cifar10" #bitmap,downsampled, cifar10
 N_EPOCHS = 50
 
@@ -21,11 +21,10 @@ if which_network == 'nn':
 	#if # of CL parameters is correct take them, else go to default
 	if len(sys.argv) == 4:
 		dataset = sys.argv[1] #bitmap, downsampled, cifar10
-		n_out_neurons = int(sys.argv[3]) # 10 or 1
-		l_rate = float(sys.argv[4])
+		n_out_neurons = int(sys.argv[2]) # 10 or 1
+		l_rate = float(sys.argv[3])
 	else:
 		dataset = "bitmap" #bitmap,downsampled, cifar10
-		n_hid_neurons = 100
 		n_out_neurons = 10 # 10 or 1
 		l_rate = 0.5
 
@@ -51,12 +50,30 @@ if which_network == 'nn':
 	net.train(train_data, test_data)
 
 elif which_network == 'cnn':
-	(x_train,y_train),(x_test,y_test) = dl.get_data(which_network,'cifar10')
-	n_classes = 10
 
-	net = cnn.CNetwork(n_epochs=N_EPOCHS,n_layers=4,dropout=True,batch_size=32,optimizer='sgd',
-		data_augmentation=True,convActivation='relu',denseActivation='softmax',
-		x_train=x_train,y_train=y_train,x_test=x_test,y_test=y_test)
+	#if # of CL parameters is correct take them, else go to default
+	if len(sys.argv) == 8:
+		n_layers = int(sys.argv[1])
+		dropout = int(sys.argv[2])
+		batch_size = int(sys.argv[3])
+		optimizer = sys.argv[4]
+		data_augmentation = int(sys.argv[5])
+		convActivation = sys.argv[6]
+		denseActivation = sys.argv[7]
+	else:
+		n_layers = 4
+		dropout = True
+		batch_size = 32
+		optimizer = 'sgd'
+		data_augmentation = True
+		convActivation = 'relu'
+		denseActivation = 'softmax'
+
+	(x_train,y_train),(x_test,y_test) = dl.get_data(which_network,'cifar10')
+
+	net = cnn.CNetwork(n_epochs=N_EPOCHS,n_layers=n_layers,dropout=dropout,batch_size=batch_size,
+		optimizer=optimizer,data_augmentation=data_augmentation,convActivation=convActivation,
+		denseActivation=denseActivation,x_train=x_train,y_train=y_train,x_test=x_test,y_test=y_test)
 
 	net.build_network()
 	net.train()

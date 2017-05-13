@@ -39,6 +39,7 @@ class CNetwork(object):
 		self.optimizer = optimizer
 		self.convActivation = convActivation
 		self.denseActivation = denseActivation
+		self.n_classes = 10
 
 		self.x_train = x_train
 		self.y_train = y_train
@@ -46,9 +47,6 @@ class CNetwork(object):
 		self.y_test = y_test
 
 		self.model = Sequential()
-
-		self.n_classes = 10
-		self.steps_per_epoch = 32
 
 	def build_network(self):
 		self.model.add(Conv2D(32,(3,3), padding='same', \
