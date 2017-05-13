@@ -12,21 +12,26 @@ import network as nn
 import cnetwork as cnn
 import sys
 
-which_network = 'cnn' #or 'nn'
+which_network = 'nn' #or 'nn'
 nn_dataset = "cifar10" #bitmap,downsampled, cifar10
 N_EPOCHS = 50
 
 if which_network == 'nn':
 
 	#if # of CL parameters is correct take them, else go to default
-	if len(sys.argv) == 4:
+	if len(sys.argv) >= 4:
 		dataset = sys.argv[1] #bitmap, downsampled, cifar10
 		n_out_neurons = int(sys.argv[2]) # 10 or 1
 		l_rate = float(sys.argv[3])
+
+		hidden_layer_info = []
+		for i in xrange(4,len(sys.argv)):
+			hidden_layer_info.append(int(sys.argv[i]))
 	else:
-		dataset = "bitmap" #bitmap,downsampled, cifar10
+		dataset = 'cifar10' #bitmap,downsampled, cifar10
 		n_out_neurons = 10 # 10 or 1
 		l_rate = 0.5
+		hidden_layer_info = [100,50]
 
 	assert(n_out_neurons == 10 or n_out_neurons == 1)
 
@@ -43,8 +48,12 @@ if which_network == 'nn':
 	#load training & test data using data_loader.py
 	(train_data, test_data) = dl.get_data(which_network,dataset,n_out_neurons)
 
+	layer_info = [n_in_neurons]
+	layer_info.extend(hidden_layer_info)
+	layer_info.append(n_out_neurons)
+	
 	#create an instance of the neural network with specified parameters
-	net = nn.Network([n_in_neurons,100,50,n_out_neurons],n_epochs=N_EPOCHS, lr=l_rate)
+	net = nn.Network(layer_info=layer_info,n_epochs=N_EPOCHS, lr=l_rate)
 
 	#start the training process
 	net.train(train_data, test_data)

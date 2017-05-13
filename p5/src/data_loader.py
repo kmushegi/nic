@@ -187,9 +187,9 @@ def load_cifar_data_cnn():
 
 def get_data(which_network,dataset='bitmap', num_output_neurons=10):
 	if(dataset == "bitmap"):
-		return load_majercik_data(bitmap=1,num_output_neurons=num_output_neurons)
+		return load_majercik_data(bit_map=1,num_output_neurons=num_output_neurons)
 	elif(dataset == "downsampled"):
-		return load_majercik_data(bitmap=0,num_output_neurons=num_output_neurons)
+		return load_majercik_data(bit_map=0,num_output_neurons=num_output_neurons)
 	elif(dataset == "cifar10"):
 		if(which_network == 'nn'):
 			return load_cifar_data_nn(n_batches=6)
