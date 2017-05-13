@@ -27,26 +27,33 @@ M = 0.5
 
 class Network(object):
 
-	def __init__(self, num_inputs, num_hidden, num_outputs, num_epochs, learning_rate):
-		self.num_inputs = num_inputs + 1 #add 1 for bias node
-		self.num_hidden = num_hidden 
-		self.num_outputs = num_outputs
-		self.num_epochs = num_epochs
-		self.learning_rate = learning_rate
+	def __init__(self, layer_info, n_epochs, lr): #layer_info => [in,hidden,...,hidden,out] 
+		self.n_layers = len(layer_info)
+		self.layer_info = layer_info
+		self.n_inputs = layer_info[0] + 1 #add 1 for bias node
+		self.n_epochs = n_epochs
+		self.lr = lr
 
-		self.in_activations = np.reshape(np.ones(self.num_inputs),(self.num_inputs,1))
-		self.hid_activations = np.ones(self.num_hidden)
-		self.out_activations = np.ones(self.num_outputs)
+		self.weights = []		#weights[i] = weights between layer i and layer i+1
+		self.deltas = []		#deltas[i] = deltas between layer i and layer i+1
+		self.activations = []	#activations[i] = activations of layer i
 
-		#keep track of how much weights need to change at next iteration
-		self.delta_ih = np.zeros((self.num_inputs, self.num_hidden)) #input to hidden
-		self.delta_ho = np.zeros((self.num_hidden, self.num_outputs)) #hidden to output
+		#unlike everything else there are (n_layers) activations
+		in_activations = np.reshape(np.ones(self.n_inputs),(self.n_inputs,1))
+		self.activations.append(in_activations)
 
-		#initialize weights randomly between -0.15 and 0.15
-		self.weights_ih = 0.3 * np.random.randn(self.num_inputs, self.num_hidden) - 0.15
-		self.weights_ho = 0.3 * np.random.randn(self.num_hidden, self.num_outputs) - 0.15
+		#initialize random weights in [-0.15,0.15],deltas for the momentum term,layer activations
+		for i in xrange(self.n_layers - 1):
+			if i == 0:
+				temp_w = 0.3 * np.random.randn(self.n_inputs, self.layer_info[i+1]) - 0.15
+				temp_d = np.zeros((self.n_inputs, self.layer_info[i+1]))
+			else:
+				temp_w = 0.3 * np.random.randn(self.layer_info[i], self.layer_info[i+1]) - 0.15
+				temp_d = np.zeros((self.layer_info[i], self.layer_info[i+1]))
 
-		self.inputSums = np.ones(self.num_outputs)
+			self.weights.append(temp_w)
+			self.deltas.append(temp_d)
+			self.activations.append(np.ones(self.layer_info[i]))
 
 	#activation function
 	def sigmoid(self, x):
@@ -56,12 +63,11 @@ class Network(object):
 	def sigmoidPrime(self, x):
 		return self.sigmoid(x) * (1.0 - self.sigmoid(x))
 
-	#start the training process, test_data is optional and is used for evaluation
+	#train the neural network on training_data with optional test_data for evaluation
 	def train(self, training_data, test_data=None):
 		if test_data: n_test_samples = len(test_data)
 
-		#for every epoch
-		for i in xrange(self.num_epochs):
+		for i in xrange(self.n_epochs):
 			random.shuffle(training_data) #shuffle training data for 'random' sampling
 			
 			for index, sample in enumerate(training_data): #for every input/output pair
@@ -79,49 +85,40 @@ class Network(object):
 
 	#run the input through the neural network with existing weights
 	def feedForward(self, inputs):
-		#set input nodes to actual input, except for the bias node
-		self.in_activations[0:self.num_inputs-1] = inputs
+		#set input layer nodes to actual input, except for the bias node
+		self.activations[0][0:self.n_inputs-1] = inputs
 
-		#dot weights(input->hidden) with the input
-		sum = np.dot(self.weights_ih.T,self.in_activations)
-		self.hid_activations = self.sigmoid(sum)
+		for i in xrange(self.n_layers - 1):
+			sum = np.dot(self.weights[i].T,self.activations[i])
+			self.activations[i+1] = self.sigmoid(sum)
 
-		#dot weights(hidden->output) with the hidden layer
-		sum = np.dot(self.weights_ho.T,self.hid_activations)
-		self.out_activations = self.sigmoid(sum)
-		#print(self.out_activations)
-		return self.out_activations
+		return self.activations[-1]
 
 	#update weights in the direction of the gradient descent
 	def update(self, desired_output):
 
-		if (self.num_outputs == 1): #'normalize' desired output to be in [0,1]
+		if (self.layer_info[-1] == 1): #'normalize' desired output to be in [0,1]
 			desired_output /= 10.0
 
-		#calculate error for the output layer
-		error = -(desired_output - self.out_activations)
-		out_deltas = self.sigmoidPrime(self.out_activations) * error
+		c_delta = None
+		for i in xrange(1,self.n_layers):
+			if i == 1:
+				error = -(desired_output - self.activations[-i])
+				c_delta = self.sigmoidPrime(self.activations[-i]) * error
+			else:
+				error = np.dot(self.weights[-(i-1)],c_delta)
+				c_delta = self.sigmoidPrime(self.activations[-i]) * error
 
-		#errors for hidden layer
-		error = np.dot(self.weights_ho, out_deltas)
-		hid_deltas = self.sigmoidPrime(self.hid_activations) * error
-
-		#update hidden --> output weights
-		delta = out_deltas.T * self.hid_activations
-		self.weights_ho -= (self.learning_rate * delta + M * self.delta_ho)
-		self.delta_ho = delta
-
-		#update input --> hidden weights
-		delta = hid_deltas.T * self.in_activations
-		self.weights_ih -= (self.learning_rate * delta + M * self.delta_ih)
-		self.delta_ih = delta
+			delta = c_delta.T * self.activations[-(i+1)]
+			self.weights[-i] -= (self.lr * delta + M * self.deltas[-i])
+			self.deltas[-i] = delta
 
 	#feed test_data through the neural net and return the number of correct predictions
 	def test(self, test_data):
-		if self.num_outputs == 10:
+		if self.layer_info[-1] == 10:
 			#'zip' together perceptron results and the expected test output to form a tuple
 			test_results = [(np.argmax(self.feedForward(x)), np.argmax(y)) for (x,y) in test_data]
-		elif self.num_outputs == 1:
+		elif self.layer_info[-1] == 1:
 			#perceptron output is multiplied by 10, as our expected test output is a number [0,9]
 			test_results = [(math.floor(self.feedForward(x) * 10.0), y) for (x,y) in test_data]
 		#return the total number of test cases that were correctly classified
