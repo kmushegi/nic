@@ -81,7 +81,7 @@ class Network(object):
 			else:
 				print("Epoch {0}".format(i+1))
 
-		return (self.weights_ih, self.weights_ho)
+		return self.weights
 
 	#run the input through the neural network with existing weights
 	def feedForward(self, inputs):

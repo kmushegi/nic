@@ -31,7 +31,7 @@ if which_network == 'nn':
 		dataset = 'cifar10' #bitmap,downsampled, cifar10
 		n_out_neurons = 10 # 10 or 1
 		l_rate = 0.5
-		hidden_layer_info = [100,50]
+		hidden_layer_info = [300]
 
 	assert(n_out_neurons == 10 or n_out_neurons == 1)
 
