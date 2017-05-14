@@ -124,6 +124,10 @@ class Network(object):
 		#return the total number of test cases that were correctly classified
 		return sum((x == y) for (x,y) in test_results)
 
+	def calculateFitness(self):
+		
+
+
 
 
 
