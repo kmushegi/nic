@@ -55,7 +55,7 @@ if which_network == 'nn':
 	layer_info.append(n_out_neurons)
 	
 	#create an instance of the neural network with specified parameters
-	net = nn.Network(layer_info=layer_info, n_epochs=N_EPOCHS, lr=l_rate, startWeightR=startWeightR)
+	net = nn.Network(layer_info=layer_info, n_epochs=N_EPOCHS, lr=l_rate, startWeightRange=startWeightR)
 
 	#start the training process
 	net.train(train_data, test_data)

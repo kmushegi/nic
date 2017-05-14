@@ -19,7 +19,7 @@ information about the "desired" output formatted in a 10 output neuron way.
 """
 
 from __future__ import absolute_import
-import cPickle
+import pickle as cPickle
 import keras
 from keras.datasets import cifar10
 import numpy as np
