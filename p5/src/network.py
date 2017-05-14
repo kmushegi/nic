@@ -27,7 +27,7 @@ M = 0.5
 
 class Network(object):
 
-	def __init__(self, layer_info, n_epochs, lr , params): #layer_info => [in,hidden,...,hidden,out] 
+	def __init__(self, layer_info, n_epochs, lr , params, startWeightRange): #layer_info => [in,hidden,...,hidden,out] 
 		self.n_layers = len(layer_info)
 		self.layer_info = layer_info
 		self.n_inputs = layer_info[0] + 1 #add 1 for bias node
@@ -46,10 +46,10 @@ class Network(object):
 		#initialize random weights in [-0.15,0.15],deltas for the momentum term,layer activations
 		for i in xrange(self.n_layers - 1):
 			if i == 0:
-				temp_w = 0.3 * np.random.randn(self.n_inputs, self.layer_info[i+1]) - 0.15
+				temp_w = (2*startWeightRange) * np.random.randn(self.n_inputs, self.layer_info[i+1]) - startWeightRange
 				temp_d = np.zeros((self.n_inputs, self.layer_info[i+1]))
 			else:
-				temp_w = 0.3 * np.random.randn(self.layer_info[i], self.layer_info[i+1]) - 0.15
+				temp_w = (2*startWeightRange) * np.random.randn(self.layer_info[i], self.layer_info[i+1]) - startWeightRange
 				temp_d = np.zeros((self.layer_info[i], self.layer_info[i+1]))
 
 			self.weights.append(temp_w)

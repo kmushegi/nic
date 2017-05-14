@@ -32,10 +32,11 @@ class GA(object):
 		self.population = initializePopulation()
 
 		if (self.networkType == "nn"):
-			self.train_dataANDtest_data = dl.get_data(which_network,dataset,n_out_neurons)
+			self.train_train_data = dl.get_data(which_network,dataset,n_out_neurons)
+			print(len(self.train_train_data))
 
 		else:
-			self.x_train,y_trainANDx_test,y_test = dl.get_data(which_network,'cifar10')
+			self.x_y_train_data = dl.get_data(which_network,'cifar10')
 
 	def initializePopulation(self):
 		pop = []

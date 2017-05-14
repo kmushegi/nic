@@ -9,7 +9,7 @@ Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 
 import data_loader as dl
 import network as nn
-# import cnetwork as cnn
+import cnetwork as cnn
 import sys
 
 which_network = 'nn' #or 'cnn'
@@ -19,19 +19,21 @@ N_EPOCHS = 50
 if which_network == 'nn':
 
 	#if # of CL parameters is correct take them, else go to default
-	if len(sys.argv) >= 4:
+	if len(sys.argv) >= 5:
 		dataset = sys.argv[1] #bitmap, downsampled, cifar10
 		n_out_neurons = int(sys.argv[2]) # 10 or 1
 		l_rate = float(sys.argv[3])
+		startWeightR = float(sys.argv[4])
 
 		hidden_layer_info = []
-		for i in xrange(4,len(sys.argv)):
+		for i in xrange(5,len(sys.argv)):
 			hidden_layer_info.append(int(sys.argv[i]))
 	else:
 		dataset = 'cifar10' #bitmap,downsampled, cifar10
 		n_out_neurons = 10 # 10 or 1
 		l_rate = 1
 		hidden_layer_info = [100,50]
+		startWeightR = 0.15
 
 	assert(n_out_neurons == 10 or n_out_neurons == 1)
 
@@ -53,7 +55,7 @@ if which_network == 'nn':
 	layer_info.append(n_out_neurons)
 	
 	#create an instance of the neural network with specified parameters
-	net = nn.Network(layer_info=layer_info,n_epochs=N_EPOCHS, lr=l_rate)
+	net = nn.Network(layer_info=layer_info, n_epochs=N_EPOCHS, lr=l_rate, startWeightR=startWeightR)
 
 	#start the training process
 	net.train(train_data, test_data)
