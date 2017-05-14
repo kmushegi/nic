@@ -27,12 +27,13 @@ M = 0.5
 
 class Network(object):
 
-	def __init__(self, layer_info, n_epochs, lr): #layer_info => [in,hidden,...,hidden,out] 
+	def __init__(self, layer_info, n_epochs, lr , params): #layer_info => [in,hidden,...,hidden,out] 
 		self.n_layers = len(layer_info)
 		self.layer_info = layer_info
 		self.n_inputs = layer_info[0] + 1 #add 1 for bias node
 		self.n_epochs = n_epochs
 		self.lr = lr
+		self.parameters = params
 
 		self.weights = []		#weights[i] = weights between layer i and layer i+1
 		self.deltas = []		#deltas[i] = deltas between layer i and layer i+1
@@ -124,7 +125,7 @@ class Network(object):
 		#return the total number of test cases that were correctly classified
 		return sum((x == y) for (x,y) in test_results)
 
-	def calculateFitness(self):
+	#def calculateFitness(self):
 		
 
 

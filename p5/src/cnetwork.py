@@ -30,7 +30,7 @@ outdir = '../stats/'
 class CNetwork(object):
 
 	def __init__(self,n_epochs,n_layers,dropout,batch_size,optimizer,data_augmentation,
-					convActivation,denseActivation,x_train,y_train,x_test,y_test):
+					convActivation,denseActivation,x_train,y_train,x_test,y_test , params):
 		self.n_epochs = n_epochs
 		self.n_layers = n_layers
 		self.data_augmentation = data_augmentation
@@ -40,6 +40,7 @@ class CNetwork(object):
 		self.convActivation = convActivation
 		self.denseActivation = denseActivation
 		self.n_classes = 10
+		self.parameters = params
 
 		self.x_train = x_train
 		self.y_train = y_train
