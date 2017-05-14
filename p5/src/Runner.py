@@ -1,4 +1,5 @@
 import ga as ga
+import data_loader as dl
 
 def main():
 
@@ -21,31 +22,27 @@ def main():
 		mutationProb = 0.01
 
 	if (networkType == "nn"):
-		nnParams = [
-			"epochs": [],
-			"layers": [],
-			"startWeights": [],
-			# "activation": [],
-			"learningRate": []
-		]
+		nnParams = {
+			"epochs": [1],
+			"startWeights": [0.15],
+			"learningRate": [1],
+			"hiddenInfo": [[100,50]],
+		}
 
 	else:
-		nnParams = [
-			"epochs": [],
-			"layers": [],
-			"startWeights": [],
-			"activation": [],
-			"learningRate": [],
-			"dropout": [],
-			"filters": [],
-			"spatial": [],
-			"stride": [],
-			"padding":[]
-		]
-
+		nnParams = {
+			"epochs": [1],
+			"layers": [4],
+			"dropout": [True],
+			"batch_size": [32],
+			"optimizer": ['sgd'],
+			"data_augmentation": [True],
+			"convActivation": ['relu'],
+			"denseActivation": ['softmax']
+		}
 
 	geneticAlg = ga.GA(networkType, numIterations, populationSize, selection, crossover, crossoverProb, mutationProb, nnParams)
-	geneticAlg.runGA()
+	# geneticAlg.runGA()
 
 
 

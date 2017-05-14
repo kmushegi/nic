@@ -9,7 +9,7 @@ Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 
 import data_loader as dl
 import network as nn
-import cnetwork as cnn
+# import cnetwork as cnn
 import sys
 
 which_network = 'nn' #or 'cnn'
@@ -30,7 +30,7 @@ if which_network == 'nn':
 	else:
 		dataset = 'cifar10' #bitmap,downsampled, cifar10
 		n_out_neurons = 10 # 10 or 1
-		l_rate = 0.5
+		l_rate = 1
 		hidden_layer_info = [100,50]
 
 	assert(n_out_neurons == 10 or n_out_neurons == 1)
