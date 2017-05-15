@@ -25,15 +25,15 @@ def main():
 
 	if (networkType == "nn"):
 		nnParams = {
-			"epochs": [5, 10, 15, 20],
+			"epochs": [10],
 			"learningRate": [1, 0.5, 0.1],
-			"hiddenInfo": [[], [100,50]],
-			"startWeights": [0,1,0.15, 0.2],
+			"hiddenInfo": [[], [100,50], []],
+			"startWeights": [0,1,0.15, 0.2, 0.25],
 		}
 
 	else:
 		nnParams = {
-			"epochs": [5, 10, 15, 20],
+			"epochs": [1],
 			"layers": [2,3,4],
 			"dropout": [True, False],
 			"batch_size": [32],

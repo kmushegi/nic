@@ -32,7 +32,7 @@ class GA(object):
 
 		if (self.networkType == "nn"):
 			sys.stdout.flush()
-			self.train_train_data = dl.get_data("nn",'cifar10',10) #Length = 2
+			self.train_train_data = dl.get_data("nn",'bitmap',10) #Length = 2
 
 		else:
 			sys.stdout.flush()
@@ -44,7 +44,7 @@ class GA(object):
 		pop = []
 		for _ in range(0, self.populationSize):
 			if (self.networkType == "nn"):
-				n_in_neurons = 3072
+				n_in_neurons = 1024
 				n_out_neurons = 10
 				hidden_layer_info = random.choice(self.nnParams["hiddenInfo"])
 
@@ -133,6 +133,7 @@ class GA(object):
 				currentBestFitness = newBestFitness
 
 			self.population = children
+			nnFitnesses = childFitnesses
 
 		print(bestNN.parameters)
 		print(fitnessOT)
@@ -181,8 +182,8 @@ class GA(object):
 
 	def uniform(self, p1, p2):
 		if (random.random() > self.crossoverProb):
-			child1 = p1
-			child2 = p2
+			child1 = p1.parameters
+			child2 = p2.parameters
 			return (child1, child2)
 
 		child1 = []
@@ -215,7 +216,7 @@ class GA(object):
 					# print("MUTATING")
 
 					if (i == 0):
-						n_in_neurons = 3072
+						n_in_neurons = 1024
 						n_out_neurons = 10
 						hidden_layer_info = random.choice(self.nnParams["hiddenInfo"])
 
