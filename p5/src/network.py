@@ -33,7 +33,7 @@ class Network(object):
 		self.n_inputs = layer_info[0] + 1 #add 1 for bias node
 		self.n_epochs = n_epochs
 		self.lr = lr
-		self.parameters = 1
+		self.parameters = [layer_info, n_epochs, lr, startWeightRange]
 
 		self.weights = []		#weights[i] = weights between layer i and layer i+1
 		self.deltas = []		#deltas[i] = deltas between layer i and layer i+1
@@ -78,11 +78,12 @@ class Network(object):
 				self.update(sample[1])
 			print("")
 			if test_data:
-				print("Epoch {0}:\t {1} \t {2}".format(i+1, self.test(test_data),n_test_samples))
+				test_results = self.test(test_data)
+				print("Epoch {0}:\t {1} \t {2}".format(i+1, test_results,n_test_samples))
 			else:
 				print("Epoch {0}".format(i+1))
 
-		return (self.weights_ih, self.weights_ho)
+		return test_results
 
 	#run the input through the neural network with existing weights
 	def feedForward(self, inputs):

@@ -17,14 +17,13 @@ class rankedIndividual(object):
 
 	def __init__(self , network):
 		self.individual = network
-
 		self.fitness = 0
 		self.probability = 0
 
-	def setFitness(newFitness):
+	def setFitness(self, newFitness):
 		self.fitness = newFitness
 
-	def setProbability(newProbability):
+	def setProbability(self, newProbability):
 		self.probability = newProbability
 
 	def getIndividual(self):

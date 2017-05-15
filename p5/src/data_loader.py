@@ -203,7 +203,7 @@ def digit_to_vector_representation(j):
 	return e
 
 def normalize(data):
-	return data / 255.0
+	return data/255.0
 
 
 

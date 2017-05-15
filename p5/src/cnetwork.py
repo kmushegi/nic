@@ -30,7 +30,7 @@ outdir = '../stats/'
 class CNetwork(object):
 
 	def __init__(self,n_epochs,n_layers,dropout,batch_size,optimizer,data_augmentation,
-					convActivation,denseActivation,x_train,y_train,x_test,y_test , params):
+					convActivation,denseActivation,x_train,y_train,x_test,y_test):
 		self.n_epochs = n_epochs
 		self.n_layers = n_layers
 		self.data_augmentation = data_augmentation
@@ -40,7 +40,8 @@ class CNetwork(object):
 		self.convActivation = convActivation
 		self.denseActivation = denseActivation
 		self.n_classes = 10
-		self.parameters = params
+
+		self.parameters = [n_epochs, n_layers, dropout, batch_size, optimizer, data_augmentation, convActivation, denseActivation]
 
 		self.x_train = x_train
 		self.y_train = y_train
@@ -86,8 +87,12 @@ class CNetwork(object):
 			epochs=self.n_epochs,
 			validation_data=(self.x_test,self.y_test),
 			shuffle=True)
+		# print(len(hist.history['acc']))
+		# write_out_training_history(hist)
 
-		write_out_training_history(hist)
+		print(type(hist.history['acc'][-1]))
+
+		return hist.history['acc'][-1]
 
 	def write_out_training_history(self,h):
 		fn = outdir+str(time.time())+".losses.txt"
