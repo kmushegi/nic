@@ -4,7 +4,6 @@ import sys
 import network as nn
 
 def main():
-
 	if len(sys.argv) == 6:
 		networkType = sys.argv[1]
 		numIterations = int(sys.argv[2])
