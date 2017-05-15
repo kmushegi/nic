@@ -27,10 +27,10 @@ import sys
 
 np.set_printoptions(threshold=np.nan)
 
-bitmap_training_data_file = "../data/bitmaps/optdigits-32x32.tra"
-bitmap_testing_data_file = "../data/bitmaps/optdigits-32x32.tes"
-downsampled_training_data_file = "../data/downsampled/optdigits-8x8-int.tra"
-downsampled_testing_data_file = "../data/downsampled/optdigits-8x8-int.tes"
+bitmap_training_data_file = "/home/kmushegi/p5/data/bitmaps/optdigits-32x32.tra"
+bitmap_testing_data_file = "/home/kmushegi/p5/data/bitmaps/optdigits-32x32.tes"
+downsampled_training_data_file = "/home/kmushegi/p5/data/downsampled/optdigits-8x8-int.tra"
+downsampled_testing_data_file = "/home/kmushegi/p5/data/downsampled/optdigits-8x8-int.tes"
 cifar_dir = "../data/cifar-10-batches-py/"
 
 NUM_TRAINING_IMAGES = 3823
