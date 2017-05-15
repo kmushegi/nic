@@ -72,16 +72,16 @@ class Network(object):
 			random.shuffle(training_data) #shuffle training data for 'random' sampling
 			
 			for index, sample in enumerate(training_data): #for every input/output pair
-				print("Sample: ",index,end='\r')
-				sys.stdout.flush()
+				#print("Sample: ",index,end='\r')
+				#sys.stdout.flush()
 				self.feedForward(sample[0])
 				self.update(sample[1])
-			print("")
+			#print("")
 			if test_data:
 				test_results = self.test(test_data)
-				print("Epoch {0}:\t {1} \t {2}".format(i+1, test_results,n_test_samples))
-			else:
-				print("Epoch {0}".format(i+1))
+				#print("Epoch {0}:\t {1} \t {2}".format(i+1, test_results,n_test_samples))
+			#else:
+				#print("Epoch {0}".format(i+1))
 
 		return test_results
 

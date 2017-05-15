@@ -90,7 +90,7 @@ class CNetwork(object):
 		# print(len(hist.history['acc']))
 		# write_out_training_history(hist)
 
-		print(type(hist.history['acc'][-1]))
+		#print(type(hist.history['acc'][-1]))
 
 		return hist.history['acc'][-1]
 
