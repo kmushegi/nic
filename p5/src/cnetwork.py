@@ -41,6 +41,8 @@ class CNetwork(object):
 		self.denseActivation = denseActivation
 		self.n_classes = 10
 
+		self.parameters = [n_epochs, n_layers, dropout, batch_size, optimizer, data_augmentation, convActivation, denseActivation]
+
 		self.x_train = x_train
 		self.y_train = y_train
 		self.x_test = x_test
@@ -85,8 +87,12 @@ class CNetwork(object):
 			epochs=self.n_epochs,
 			validation_data=(self.x_test,self.y_test),
 			shuffle=True)
+		# print(len(hist.history['acc']))
+		# write_out_training_history(hist)
 
-		write_out_training_history(hist)
+		print(type(hist.history['acc'][-1]))
+
+		return hist.history['acc'][-1]
 
 	def write_out_training_history(self,h):
 		fn = outdir+str(time.time())+".losses.txt"
