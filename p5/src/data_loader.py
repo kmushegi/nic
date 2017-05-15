@@ -19,7 +19,7 @@ information about the "desired" output formatted in a 10 output neuron way.
 """
 
 from __future__ import absolute_import
-import cPickle
+import pickle as cPickle
 import keras
 from keras.datasets import cifar10
 import numpy as np
@@ -148,7 +148,6 @@ def load_cifar_data_nn(n_batches):
 
 	for b in xrange(1,n_batches):
 		batch_path = cifar_dir + "data_batch_" + str(b)
-		print batch_path
 		data, labels = load_data_batch(batch_path)
 
 		if b == 1:
@@ -159,6 +158,7 @@ def load_cifar_data_nn(n_batches):
 			training_outputs = np.append(training_outputs,labels,axis=0)
 
 	training_inputs = normalize(training_inputs)
+
 	training_inputs = training_inputs.reshape(-1,3072,1)
 	training_outputs = [digit_to_vector_representation(y) for y in training_outputs]
 

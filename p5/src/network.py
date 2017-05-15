@@ -27,12 +27,13 @@ M = 0.5
 
 class Network(object):
 
-	def __init__(self, layer_info, n_epochs, lr): #layer_info => [in,hidden,...,hidden,out] 
+	def __init__(self, layer_info, n_epochs, lr, startWeightRange): #layer_info => [in,hidden,...,hidden,out] 
 		self.n_layers = len(layer_info)
 		self.layer_info = layer_info
 		self.n_inputs = layer_info[0] + 1 #add 1 for bias node
 		self.n_epochs = n_epochs
 		self.lr = lr
+		self.parameters = [layer_info, n_epochs, lr, startWeightRange]
 
 		self.weights = []		#weights[i] = weights between layer i and layer i+1
 		self.deltas = []		#deltas[i] = deltas between layer i and layer i+1
@@ -45,10 +46,10 @@ class Network(object):
 		#initialize random weights in [-0.15,0.15],deltas for the momentum term,layer activations
 		for i in xrange(self.n_layers - 1):
 			if i == 0:
-				temp_w = 0.3 * np.random.randn(self.n_inputs, self.layer_info[i+1]) - 0.15
+				temp_w = (2*startWeightRange) * np.random.randn(self.n_inputs, self.layer_info[i+1]) - startWeightRange
 				temp_d = np.zeros((self.n_inputs, self.layer_info[i+1]))
 			else:
-				temp_w = 0.3 * np.random.randn(self.layer_info[i], self.layer_info[i+1]) - 0.15
+				temp_w = (2*startWeightRange) * np.random.randn(self.layer_info[i], self.layer_info[i+1]) - startWeightRange
 				temp_d = np.zeros((self.layer_info[i], self.layer_info[i+1]))
 
 			self.weights.append(temp_w)
@@ -77,11 +78,12 @@ class Network(object):
 				self.update(sample[1])
 			print("")
 			if test_data:
-				print("Epoch {0}:\t {1} \t {2}".format(i+1, self.test(test_data),n_test_samples))
+				test_results = self.test(test_data)
+				print("Epoch {0}:\t {1} \t {2}".format(i+1, test_results,n_test_samples))
 			else:
 				print("Epoch {0}".format(i+1))
 
-		return self.weights
+		return test_results
 
 	#run the input through the neural network with existing weights
 	def feedForward(self, inputs):
@@ -123,6 +125,10 @@ class Network(object):
 			test_results = [(math.floor(self.feedForward(x) * 10.0), y) for (x,y) in test_data]
 		#return the total number of test cases that were correctly classified
 		return sum((x == y) for (x,y) in test_results)
+
+	#def calculateFitness(self):
+		
+
 
 
 
