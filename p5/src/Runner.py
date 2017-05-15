@@ -26,20 +26,20 @@ def main():
 		nnParams = {
 			"epochs": [10],
 			"learningRate": [1, 0.5, 0.1],
-			"hiddenInfo": [[], [100,50], []],
+			"hiddenInfo": [[], [300], [150,100]],
 			"startWeights": [0,1,0.15, 0.2, 0.25],
 		}
 
 	else:
 		nnParams = {
-			"epochs": [1],
+			"epochs": [10],
 			"layers": [2,3,4],
 			"dropout": [True, False],
 			"batch_size": [32],
-			"optimizer": ['sgd'],
-			"data_augmentation": [True],
-			"convActivation": ['relu'],
-			"denseActivation": ['softmax']
+			"optimizer": ['sgd','rmsprop','adam'],
+			"data_augmentation": [False],
+			"convActivation": ['relu','elu','sigmoid'],
+			"denseActivation": ['softmax','tanh','sigmoid']
 		}
 
 	geneticAlg = ga.GA(networkType, numIterations, populationSize, selection, crossover, crossoverProb, mutationProb, nnParams)
