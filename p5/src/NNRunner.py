@@ -5,6 +5,14 @@ Spring 2017
 Stephen Majercik
 
 Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
+
+This file is part of Project 5. This file contains is respondible for running an NN or cnn
+based on the parameters defined in the file or as specified on the command line.
+
+Neural Network defaults to NN(MLP); change on line 22.
+
+See lines 25-25(MLP), 75-81(CNN) for CL parameter information. 
+See lines 40-44(MLP), 83-89(CNN) for default parameters.
 """
 
 import data_loader as dl
