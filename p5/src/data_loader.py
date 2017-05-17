@@ -19,7 +19,7 @@ information about the "desired" output formatted in a 10 output neuron way.
 """
 
 from __future__ import absolute_import
-import pickle as cPickle
+import cPickle
 import keras
 from keras.datasets import cifar10
 import numpy as np
@@ -27,11 +27,11 @@ import sys
 
 np.set_printoptions(threshold=np.nan)
 
-bitmap_training_data_file = "../data/bitmaps/optdigits-32x32.tra"
-bitmap_testing_data_file = "../data/bitmaps/optdigits-32x32.tes"
-downsampled_training_data_file = "../data/downsampled/optdigits-8x8-int.tra"
-downsampled_testing_data_file = "../data/downsampled/optdigits-8x8-int.tes"
-cifar_dir = "../data/cifar-10-batches-py/"
+bitmap_training_data_file = "/home/kmushegi/p5/data/bitmaps/optdigits-32x32.tra"
+bitmap_testing_data_file = "/home/kmushegi/p5/data/bitmaps/optdigits-32x32.tes"
+downsampled_training_data_file = "/home/kmushegi/p5/data/downsampled/optdigits-8x8-int.tra"
+downsampled_testing_data_file = "/home/kmushegi/p5/data/downsampled/optdigits-8x8-int.tes"
+cifar_dir = "/home/kmushegi/p5/data/cifar-10-batches-py/"
 
 NUM_TRAINING_IMAGES = 3823
 
@@ -148,6 +148,7 @@ def load_cifar_data_nn(n_batches):
 
 	for b in xrange(1,n_batches):
 		batch_path = cifar_dir + "data_batch_" + str(b)
+		print batch_path
 		data, labels = load_data_batch(batch_path)
 
 		if b == 1:
@@ -158,7 +159,6 @@ def load_cifar_data_nn(n_batches):
 			training_outputs = np.append(training_outputs,labels,axis=0)
 
 	training_inputs = normalize(training_inputs)
-
 	training_inputs = training_inputs.reshape(-1,3072,1)
 	training_outputs = [digit_to_vector_representation(y) for y in training_outputs]
 
@@ -192,7 +192,7 @@ def get_data(which_network,dataset='bitmap', num_output_neurons=10):
 		return load_majercik_data(bit_map=0,num_output_neurons=num_output_neurons)
 	elif(dataset == "cifar10"):
 		if(which_network == 'nn'):
-			return load_cifar_data_nn(n_batches=6)
+			return load_cifar_data_nn(n_batches=3)
 		elif(which_network == 'cnn'):
 			return load_cifar_data_cnn()
 

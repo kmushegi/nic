@@ -18,6 +18,8 @@ import cnetwork as cnn
 import rankedIndividual as ri
 import data_loader as dl
 
+out_dest = '/home/kmushegi/p5/stats/stats.txt'
+
 class GA(object):
 
 	def __init__(self, networkType, numIterations, populationSize, selection, crossover, crossoverProb, mutationProb, nnParams):
@@ -32,7 +34,7 @@ class GA(object):
 
 		if (self.networkType == "nn"):
 			sys.stdout.flush()
-			self.train_train_data = dl.get_data("nn",'bitmap',10) #Length = 2
+			self.train_train_data = dl.get_data("nn",'cifar10',10) #Length = 2
 
 		else:
 			sys.stdout.flush()
@@ -44,7 +46,7 @@ class GA(object):
 		pop = []
 		for _ in range(0, self.populationSize):
 			if (self.networkType == "nn"):
-				n_in_neurons = 1024
+				n_in_neurons = 3072
 				n_out_neurons = 10
 				hidden_layer_info = random.choice(self.nnParams["hiddenInfo"])
 
@@ -86,31 +88,16 @@ class GA(object):
 		for _ in range(self.numberOfIterations):
 			if self.selection == "rs":
 				parents = self.rs(nnFitnesses)
-			# elif self.selection = "ts":
-			# 	parents = self.ts()
-			# elif self.selection = "bs":
-			# 	parents = self.bs()
 			else:
 				sys.exit(1)
 
 			children = []
-
-			# for i in range(len(parents)):
-			# 	print(parents[i].parameters)
-
-			# sys.exit(1)
 
 			for i in range(0,len(parents),2):
 				if (self.crossover =="1c"):
 					newChildren = self.onepoint(parents[i], parents[i+1])
 				elif (self.crossover =="uc"):
 					newChildren = self.uniform(parents[i], parents[i+1])
-
-				# print("MUTATION")
-				# print(self.mutate(newChildren[0]).parameters)
-				# print(self.mutate(newChildren[1]).parameters)
-
-				# sys.exit(1)
 				
 				children.append(self.mutate(newChildren[0]))
 				children.append(self.mutate(newChildren[1]))
@@ -135,10 +122,11 @@ class GA(object):
 			self.population = children
 			nnFitnesses = childFitnesses
 
-		print(bestNN.parameters)
-		print(fitnessOT)
 
-		# return bestNN
+		f = open(out_dest,'w')
+		for p in bestNN.parameters:
+			print >> f, p
+		print >> f, fitnessOT
 
 	def rs(self, nnFitnesses):
 		#Willbe the selected networks
@@ -201,10 +189,6 @@ class GA(object):
 			else:
 				child2.append(p2.parameters[key])
 
-		# print(net1.parameters)
-		# print(net2.parameters)
-		# sys.exit(1)
-
 		return (child1, child2)
 
 	def mutate(self, child):
@@ -213,10 +197,8 @@ class GA(object):
 			for i in range(len(child)):
 				if (random.random() > self.mutationProb):
 
-					# print("MUTATING")
-
 					if (i == 0):
-						n_in_neurons = 1024
+						n_in_neurons = 3072
 						n_out_neurons = 10
 						hidden_layer_info = random.choice(self.nnParams["hiddenInfo"])
 
