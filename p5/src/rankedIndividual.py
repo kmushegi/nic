@@ -1,13 +1,13 @@
 """
-Neural Networks for Image Classification - Final Project
+Evolving Neural Networks Using Genetic Algorithms - Project 5
 Nature Inspired Computation
 Spring 2017
 Stephen Majercik
 
 Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 
-This file is part of Neural Networks for Image Classification, Final Project. This file
-contains the implementation of NEED TO WRITE THIS
+This file is part of Project 5. This file contains the implementation of a
+rankedIndividual class used by the Genetic Algorithm.
 """
 
 import network as nn
