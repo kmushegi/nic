@@ -1,3 +1,18 @@
+"""
+Evolving Neural Networks Using Genetic Algorithms - Project 5
+Nature Inspired Computation
+Spring 2017
+Stephen Majercik
+
+Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
+
+This file is part of Project 5. This file is an entry point into the program and let's the user
+run the Genetic Algorithm to evolve optimal parameters for the Neural Networks (MLP, CNN).
+
+If the Command Line parameters are correctly specified (lines 22-28) then the parameters are read
+from the CL, otherwise Genetic Algorithm parameters default to ones defined on lines 32-38.
+"""
+
 import ga as ga
 import data_loader as dl
 import sys
