@@ -14,9 +14,9 @@ def main():
 		mutationProb = float(sys.argv[7])
 
 	else:
-		networkType = "nn"
-		numIterations = 10
-		populationSize = 20
+		networkType = "cnn"
+		numIterations = 1
+		populationSize = 2
 		selection = "rs"
 		crossover = "uc"
 		crossoverProb = 0.8
@@ -32,8 +32,7 @@ def main():
 
 	else:
 		nnParams = {
-			"epochs": [10],
-			"layers": [2,3,4],
+			"epochs": [1],
 			"dropout": [True, False],
 			"batch_size": [32],
 			"optimizer": ['sgd','rmsprop','adam'],

@@ -1,10 +1,13 @@
 """
-Neural Networks for Digit Recognition - Project 5
+Evolving Neural Networks Using Genetic Algorithms - Project 5
 Nature Inspired Computation
 Spring 2017
 Stephen Majercik
 
 Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
+
+This file is part of Project 5. This file contains the implementation of a Convolutional Neural
+Network based on the Keras API.
 """
 
 from __future__ import print_function
@@ -29,10 +32,9 @@ outdir = '../stats/'
 
 class CNetwork(object):
 
-	def __init__(self,n_epochs,n_layers,dropout,batch_size,optimizer,data_augmentation,
+	def __init__(self,n_epochs,dropout,batch_size,optimizer,data_augmentation,
 					convActivation,denseActivation,x_train,y_train,x_test,y_test):
 		self.n_epochs = n_epochs
-		self.n_layers = n_layers
 		self.data_augmentation = data_augmentation
 		self.dropout = dropout
 		self.batch_size = batch_size
@@ -41,7 +43,7 @@ class CNetwork(object):
 		self.denseActivation = denseActivation
 		self.n_classes = 10
 
-		self.parameters = [n_epochs, n_layers, dropout, batch_size, optimizer, data_augmentation, convActivation, denseActivation]
+		self.parameters = [n_epochs, dropout, batch_size, optimizer, data_augmentation, convActivation, denseActivation]
 
 		self.x_train = x_train
 		self.y_train = y_train
@@ -50,6 +52,7 @@ class CNetwork(object):
 
 		self.model = Sequential()
 
+	#stack convolutional and pooling layers to create the CNN structure
 	def build_network(self):
 		self.model.add(Conv2D(32,(3,3), padding='same', \
 			input_shape=self.x_train.shape[1:], activation=self.convActivation))
@@ -75,10 +78,7 @@ class CNetwork(object):
 
 		self.model.add(Dense(self.n_classes, activation=self.denseActivation))
 
-		#possibly add data augmentation here
-
-		#opt = keras.optimizers.rmsprop(lr=0.0001,decay=1e-6)
-		#use optimizer with default parameters for learning rate, decay and etc and find best optimizer
+		#use optimizer with default parameters for learning rate, decay and etc. goal: find best optimizer
 		self.model.compile(loss='categorical_crossentropy',optimizer=self.optimizer,metrics=['accuracy'])
 
 	def train(self):
@@ -87,22 +87,5 @@ class CNetwork(object):
 			epochs=self.n_epochs,
 			validation_data=(self.x_test,self.y_test),
 			shuffle=True)
-		# print(len(hist.history['acc']))
-		# write_out_training_history(hist)
 
-		#print(type(hist.history['acc'][-1]))
-
-		return hist.history['acc'][-1]
-
-	def write_out_training_history(self,h):
-		fn = outdir+str(time.time())+".losses.txt"
-		f = open(fn,'w')
-		f.write('loss\tval_loss\tacc\tval_acc\ttop_k\tval_top_k\n')
-		for i in np.arange(self.n_epochs):
-			f.write('%0.5f\t%0.5f\t%0.5f\t%0.5f\t%0.5f\t%0.5f'%(
-				h.history['loss'][i],
-				h.history['val_loss'][i],
-				h.history['acc'][i],
-				h.history['val_acc'][i],
-				h.history['top_k_categorical_accuracy'][i],
-				h.history['val_top_k_categorical_accuracy'][i]))
+		return hist.history['acc'][-1] #return the accuracy on last epoch

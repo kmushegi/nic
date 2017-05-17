@@ -1,0 +1,8 @@
+1
+True
+32
+rmsprop
+False
+elu
+softmax
+[0.41158, 0.43178]

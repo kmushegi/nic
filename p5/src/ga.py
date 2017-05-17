@@ -18,7 +18,7 @@ import cnetwork as cnn
 import rankedIndividual as ri
 import data_loader as dl
 
-out_dest = '/home/kmushegi/p5/stats/stats.txt'
+out_dest = '../stats/stats-1.txt'
 
 class GA(object):
 
@@ -58,7 +58,7 @@ class GA(object):
 				random.choice(self.nnParams["learningRate"]), random.choice(self.nnParams["startWeights"])) #Parameters
 
 			else:
-				net = cnn.CNetwork(random.choice(self.nnParams["epochs"]), random.choice(self.nnParams["layers"]), random.choice(self.nnParams["dropout"]),
+				net = cnn.CNetwork(random.choice(self.nnParams["epochs"]), random.choice(self.nnParams["dropout"]),
 				random.choice(self.nnParams["batch_size"]), random.choice(self.nnParams["optimizer"]), random.choice(self.nnParams["data_augmentation"]),
 				random.choice(self.nnParams["convActivation"]), random.choice(self.nnParams["denseActivation"]),
 				self.x_y_train_data[0][0],self.x_y_train_data[0][1],self.x_y_train_data[1][0],self.x_y_train_data[1][1]) #Parameters
@@ -85,7 +85,10 @@ class GA(object):
 
 		parents = []
 
-		for _ in range(self.numberOfIterations):
+		for i in range(self.numberOfIterations):
+			f = open(out_dest,'w')
+			print >> f, i
+			f.close()
 			if self.selection == "rs":
 				parents = self.rs(nnFitnesses)
 			else:
@@ -122,11 +125,11 @@ class GA(object):
 			self.population = children
 			nnFitnesses = childFitnesses
 
-
 		f = open(out_dest,'w')
 		for p in bestNN.parameters:
 			print >> f, p
 		print >> f, fitnessOT
+		f.close()
 
 	def rs(self, nnFitnesses):
 		#Willbe the selected networks
@@ -222,22 +225,20 @@ class GA(object):
 					if (i == 0):
 						child[i] = random.choice(self.nnParams["epochs"])
 					elif i == 1:
-						child[i] = random.choice(self.nnParams["layers"])
-					elif i == 2:
 						child[i] = random.choice(self.nnParams["dropout"])
-					elif i == 3:
+					elif i == 2:
 						child[i] = random.choice(self.nnParams["batch_size"])
-					elif i == 4:
+					elif i == 3:
 						child[i] = random.choice(self.nnParams["optimizer"])
-					elif i == 5:
+					elif i == 4:
 						child[i] = random.choice(self.nnParams["data_augmentation"])
-					elif i == 6:
+					elif i == 5:
 						child[i] = random.choice(self.nnParams["convActivation"])
-					elif i == 7:
+					elif i == 6:
 						child[i] = random.choice(self.nnParams["denseActivation"])
 
 			net = cnn.CNetwork(child[0],child[1],child[2],child[3],child[4],child[5],
-				child[6],child[7], self.x_y_train_data[0][0],self.x_y_train_data[0][1],
+				child[6], self.x_y_train_data[0][0],self.x_y_train_data[0][1],
 				self.x_y_train_data[1][0],self.x_y_train_data[1][1])
 			net.build_network()
 

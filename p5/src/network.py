@@ -1,14 +1,13 @@
 """
-Neural Networks for Digit Recognition - Project 5
+Evolving Neural Networks Using Genetic Algorithms - Project 5
 Nature Inspired Computation
 Spring 2017
 Stephen Majercik
 
 Ernesto Garcia, Marcus Christiansen, Konstantine Mushegian
 
-This file is part of Neural Networks for Digit Recognition, Project 4. This file
-contains the implementation of the Perceptron model of artificial neural 
-networks, with two layers: input & output.
+This file is part of Project 5. This file contains the implementation of the Multi-layer
+Perceptron model of artificial neural networks with an arbitrary number of hidden layers.
 """
 
 from __future__ import print_function
@@ -43,7 +42,7 @@ class Network(object):
 		in_activations = np.reshape(np.ones(self.n_inputs),(self.n_inputs,1))
 		self.activations.append(in_activations)
 
-		#initialize random weights in [-0.15,0.15],deltas for the momentum term,layer activations
+		#initialize random weights in [-0.15,0.15], deltas for the momentum term,layer activations
 		for i in xrange(self.n_layers - 1):
 			if i == 0:
 				temp_w = (2*startWeightRange) * np.random.randn(self.n_inputs, self.layer_info[i+1]) - startWeightRange
@@ -52,6 +51,7 @@ class Network(object):
 				temp_w = (2*startWeightRange) * np.random.randn(self.layer_info[i], self.layer_info[i+1]) - startWeightRange
 				temp_d = np.zeros((self.layer_info[i], self.layer_info[i+1]))
 
+			#append generated weights, momentum deltas and layer activations to global containers
 			self.weights.append(temp_w)
 			self.deltas.append(temp_d)
 			self.activations.append(np.ones(self.layer_info[i]))
@@ -72,16 +72,16 @@ class Network(object):
 			random.shuffle(training_data) #shuffle training data for 'random' sampling
 			
 			for index, sample in enumerate(training_data): #for every input/output pair
-				#print("Sample: ",index,end='\r')
-				#sys.stdout.flush()
+				print("Sample: ",index,end='\r')
+				sys.stdout.flush()
 				self.feedForward(sample[0])
 				self.update(sample[1])
-			#print("")
+			print("")
 			if test_data:
 				test_results = self.test(test_data)
-				#print("Epoch {0}:\t {1} \t {2}".format(i+1, test_results,n_test_samples))
-			#else:
-				#print("Epoch {0}".format(i+1))
+				print("Epoch {0}:\t {1} \t {2}".format(i+1, test_results,n_test_samples))
+			else:
+				print("Epoch {0}".format(i+1))
 
 		return test_results
 
@@ -90,30 +90,30 @@ class Network(object):
 		#set input layer nodes to actual input, except for the bias node
 		self.activations[0][0:self.n_inputs-1] = inputs
 
+		#feed the input through the neural network input ---> output
 		for i in xrange(self.n_layers - 1):
 			sum = np.dot(self.weights[i].T,self.activations[i])
 			self.activations[i+1] = self.sigmoid(sum)
 
-		return self.activations[-1]
+		return self.activations[-1] #return activation of the output layer
 
 	#update weights in the direction of the gradient descent
 	def update(self, desired_output):
 
-		if (self.layer_info[-1] == 1): #'normalize' desired output to be in [0,1]
-			desired_output /= 10.0
+		t_delta = None
 
-		c_delta = None
+		#update the weights starting at the output layer and moving backwards -- 'backpropagate'
 		for i in xrange(1,self.n_layers):
-			if i == 1:
+			if i == 1: #error term = desired - out_activation at the last layer
 				error = -(desired_output - self.activations[-i])
-				c_delta = self.sigmoidPrime(self.activations[-i]) * error
+				t_delta = self.sigmoidPrime(self.activations[-i]) * error
 			else:
-				error = np.dot(self.weights[-(i-1)],c_delta)
-				c_delta = self.sigmoidPrime(self.activations[-i]) * error
+				error = np.dot(self.weights[-(i-1)],t_delta) #compute error
+				t_delta = self.sigmoidPrime(self.activations[-i]) * error #compute t_delta
 
-			delta = c_delta.T * self.activations[-(i+1)]
-			self.weights[-i] -= (self.lr * delta + M * self.deltas[-i])
-			self.deltas[-i] = delta
+			delta = t_delta.T * self.activations[-(i+1)] #compute the direction of weight change
+			self.weights[-i] -= (self.lr * delta + M * self.deltas[-i]) #update weights
+			self.deltas[-i] = delta #store the current delta for next epoch momentum term
 
 	#feed test_data through the neural net and return the number of correct predictions
 	def test(self, test_data):
@@ -125,8 +125,6 @@ class Network(object):
 			test_results = [(math.floor(self.feedForward(x) * 10.0), y) for (x,y) in test_data]
 		#return the total number of test cases that were correctly classified
 		return sum((x == y) for (x,y) in test_results)
-
-	#def calculateFitness(self):
 		
 
 

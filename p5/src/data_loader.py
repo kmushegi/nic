@@ -27,11 +27,11 @@ import sys
 
 np.set_printoptions(threshold=np.nan)
 
-bitmap_training_data_file = "/home/kmushegi/p5/data/bitmaps/optdigits-32x32.tra"
-bitmap_testing_data_file = "/home/kmushegi/p5/data/bitmaps/optdigits-32x32.tes"
-downsampled_training_data_file = "/home/kmushegi/p5/data/downsampled/optdigits-8x8-int.tra"
-downsampled_testing_data_file = "/home/kmushegi/p5/data/downsampled/optdigits-8x8-int.tes"
-cifar_dir = "/home/kmushegi/p5/data/cifar-10-batches-py/"
+bitmap_training_data_file = "../data/bitmaps/optdigits-32x32.tra"
+bitmap_testing_data_file = "../data/bitmaps/optdigits-32x32.tes"
+downsampled_training_data_file = "../data/downsampled/optdigits-8x8-int.tra"
+downsampled_testing_data_file = "../data/downsampled/optdigits-8x8-int.tes"
+cifar_dir = "../data/cifar-10-batches-py/"
 
 NUM_TRAINING_IMAGES = 3823
 
@@ -127,64 +127,83 @@ def load_majercik_data(bit_map, num_output_neurons):
 
 		return (training_data, testing_data)
 
+#load an individual dataset and format it into the NumPy array
 def load_data_batch(fp):
+	#open and load the file
 	f = open(fp,'rb')
 	data_batch = cPickle.load(f)
 	data_batch_dec = {}
 
+	#decode (deserialize) cPickle data into unicode form
 	for key, value in data_batch.items():
 		data_batch_dec[key.decode('utf8')] = value
 
 	data_batch = data_batch_dec
-	f.close()
+	f.close() #close the file
 
 	data = data_batch['data']
 	labels = np.array(data_batch['labels'])
 
 	return data,labels
 
+#load the cifar-10 dataset into memory for use by our Multi-layer Perceptron
 def load_cifar_data_nn(n_batches):
 	N_TRAINING_DATA = 50000
 
+	#load n_batches of cifar-10 data
 	for b in xrange(1,n_batches):
 		batch_path = cifar_dir + "data_batch_" + str(b)
 		print batch_path
 		data, labels = load_data_batch(batch_path)
 
+		#build up the entire dataset
 		if b == 1:
 			training_inputs = data
 			training_outputs = labels
-		else:
+		else:  #after first batch, batches get appended to the containers
 			training_inputs = np.append(training_inputs,data,axis=0)
 			training_outputs = np.append(training_outputs,labels,axis=0)
 
 	training_inputs = normalize(training_inputs)
+	#reshape the multi-dimensional image data into a single 3072 array
 	training_inputs = training_inputs.reshape(-1,3072,1)
+	#Makes list of 10 elements with 1.0 at index = desired_output
 	training_outputs = [digit_to_vector_representation(y) for y in training_outputs]
 
+	#load the test batch
 	batch_path = cifar_dir + "test_batch"
 	testing_inputs, testing_outputs = load_data_batch(batch_path)
 
 	testing_inputs = normalize(testing_inputs)
+	#reshape the multi-dimensional image data into a single 3072 array
 	testing_inputs = testing_inputs.reshape(-1,3072,1)
+	#Makes list of 10 elements with 1.0 at index = desired_output
 	testing_outputs = [digit_to_vector_representation(y) for y in testing_outputs]
 
+	#zip together the inputs and outputs
 	training_data = zip(training_inputs, training_outputs)
 	testing_data = zip(testing_inputs, testing_outputs)
 
 	return (training_data, testing_data)
 
+#load the cifar-10 dataset into memory for use by the Keras-based CNN by using the Keras data loader
 def load_cifar_data_cnn():
 	(x_train,y_train),(x_test,y_test) = cifar10.load_data()
+	#convert a class vector to binary class matrix, similar to vectorizing
 	y_train = keras.utils.to_categorical(y_train, 10)
 	y_test = keras.utils.to_categorical(y_test, 10)
+
+	#convert type of data from integers to floats
 	x_train = x_train.astype('float32')
 	x_test = x_test.astype('float32')
-	x_train /= 255.0
-	x_test /= 255.0
+
+	x_train = normalize(x_train)
+	x_test = normalize(x_test)
 
 	return (x_train,y_train),(x_test,y_test)
 
+#obtain data given which network and which dataset is requested. dataset defaults to bitmap, number
+#of output neurons defaults to 10
 def get_data(which_network,dataset='bitmap', num_output_neurons=10):
 	if(dataset == "bitmap"):
 		return load_majercik_data(bit_map=1,num_output_neurons=num_output_neurons)
@@ -202,6 +221,7 @@ def digit_to_vector_representation(j):
 	e[j] = 1.0
 	return e
 
+#normalize image data from 0-255 to 0-1 range
 def normalize(data):
 	return data/255.0
 
