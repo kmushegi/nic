@@ -28,7 +28,7 @@ from keras.optimizers import Optimizer
 import numpy as np
 import time
 
-outdir = '../stats/'
+outdir = '../stats/' #directory to write files to
 
 class CNetwork(object):
 
@@ -54,33 +54,43 @@ class CNetwork(object):
 
 	#stack convolutional and pooling layers to create the CNN structure
 	def build_network(self):
+		#add two convolutional layers, with filter size 3x3 and no padding
 		self.model.add(Conv2D(32,(3,3), padding='same', \
 			input_shape=self.x_train.shape[1:], activation=self.convActivation))
 		self.model.add(Conv2D(32,(3,3), activation=self.convActivation))
+		#add a pooling layer with filter size 2x2
 		self.model.add(MaxPooling2D(pool_size=(2,2)))
 
+		#if doing dropout, ignore 25% of nodes
 		if(self.dropout):
 			self.model.add(Dropout(0.25))
 
+		#add two more conv. and one more poling layer, no padding
 		self.model.add(Conv2D(64,(3,3), padding='same', activation=self.convActivation))
 		self.model.add(Conv2D(64,(3,3), activation=self.convActivation))
 		self.model.add(MaxPooling2D(pool_size=(2,2)))
 
+		#increase dropout rate to 50% if performing it
 		if(self.dropout):
 			self.model.add(Dropout(0.5))
 
+		#squash the 3D structure into a 1-dimensional structure
 		self.model.add(Flatten())
+		#add two fully-connected layers with 512 and 256 neurons per layer
 		self.model.add(Dense(512, activation=self.convActivation))
 		self.model.add(Dense(256, activation=self.convActivation))
 
+		#dropout again
 		if(self.dropout):
 			self.model.add(Dropout(0.5))
 
+		#add output layer with n_classes neurons
 		self.model.add(Dense(self.n_classes, activation=self.denseActivation))
 
 		#use optimizer with default parameters for learning rate, decay and etc. goal: find best optimizer
 		self.model.compile(loss='categorical_crossentropy',optimizer=self.optimizer,metrics=['accuracy'])
 
+	#initialize the training history and return the accuracy at last epoch
 	def train(self):
 		hist = self.model.fit(self.x_train, self.y_train, 
 			batch_size=self.batch_size,
