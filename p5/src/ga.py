@@ -22,6 +22,7 @@ out_dest = '../stats/stats-1.txt'
 
 class GA(object):
 
+	#Constructor
 	def __init__(self, networkType, numIterations, populationSize, selection, crossover, crossoverProb, mutationProb, nnParams):
 		self.networkType = networkType
 		self.numberOfIterations = numIterations
@@ -32,70 +33,110 @@ class GA(object):
 		self.mutationProb = mutationProb
 		self.nnParams = nnParams
 
+		#User specified neural network
 		if (self.networkType == "nn"):
 			sys.stdout.flush()
-			self.train_train_data = dl.get_data("nn",'cifar10',10) #Length = 2
 
+			#Load data from cifar10 dataset and 10 output neurons
+			self.train_train_data = dl.get_data("nn",'cifar10',10)
+
+		#User specified convolutional neural network
 		else:
 			sys.stdout.flush()
-			self.x_y_train_data = dl.get_data("cnn",'cifar10') #Array of arrays
+
+			#Load data from cifar10
+			self.x_y_train_data = dl.get_data("cnn",'cifar10')
 
 		self.population = self.initializePopulation()
 
 	def initializePopulation(self):
+
+		#Container for the networks
 		pop = []
 		for _ in range(0, self.populationSize):
+
+			#User specified neural network
 			if (self.networkType == "nn"):
+
+				#Number of input nodes from rgb values
 				n_in_neurons = 3072
+
+				#Number of output nodes for 10 categories
 				n_out_neurons = 10
+
+				#Randomly hoose hidden layer parameters
 				hidden_layer_info = random.choice(self.nnParams["hiddenInfo"])
+
 
 				layer_info = [n_in_neurons]
 				layer_info.extend(hidden_layer_info)
 				layer_info.append(n_out_neurons)
 
+				#Crete the neural net with specified node info and random parameters; specified in network.py
 				net = nn.Network(layer_info, random.choice(self.nnParams["epochs"]),
 				random.choice(self.nnParams["learningRate"]), random.choice(self.nnParams["startWeights"])) #Parameters
 
+			#User specified convolutional neural network
 			else:
+
+				#Initialize convolution neural net with random parameters; specified in cnetwork.py
 				net = cnn.CNetwork(random.choice(self.nnParams["epochs"]), random.choice(self.nnParams["dropout"]),
 				random.choice(self.nnParams["batch_size"]), random.choice(self.nnParams["optimizer"]), random.choice(self.nnParams["data_augmentation"]),
 				random.choice(self.nnParams["convActivation"]), random.choice(self.nnParams["denseActivation"]),
 				self.x_y_train_data[0][0],self.x_y_train_data[0][1],self.x_y_train_data[1][0],self.x_y_train_data[1][1]) #Parameters
 				net.build_network()
 
+			#Append initialized network to population container
 			pop.append(net)
 
+		#Return randomly initialized neural network population
 		return pop
 
 	def runGA(self):
 
+		#Container for the fitness(accuracy) of each network
 		nnFitnesses = []
 		for i in range(len(self.population)):
+
+			#User specified neural network
 			if (self.networkType == "nn"):
 				nnFitnesses.append(self.evaluateFitnessNN(self.population[i]))
+
+			#User specified convolutional neural network
 			else:
 				nnFitnesses.append(self.evaluateFitnessCNN(self.population[i]))
 
+		#Find network with best fitness
 		bestNN = self.population[nnFitnesses.index(max(nnFitnesses))]
+
+		#Retrieve the actual fitness of this network
 		currentBestFitness = max(nnFitnesses)
 
+		#Keeps track of the best fitness over number of iterations
 		fitnessOT = []
 		fitnessOT.append(currentBestFitness)
 
+		#Container for networks selected for crossover
 		parents = []
 
+		#For number of iterations
 		for i in range(self.numberOfIterations):
+
+			#Prints iteration number to stats file
 			f = open(out_dest,'w')
 			print >> f, i
 			f.close()
+
+			#If selected rank selection run rank selection
 			if self.selection == "rs":
 				parents = self.rs(nnFitnesses)
 			else:
 				sys.exit(1)
 
+			#Container for the children that resulting from crossover
 			children = []
 
+			
 			for i in range(0,len(parents),2):
 				if (self.crossover =="1c"):
 					newChildren = self.onepoint(parents[i], parents[i+1])
