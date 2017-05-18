@@ -19,6 +19,8 @@ import sys
 import network as nn
 
 def main():
+
+	#If user wanted to specify own parameters retrieve them from command line
 	if len(sys.argv) == 6:
 		networkType = sys.argv[1]
 		numIterations = int(sys.argv[2])
@@ -28,6 +30,7 @@ def main():
 		crossoverProb = float(sys.argv[6])
 		mutationProb = float(sys.argv[7])
 
+	#If not specifed then these are default parameters
 	else:
 		networkType = "cnn"
 		numIterations = 1
@@ -37,7 +40,10 @@ def main():
 		crossoverProb = 0.8
 		mutationProb = 0.2
 
+	#Will define the choice of parameters for neral network
 	if (networkType == "nn"):
+
+		#Dictionary of parameters
 		nnParams = {
 			"epochs": [10],
 			"learningRate": [1, 0.5, 0.1],
@@ -45,7 +51,9 @@ def main():
 			"startWeights": [0,1,0.15, 0.2, 0.25],
 		}
 
+	#Will define the choice of parameters for convolutional neural network
 	else:
+		#Dictionary of possible paramaters
 		nnParams = {
 			"epochs": [1],
 			"dropout": [True, False],
@@ -56,6 +64,7 @@ def main():
 			"denseActivation": ['softmax','tanh','sigmoid']
 		}
 
+	#Run the ga algorithm to find optimal set of parameters
 	geneticAlg = ga.GA(networkType, numIterations, populationSize, selection, crossover, crossoverProb, mutationProb, nnParams)
 	geneticAlg.runGA()
 
